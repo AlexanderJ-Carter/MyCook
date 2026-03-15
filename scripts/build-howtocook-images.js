@@ -36,57 +36,107 @@ function ensureDir(dir) {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
 
+/** 写入占位页，避免 /howtocook-images/ 404 */
+function writePlaceholder(reason) {
+    ensureDir(OUT_PATH);
+    const escaped = String(reason)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    const html = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HowToCook 图片版 - 构建未就绪</title>
+  <style>body{font-family:system-ui,sans-serif;max-width:36em;margin:2em auto;padding:0 1em;line-height:1.5;}a{color:#c17f3a;}</style>
+</head>
+<body>
+  <h1>HowToCook 图片版</h1>
+  <p>${escaped}</p>
+  <p><a href="/">返回 MyCook 首页</a></p>
+</body>
+</html>`;
+    fs.writeFileSync(path.join(OUT_PATH, 'index.html'), html, 'utf8');
+    console.log(
+        '[build-howtocook-images] Wrote placeholder public/' +
+            OUT_SUBDIR +
+            '/index.html',
+    );
+}
+
 function main() {
     if (process.env.SKIP_IMAGES === '1') {
         console.log('[build-howtocook-images] SKIP_IMAGES=1, skip.');
-        return;
-    }
-
-    let srcDir = process.env.HOWTOCOOK_IMAGES_PATH
-        ? path.resolve(process.env.HOWTOCOOK_IMAGES_PATH)
-        : null;
-
-    if (!srcDir || !fs.existsSync(srcDir)) {
-        srcDir = UPSTREAM_DIR;
-        if (!fs.existsSync(srcDir)) {
-            console.log('[build-howtocook-images] Clone HowToCook (images)...');
-            ensureDir(path.dirname(UPSTREAM_DIR));
-            const repo = process.env.HOWTOCOOK_IMAGES_REPO || DEFAULT_REPO;
-            run('git', ['clone', '--depth', '1', repo, UPSTREAM_DIR]);
-        }
-    }
-
-    const packageJson = path.join(srcDir, 'package.json');
-    if (!fs.existsSync(packageJson)) {
-        console.warn(
-            '[build-howtocook-images] No package.json in',
-            srcDir,
-            '- skip.',
+        writePlaceholder(
+            '当前已跳过图片版构建（SKIP_IMAGES=1）。本地可取消该变量后执行 npm run build:images。',
         );
         return;
     }
 
-    console.log(
-        '[build-howtocook-images] Install & build (base /howtocook-images/)...',
-    );
-    run('npm', ['ci', '--prefer-offline', '--no-audit'], { cwd: srcDir });
-    run('npm', ['run', 'build'], {
-        cwd: srcDir,
-        env: { ...process.env, VITE_BASE_PATH: '/howtocook-images/' },
-    });
+    try {
+        let srcDir = process.env.HOWTOCOOK_IMAGES_PATH
+            ? path.resolve(process.env.HOWTOCOOK_IMAGES_PATH)
+            : null;
 
-    const distDir = path.join(srcDir, 'dist');
-    if (!fs.existsSync(distDir)) {
-        console.warn('[build-howtocook-images] No dist/ - skip copy.');
-        return;
-    }
+        if (!srcDir || !fs.existsSync(srcDir)) {
+            srcDir = UPSTREAM_DIR;
+            if (!fs.existsSync(srcDir)) {
+                console.log(
+                    '[build-howtocook-images] Clone HowToCook (images)...',
+                );
+                ensureDir(path.dirname(UPSTREAM_DIR));
+                const repo = process.env.HOWTOCOOK_IMAGES_REPO || DEFAULT_REPO;
+                run('git', ['clone', '--depth', '1', repo, UPSTREAM_DIR]);
+            }
+        }
 
-    if (fs.existsSync(OUT_PATH)) {
-        fs.rmSync(OUT_PATH, { recursive: true });
+        const packageJson = path.join(srcDir, 'package.json');
+        if (!fs.existsSync(packageJson)) {
+            console.warn(
+                '[build-howtocook-images] No package.json in',
+                srcDir,
+                '- skip.',
+            );
+            writePlaceholder(
+                '未找到图片版源码（无 package.json）。CI 请确认已克隆 king-jingxiang/HowToCook 到 upstream/HowToCookImages。',
+            );
+            return;
+        }
+
+        console.log(
+            '[build-howtocook-images] Install & build (base /howtocook-images/)...',
+        );
+        run('npm', ['ci', '--prefer-offline', '--no-audit'], { cwd: srcDir });
+        run('npm', ['run', 'build'], {
+            cwd: srcDir,
+            env: { ...process.env, VITE_BASE_PATH: '/howtocook-images/' },
+        });
+
+        const distDir = path.join(srcDir, 'dist');
+        if (!fs.existsSync(distDir)) {
+            console.warn('[build-howtocook-images] No dist/ - skip copy.');
+            writePlaceholder(
+                '图片版构建未产出 dist/，请检查上游仓库构建脚本。',
+            );
+            return;
+        }
+
+        if (fs.existsSync(OUT_PATH)) {
+            fs.rmSync(OUT_PATH, { recursive: true });
+        }
+        ensureDir(PUBLIC_DIR);
+        copyRecurse(distDir, OUT_PATH);
+        console.log('[build-howtocook-images] Copied to public/' + OUT_SUBDIR);
+    } catch (err) {
+        console.error('[build-howtocook-images] Error:', err.message);
+        writePlaceholder(
+            '图片版构建失败（' +
+                err.message +
+                '）。请查看 CI 日志或本地执行 npm run build:images 排查。',
+        );
     }
-    ensureDir(PUBLIC_DIR);
-    copyRecurse(distDir, OUT_PATH);
-    console.log('[build-howtocook-images] Copied to public/' + OUT_SUBDIR);
 }
 
 function copyRecurse(src, dest) {

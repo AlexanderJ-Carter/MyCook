@@ -136,6 +136,7 @@ npm run docs:preview
 ## 故障排查
 
 - **Get Pages site failed / Not Found**：到仓库 **Settings → Pages → Build and deployment**，将 **Source** 选为 **GitHub Actions**（不要选 “Deploy from a branch”），保存后再重新跑一次 Actions。
+- **/howtocook-images/ 404 或显示「构建未就绪」**：图片版在 CI 中可能构建失败。打开 **Actions → 最近一次 Sync & Build → Install & Sync & Build** 日志，搜索 `build-howtocook-images` 查看报错；修复后重新跑 workflow。
 - **Settings → Pages** 确认 Source 为 **GitHub Actions**
 - DNS: `cook.alexander.xin` 的 CNAME 记录指向 `alexanderj-carter.github.io`
 - **Actions** 里确认最近一次 **Sync & Build** 成功
