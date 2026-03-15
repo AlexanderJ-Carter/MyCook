@@ -1,11 +1,12 @@
-# 定时从你 fork 的仓库拉取 → 同步 → 构建 → 发布到 GitHub Pages
+# 从 fork 拉取 → 同步 → 构建 → 发布到 GitHub Pages
 name: Sync & Build
 
 on:
+    push:
+        branches: [main] # 推送到 main 时自动重建并发布
     schedule:
-        # 每天 UTC 2:00（北京时间 10:00）自动同步并发布
-        - cron: '0 2 * * *'
-    workflow_dispatch: {} # 支持手动 Run workflow
+        - cron: '0 2 * * *' # 每天 UTC 2:00（北京 10:00）再同步一次
+    workflow_dispatch: {}
 
 jobs:
     sync-and-build:
