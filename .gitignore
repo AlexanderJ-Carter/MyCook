@@ -1,0 +1,8 @@
+node_modules
+.vitepress/dist
+.vitepress/cache
+public/recent.json
+cooklikehoc
+howtocook
+.DS_Store
+*.log

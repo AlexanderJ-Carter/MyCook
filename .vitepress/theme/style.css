@@ -1,0 +1,226 @@
+/* MyCook 自定义主题：暖色菜谱站 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap');
+
+:root {
+    --vp-font-family-base:
+        'Noto Sans SC', ui-sans-serif, system-ui, -apple-system, 'PingFang SC',
+        'Microsoft YaHei', sans-serif;
+    --vp-font-family-mono:
+        ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
+
+    /* 暖色主色：姜黄/琥珀 */
+    --vp-c-brand-1: #c17f3a;
+    --vp-c-brand-2: #a66b2d;
+    --vp-c-brand-3: #8b5a24;
+    --vp-c-brand-soft: rgba(193, 127, 58, 0.14);
+
+    --vp-custom-block-tip-border: #c17f3a;
+    --vp-custom-block-tip-bg: rgba(193, 127, 58, 0.08);
+    --vp-button-brand-border: transparent;
+    --vp-button-brand-hover-border: transparent;
+}
+
+/* 首页 Hero 区域 */
+.VPHero {
+    padding: 2.5rem 0 2rem;
+}
+.VPHero .name {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+.VPHero .text {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 600;
+    font-size: 1.75rem;
+}
+.VPHero .tagline {
+    opacity: 0.9;
+    font-size: 1.05rem;
+    margin-top: 0.5rem;
+}
+.VPHero .actions {
+    margin-top: 1.5rem;
+    gap: 0.75rem;
+}
+
+/* 首页入口卡片容器 */
+.home-entries {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin: 2.5rem auto 3rem;
+    max-width: 800px;
+}
+.home-entry-card {
+    display: block;
+    padding: 1.75rem 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--vp-c-divider);
+    background: var(--vp-c-bg-soft);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    text-decoration: none;
+    color: var(--vp-c-text-1);
+}
+.home-entry-card:hover {
+    border-color: var(--vp-c-brand-1);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+}
+.home-entry-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--vp-c-brand-1);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+.home-entry-card h3 {
+    margin: 0 0 0.5rem;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--vp-c-text-1);
+    line-height: 1.3;
+}
+.home-entry-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--vp-c-text-2);
+    line-height: 1.6;
+}
+
+/* 文档内容区：标题与段落 */
+.VPDoc .content .vp-doc h1 {
+    font-family: 'Noto Serif SC', serif;
+}
+.VPDoc .content .vp-doc h2 {
+    font-family: 'Noto Serif SC', serif;
+    padding-top: 1.2em;
+    border-top: 1px solid var(--vp-c-divider);
+    margin-top: 1.8em;
+}
+.VPDoc .content .vp-doc h2:first-child {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+}
+
+/* 侧边栏与导航 */
+.VPSidebarItem.level-0 > .item > .link {
+    font-weight: 500;
+}
+.VPNavBarTitle .title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 600;
+}
+
+/* 搜索框与按钮 */
+.VPButton.medium.brand {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* 最近更新区块 */
+.recent-updates {
+    margin: 3rem auto 3rem;
+    padding: 2rem 0 0;
+    border-top: 1px solid var(--vp-c-divider);
+    max-width: 800px;
+}
+.recent-updates-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: var(--vp-c-text-1);
+}
+.recent-updates-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.35rem 1.25rem;
+}
+.recent-updates-list li {
+    margin: 0;
+}
+.recent-updates-list a {
+    color: var(--vp-c-text-2);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.15s;
+    display: block;
+    padding: 0.2rem 0;
+}
+.recent-updates-list a:hover {
+    color: var(--vp-c-brand-1);
+}
+
+/* 两种风格内页：左侧色条与背景区分 */
+.layout-cooklikehoc .vp-doc .container {
+    padding-left: 1rem;
+    border-left: 3px solid var(--vp-c-brand-1);
+    margin-left: 0;
+    padding-left: 1.25rem;
+}
+.layout-cooklikehoc .vp-doc {
+    --vp-custom-block-tip-border: #c17f3a;
+    --vp-custom-block-tip-bg: rgba(193, 127, 58, 0.06);
+}
+
+.layout-howtocook .vp-doc .container {
+    padding-left: 1rem;
+    border-left: 3px solid #2d7d5e;
+    margin-left: 0;
+    padding-left: 1.25rem;
+}
+.layout-howtocook .vp-doc {
+    --vp-custom-block-tip-border: #2d7d5e;
+    --vp-custom-block-tip-bg: rgba(45, 125, 94, 0.06);
+}
+
+/* 文档容器在 VitePress 中可能不同，用 content 主区域 */
+.layout-cooklikehoc .vp-doc .content,
+.layout-howtocook .vp-doc .content {
+    padding-left: 0;
+}
+.layout-cooklikehoc .VPDoc .vp-doc .container {
+    border-left: 3px solid var(--vp-c-brand-1);
+    padding-left: 1.25rem;
+    margin-left: 0;
+}
+.layout-howtocook .VPDoc .vp-doc .container {
+    border-left: 3px solid #2d7d5e;
+    padding-left: 1.25rem;
+    margin-left: 0;
+}
+
+/* 移动端 */
+@media (max-width: 768px) {
+    .VPHero .text {
+        font-size: 1.5rem;
+    }
+    .home-entries {
+        grid-template-columns: 1fr;
+        margin: 1.5rem 0 2rem;
+        max-width: 100%;
+    }
+    .home-entry-card {
+        padding: 1.25rem 1.5rem;
+    }
+    .recent-updates {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .recent-updates-list {
+        grid-template-columns: 1fr;
+    }
+    .layout-cooklikehoc .VPDoc .vp-doc .container,
+    .layout-howtocook .VPDoc .vp-doc .container {
+        margin-left: 0;
+        padding-left: 1rem;
+    }
+}

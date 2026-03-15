@@ -1,0 +1,47 @@
+# 定时从你 fork 的仓库拉取 → 同步 → 构建 → 发布到 GitHub Pages
+name: Sync & Build
+
+on:
+    schedule:
+        # 每天 UTC 2:00（北京时间 10:00）自动同步并发布
+        - cron: '0 2 * * *'
+    workflow_dispatch: {} # 支持手动 Run workflow
+
+jobs:
+    sync-and-build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout MyCook
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Clone CookLikeHOC
+              run: |
+                  git clone --depth 1 https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC
+
+            - name: Clone HowToCook
+              run: |
+                  git clone --depth 1 https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: 'npm'
+
+            - name: Install & Sync & Build
+              env:
+                  COOKLIKEHOC_PATH: ${{ github.workspace }}/upstream/CookLikeHOC
+                  HOWTOCOOK_PATH: ${{ github.workspace }}/upstream/HowToCook
+                  VITEPRESS_BASE: /${{ github.event.repository.name }}/
+              run: |
+                  npm ci
+                  node scripts/sync-upstream.js
+                  npm run docs:build
+
+            - name: Deploy to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: .vitepress/dist
