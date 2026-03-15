@@ -105,14 +105,49 @@ function main() {
             return;
         }
 
+        const buildEnv = { ...process.env, VITE_BASE_PATH: '/howtocook-images/' };
+        const hasPnpmLock = fs.existsSync(path.join(srcDir, 'pnpm-lock.yaml'));
+        const hasNpmLock = fs.existsSync(path.join(srcDir, 'package-lock.json'));
+
         console.log(
             '[build-howtocook-images] Install & build (base /howtocook-images/)...',
         );
-        run('npm', ['ci', '--prefer-offline', '--no-audit'], { cwd: srcDir });
-        run('npm', ['run', 'build'], {
-            cwd: srcDir,
-            env: { ...process.env, VITE_BASE_PATH: '/howtocook-images/' },
-        });
+
+        let built = false;
+
+        if (hasPnpmLock) {
+            console.log(
+                '[build-howtocook-images] pnpm-lock.yaml detected, using pnpm via corepack...',
+            );
+            try {
+                run('corepack', ['pnpm', 'install', '--frozen-lockfile'], {
+                    cwd: srcDir,
+                });
+                run('corepack', ['pnpm', 'run', 'build'], {
+                    cwd: srcDir,
+                    env: buildEnv,
+                });
+                built = true;
+            } catch (err) {
+                console.warn(
+                    '[build-howtocook-images] pnpm install/build failed, will fall back to npm:',
+                    err.message,
+                );
+            }
+        }
+
+        if (!built) {
+            const installArgs = hasNpmLock
+                ? ['ci', '--prefer-offline', '--no-audit']
+                : ['install', '--prefer-offline', '--no-audit'];
+            console.log(
+                '[build-howtocook-images] Using npm ' +
+                    (hasNpmLock ? 'ci (package-lock found)' : 'install (no lockfile)') +
+                    '...',
+            );
+            run('npm', installArgs, { cwd: srcDir });
+            run('npm', ['run', 'build'], { cwd: srcDir, env: buildEnv });
+        }
 
         const distDir = path.join(srcDir, 'dist');
         if (!fs.existsSync(distDir)) {
