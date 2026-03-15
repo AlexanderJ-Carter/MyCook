@@ -11,7 +11,7 @@ export default defineConfig({
     cleanUrls: true,
     base: process.env.VITEPRESS_BASE || '/',
     ignoreDeadLinks: true,
-    srcExclude: ['**/README.md'],
+    srcExclude: ['README.md', 'howtocook/*.md'],
     themeConfig: {
         nav: [
             { text: '首页', link: '/' },

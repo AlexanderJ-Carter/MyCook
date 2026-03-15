@@ -8,11 +8,21 @@ on:
         - cron: '0 2 * * *' # 每天 UTC 2:00（北京 10:00）再同步一次
     workflow_dispatch: {}
 
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+concurrency:
+    group: pages
+    cancel-in-progress: false
+
 jobs:
     sync-and-build:
         runs-on: ubuntu-latest
-        permissions:
-            contents: write # 允许推送到 gh-pages 分支
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
         steps:
             - name: Checkout MyCook
               uses: actions/checkout@v4
@@ -43,8 +53,14 @@ jobs:
                   node scripts/sync-upstream.js
                   npm run docs:build
 
-            - name: Deploy to GitHub Pages
-              uses: peaceiris/actions-gh-pages@v4
+            - name: Setup Pages
+              uses: actions/configure-pages@v5
+
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v3
               with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: .vitepress/dist
+                  path: .vitepress/dist
+
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
