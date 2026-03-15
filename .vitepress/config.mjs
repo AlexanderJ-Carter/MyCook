@@ -11,7 +11,7 @@ export default defineConfig({
     cleanUrls: true,
     base: process.env.VITEPRESS_BASE || '/',
     ignoreDeadLinks: true,
-    srcExclude: ['README.md', 'howtocook/*.md'],
+    srcExclude: ['README.md', 'cooklikehoc/README.md', 'howtocook/*.md'],
 
     head: [
         ['meta', { name: 'theme-color', content: '#c17f3a' }],
