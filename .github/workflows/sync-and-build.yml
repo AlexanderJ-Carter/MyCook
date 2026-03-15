@@ -8,6 +8,9 @@ on:
         - cron: '0 2 * * *' # 每天 UTC 2:00（北京 10:00）再同步一次
     workflow_dispatch: {}
 
+env:
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # 使用 Node 24 运行 actions，消除 Node 20 弃用警告
+
 permissions:
     contents: read
     pages: write
