@@ -11,11 +11,23 @@ export default defineConfig({
     cleanUrls: true,
     base: process.env.VITEPRESS_BASE || '/',
     ignoreDeadLinks: true,
-    srcExclude: ['README.md', 'cooklikehoc/README.md', 'howtocook/*.md', 'upstream/**'],
+    srcExclude: [
+        'README.md',
+        'cooklikehoc/README.md',
+        'howtocook/*.md',
+        'upstream/**',
+    ],
 
     head: [
         ['meta', { name: 'theme-color', content: '#c17f3a' }],
-        ['meta', { name: 'description', content: 'MyCook - 老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
+        [
+            'meta',
+            {
+                name: 'description',
+                content:
+                    'MyCook - 老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅',
+            },
+        ],
         ['meta', { name: 'og:type', content: 'website' }],
         ['meta', { name: 'og:locale', content: 'zh-CN' }],
         ['meta', { name: 'og:title', content: 'MyCook - 在家做饭一站搞定' }],
@@ -47,7 +59,7 @@ export default defineConfig({
                     },
                     {
                         text: 'HowToCook 图片版',
-                        link: 'https://king-jingxiang.github.io/HowToCook/',
+                        link: '/howtocook-images/',
                     },
                     {
                         text: '本站仓库',

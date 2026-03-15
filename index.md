@@ -37,10 +37,10 @@ features:
   <p>按食材分类浏览，素菜、荤菜、水产、主食、饮料、甜品，每道菜独立成篇。</p>
 </a>
 
-<a class="home-entry-card" href="https://king-jingxiang.github.io/HowToCook/" target="_blank" rel="noopener">
+<a class="home-entry-card" href="/howtocook-images/">
   <span class="home-entry-label">衍生 · 图片版</span>
   <h3>HowToCook 图片版</h3>
-  <p>基于原版 Markdown 生成的 4K 菜谱图，分类浏览、收藏、导出 PDF/长图。由 king-jingxiang 维护，另站打开。</p>
+  <p>基于原版 Markdown 生成的 4K 菜谱图，分类浏览、收藏、导出 PDF/长图。源自 king-jingxiang/HowToCook。</p>
 </a>
 
 </div>
@@ -71,9 +71,9 @@ features:
     <li><a href="https://github.com/Gar-b-age/CookLikeHOC" target="_blank" rel="noopener">CookLikeHOC</a> — 像老乡鸡那样做饭（Gar-b-age）</li>
     <li><a href="https://github.com/Anduin2017/HowToCook" target="_blank" rel="noopener">HowToCook</a> — 程序员在家做饭方法指南（Anduin2017）</li>
   </ul>
-  <p class="home-credits-desc">衍生推荐（同源不同形态，另站访问）：</p>
+  <p class="home-credits-desc">衍生（本站子路径，源自以下项目）：</p>
   <ul class="home-credits-list">
-    <li><a href="https://king-jingxiang.github.io/HowToCook/" target="_blank" rel="noopener">HowToCook 图片版</a> — 原版 Markdown 转 4K 菜谱图，分类浏览、收藏、导出 PDF（<a href="https://github.com/king-jingxiang/HowToCook" target="_blank" rel="noopener">king-jingxiang/HowToCook</a>）</li>
+    <li><a href="/howtocook-images/">HowToCook 图片版</a> — 原版 Markdown 转 4K 菜谱图，分类浏览、收藏、导出 PDF（源自 <a href="https://github.com/king-jingxiang/HowToCook" target="_blank" rel="noopener">king-jingxiang/HowToCook</a>）</li>
   </ul>
   <p class="home-credits-note">本站为合并整理项目，基于本人 fork 同步发布，非上述项目官方站点。本仓库：<a href="https://github.com/AlexanderJ-Carter/MyCook" target="_blank" rel="noopener">AlexanderJ-Carter/MyCook</a></p>
 </section>

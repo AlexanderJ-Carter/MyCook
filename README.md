@@ -43,9 +43,10 @@ MyCook/
 │   └── navSidebar.mjs       # 导航与侧栏自动生成
 ├── scripts/
 │   ├── sync-upstream.js     # 同步内容到 cooklikehoc/、howtocook/，并写 public/sync-info.json
+│   ├── build-howtocook-images.js  # 构建图片版到 public/howtocook-images/（站内子路径）
 │   ├── generate-recent.js   # 生成 public/recent.json（最近更新）
 │   └── generate-stats.js    # 生成 public/stats.json（菜谱统计）
-├── public/                  # 静态资源与构建时生成的 recent.json、stats.json、sync-info.json
+├── public/                  # 静态资源与构建时生成的 recent.json、stats.json、sync-info.json、howtocook-images/
 ├── cooklikehoc/             # CookLikeHOC 内容（同步填充，.gitignore）
 ├── howtocook/               # HowToCook 内容（同步填充，.gitignore）
 ├── index.md                 # 首页
@@ -53,7 +54,7 @@ MyCook/
 └── docker-compose.yml       # 生产 + 开发 profile
 ```
 
-> `cooklikehoc/`、`howtocook/` 及 `public/recent.json`、`public/stats.json`、`public/sync-info.json` 为同步/构建时生成，已加入 `.gitignore`。
+> `cooklikehoc/`、`howtocook/` 及 `public/recent.json`、`public/stats.json`、`public/sync-info.json`、`public/howtocook-images/` 为同步/构建时生成，已加入 `.gitignore`。
 
 ---
 
@@ -121,7 +122,7 @@ npm run docs:preview
 
 ## 同步机制
 
-- **CI**：每次 push 到 `main` 或每日定时（UTC 2:00，北京 10:00），会克隆 `AlexanderJ-Carter/CookLikeHOC`（main）、`AlexanderJ-Carter/HowToCook`（master）到 `upstream/`，执行 `sync-upstream.js` 写入 `cooklikehoc/`、`howtocook/`，并生成 `public/sync-info.json`（最近同步时间与源）、`recent.json`、`stats.json`，再构建并部署到 GitHub Pages。
+- **CI**：每次 push 到 `main` 或每日定时（UTC 2:00，北京 10:00），会克隆 `AlexanderJ-Carter/CookLikeHOC`、`AlexanderJ-Carter/HowToCook`、`king-jingxiang/HowToCook`（图片版）到 `upstream/`，执行 `sync-upstream.js`、`build:images`（输出 `public/howtocook-images/`），生成 `recent.json`、`stats.json`、`sync-info.json`，再构建并部署到 GitHub Pages。
 - **本地**：将 CookLikeHOC、HowToCook 放在上级目录或设置 `COOKLIKEHOC_PATH`、`HOWTOCOOK_PATH`，执行 `npm run sync` 后 `npm run docs:build`。
 - **手动触发**：**Actions → Sync & Build → Run workflow** 可立即同步并发布。
 
@@ -150,9 +151,9 @@ npm run docs:preview
 
 本仓库非上述项目官方站点，为个人整理维护。
 
-### 衍生推荐
+### 衍生（站内子路径）
 
-- **[HowToCook 图片版](https://king-jingxiang.github.io/HowToCook/)**（[king-jingxiang/HowToCook](https://github.com/king-jingxiang/HowToCook)）— 将原版 Markdown 转为 4K 菜谱图，支持分类浏览、收藏、导出 PDF/长图。与本站 HowToCook 同源但技术栈不同（Vite + 图片生成），**无法与本站内容合并**；本站首页与导航已提供入口，可另站打开使用。若需自托管图片版，可单独克隆该仓库并按其 README 构建部署。
+- **HowToCook 图片版** — 集成在本站子路径 `/howtocook-images/`（与 cooklikehoc、howtocook 一样不跳转外站），源自 [king-jingxiang/HowToCook](https://github.com/king-jingxiang/HowToCook)。构建时克隆该仓库并执行 `build:images` 输出到 `public/howtocook-images/`。本地可设 `SKIP_IMAGES=1` 跳过图片版构建，或 `HOWTOCOOK_IMAGES_PATH=../HowToCookImages` 使用本地目录。
 
 ## 许可证
 

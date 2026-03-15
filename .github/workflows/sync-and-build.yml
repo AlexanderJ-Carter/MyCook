@@ -40,6 +40,10 @@ jobs:
               run: |
                   git clone --depth 1 https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook
 
+            - name: Clone HowToCook (images)
+              run: |
+                  git clone --depth 1 https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages
+
             - name: Setup Node
               uses: actions/setup-node@v4
               with:

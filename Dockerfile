@@ -27,8 +27,9 @@ ARG HOWTOCOOK_BRANCH=master
 # 克隆时重试 3 次，避免网络/限流导致 exit 128
 RUN for i in 1 2 3; do git clone --depth 1 --branch "${COOKLIKEHOC_BRANCH}" "${COOKLIKEHOC_REPO}" upstream/CookLikeHOC && break; rm -rf upstream/CookLikeHOC; [ "$i" = 3 ] && exit 1; sleep 5; done
 RUN for i in 1 2 3; do git clone --depth 1 --branch "${HOWTOCOOK_BRANCH}" "${HOWTOCOOK_REPO}" upstream/HowToCook && break; rm -rf upstream/HowToCook; [ "$i" = 3 ] && exit 1; sleep 5; done
+RUN git clone --depth 1 https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages
 
-# 同步内容并构建
+# 同步内容并构建（含图片版子路径 public/howtocook-images/）
 ENV COOKLIKEHOC_PATH=/app/upstream/CookLikeHOC
 ENV HOWTOCOOK_PATH=/app/upstream/HowToCook
 ENV COOKLIKEHOC_BRANCH=${COOKLIKEHOC_BRANCH}

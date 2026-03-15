@@ -16,9 +16,10 @@
   },
   "scripts": {
     "sync": "node scripts/sync-upstream.js",
+    "build:images": "node scripts/build-howtocook-images.js",
     "generate": "node scripts/generate-recent.js && node scripts/generate-stats.js",
     "docs:dev": "npm run generate && vitepress dev .",
-    "docs:build": "npm run generate && vitepress build .",
+    "docs:build": "npm run build:images || true && npm run generate && vitepress build .",
     "docs:preview": "vitepress preview .",
     "build": "npm run docs:build",
     "start": "npm run docs:dev",
