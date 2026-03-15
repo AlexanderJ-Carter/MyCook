@@ -10,6 +10,8 @@ on:
 jobs:
     sync-and-build:
         runs-on: ubuntu-latest
+        permissions:
+            contents: write # 允许推送到 gh-pages 分支
         steps:
             - name: Checkout MyCook
               uses: actions/checkout@v4
