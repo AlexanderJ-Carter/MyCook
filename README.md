@@ -125,15 +125,16 @@ npm run docs:preview
 - **本地**：将 CookLikeHOC、HowToCook 放在上级目录或设置 `COOKLIKEHOC_PATH`、`HOWTOCOOK_PATH`，执行 `npm run sync` 后 `npm run docs:build`。
 - **手动触发**：**Actions → Sync & Build → Run workflow** 可立即同步并发布。
 
-| 场景 | 操作 |
-|------|------|
-| 更新菜谱 | 在 CookLikeHOC 或 HowToCook fork 中修改并推送，再在 MyCook 触发 Sync & Build 或等每日定时 |
-| 改主题/首页 | 直接改 MyCook 内文件，推送到 main 后自动重建 |
+| 场景        | 操作                                                                                      |
+| ----------- | ----------------------------------------------------------------------------------------- |
+| 更新菜谱    | 在 CookLikeHOC 或 HowToCook fork 中修改并推送，再在 MyCook 触发 Sync & Build 或等每日定时 |
+| 改主题/首页 | 直接改 MyCook 内文件，推送到 main 后自动重建                                              |
 
 ---
 
 ## 故障排查
 
+- **Get Pages site failed / Not Found**：到仓库 **Settings → Pages → Build and deployment**，将 **Source** 选为 **GitHub Actions**（不要选 “Deploy from a branch”），保存后再重新跑一次 Actions。
 - **Settings → Pages** 确认 Source 为 **GitHub Actions**
 - DNS: `cook.alexander.xin` 的 CNAME 记录指向 `alexanderj-carter.github.io`
 - **Actions** 里确认最近一次 **Sync & Build** 成功

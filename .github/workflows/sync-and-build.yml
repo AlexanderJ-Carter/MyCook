@@ -58,6 +58,7 @@ jobs:
                   node scripts/sync-upstream.js
                   npm run docs:build
 
+            # 若报错 Get Pages site failed / Not Found：请到仓库 Settings → Pages → Build and deployment → Source 选择「GitHub Actions」
             - name: Setup Pages
               uses: actions/configure-pages@v5
 
