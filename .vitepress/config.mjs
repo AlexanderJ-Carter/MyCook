@@ -15,8 +15,10 @@ export default defineConfig({
 
     head: [
         ['meta', { name: 'theme-color', content: '#c17f3a' }],
+        ['meta', { name: 'description', content: 'MyCook - 老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
         ['meta', { name: 'og:type', content: 'website' }],
         ['meta', { name: 'og:locale', content: 'zh-CN' }],
+        ['meta', { name: 'og:title', content: 'MyCook - 在家做饭一站搞定' }],
         ['link', { rel: 'icon', href: '/favicon.ico' }],
     ],
 
@@ -42,6 +44,10 @@ export default defineConfig({
                                 link: 'https://github.com/Anduin2017/HowToCook',
                             },
                         ],
+                    },
+                    {
+                        text: 'HowToCook 图片版',
+                        link: 'https://king-jingxiang.github.io/HowToCook/',
                     },
                     {
                         text: '本站仓库',
@@ -93,17 +99,21 @@ export default defineConfig({
         },
 
         editLink: {
-            pattern: 'https://github.com/AlexanderJ-Carter/MyCook/edit/main/:path',
+            pattern:
+                'https://github.com/AlexanderJ-Carter/MyCook/edit/main/:path',
             text: '在 GitHub 上编辑此页',
         },
 
         footer: {
-            message: '内容来源于 CookLikeHOC 与 HowToCook 开源项目',
-            copyright: `Copyright © ${new Date().getFullYear()} MyCook · 非官方整理站`,
+            message: '内容来源于 CookLikeHOC 与 HowToCook，由本站合并整理',
+            copyright: `Copyright © ${new Date().getFullYear()} MyCook · 非官方站点`,
         },
 
         socialLinks: [
-            { icon: 'github', link: 'https://github.com/AlexanderJ-Carter/MyCook' },
+            {
+                icon: 'github',
+                link: 'https://github.com/AlexanderJ-Carter/MyCook',
+            },
         ],
     },
 

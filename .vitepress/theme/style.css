@@ -61,13 +61,13 @@
     line-height: 1.5;
 }
 
-/* 首页入口卡片容器 */
+/* 首页入口卡片容器（三栏：两源 + 衍生） */
 .home-entries {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     margin: 2.75rem auto 3rem;
-    max-width: 820px;
+    max-width: 960px;
 }
 .home-entry-card {
     display: block;
@@ -272,6 +272,14 @@
     margin-left: 0;
 }
 
+/* 平板：两栏 */
+@media (max-width: 960px) {
+    .home-entries {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 100%;
+    }
+}
+
 /* 移动端 */
 @media (max-width: 768px) {
     .VPHero {
@@ -435,7 +443,7 @@
 }
 .quick-links-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 0.75rem;
 }
 .quick-links-grid a {

@@ -1,10 +1,14 @@
-version: '3.8'
+# MyCook - 生产镜像内已含克隆与同步，无需挂载
+# 开发：docker compose --profile dev up
 
 services:
   mycook:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        COOKLIKEHOC_BRANCH: main
+        HOWTOCOOK_BRANCH: master
     image: mycook:latest
     container_name: mycook
     ports:
@@ -17,7 +21,7 @@ services:
       retries: 3
       start_period: 5s
 
-  # 开发模式：本地构建不包含内容，需要挂载
+  # 开发：需先本地 sync 或挂载上游目录
   mycook-dev:
     image: node:22-alpine
     container_name: mycook-dev

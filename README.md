@@ -37,22 +37,23 @@ MyCook 是一个合并整理两个优秀菜谱项目的静态网站：
 
 ```
 MyCook/
-├── .github/workflows/       # GitHub Actions CI/CD
+├── .github/workflows/       # Sync & Build（克隆 fork → 同步 → 构建 → 发布）
 ├── .vitepress/
-│   ├── theme/               # 自定义主题（暖色调、入口卡片）
-│   └── navSidebar.mjs       # 导航与侧边栏自动生成
+│   ├── theme/               # 自定义主题（暖色、入口卡片、双源色条）
+│   └── navSidebar.mjs       # 导航与侧栏自动生成
 ├── scripts/
-│   ├── sync-upstream.js     # 从上游同步内容
-│   └── generate-recent.js   # 生成最近更新列表
-├── public/                  # 静态资源
-├── cooklikehoc/             # CookLikeHOC 内容（自动同步）
-├── howtocook/               # HowToCook 内容（自动同步）
-├── index.md                 # 首页配置
-├── Dockerfile               # Docker 构建文件
-└── docker-compose.yml       # Docker Compose 配置
+│   ├── sync-upstream.js     # 同步内容到 cooklikehoc/、howtocook/，并写 public/sync-info.json
+│   ├── generate-recent.js   # 生成 public/recent.json（最近更新）
+│   └── generate-stats.js    # 生成 public/stats.json（菜谱统计）
+├── public/                  # 静态资源与构建时生成的 recent.json、stats.json、sync-info.json
+├── cooklikehoc/             # CookLikeHOC 内容（同步填充，.gitignore）
+├── howtocook/               # HowToCook 内容（同步填充，.gitignore）
+├── index.md                 # 首页
+├── Dockerfile               # 多阶段：克隆 fork → 同步 → 构建 → nginx
+└── docker-compose.yml       # 生产 + 开发 profile
 ```
 
-> `cooklikehoc/` 与 `howtocook/` 目录由 CI 在构建时自动从上游同步，已加入 `.gitignore`。
+> `cooklikehoc/`、`howtocook/` 及 `public/recent.json`、`public/stats.json`、`public/sync-info.json` 为同步/构建时生成，已加入 `.gitignore`。
 
 ---
 
@@ -67,15 +68,22 @@ MyCook/
 
 ### Docker 部署
 
-```bash
-# 拉取镜像
-docker pull ghcr.io/alexanderj-carter/mycook:latest
+镜像**内置克隆与同步**：构建时会从 GitHub 克隆 `AlexanderJ-Carter/CookLikeHOC` 与 `AlexanderJ-Carter/HowToCook`，无需本地预置内容。
 
-# 运行容器
+```bash
+# 直接构建（推荐）
+docker build -t mycook:latest .
+docker run -d -p 80:80 mycook:latest
+```
+
+或使用已发布镜像：
+
+```bash
+docker pull ghcr.io/alexanderj-carter/mycook:latest
 docker run -d -p 80:80 ghcr.io/alexanderj-carter/mycook:latest
 ```
 
-访问 `http://localhost` 即可。
+访问 http://localhost 。如需指定其它仓库或分支，可使用 build-arg：`docker build --build-arg COOKLIKEHOC_BRANCH=main --build-arg HOWTOCOOK_BRANCH=master -t mycook .`
 
 ---
 
@@ -111,15 +119,16 @@ npm run docs:preview
 
 ---
 
-## 内容更新
+## 同步机制
+
+- **CI**：每次 push 到 `main` 或每日定时（UTC 2:00，北京 10:00），会克隆 `AlexanderJ-Carter/CookLikeHOC`（main）、`AlexanderJ-Carter/HowToCook`（master）到 `upstream/`，执行 `sync-upstream.js` 写入 `cooklikehoc/`、`howtocook/`，并生成 `public/sync-info.json`（最近同步时间与源）、`recent.json`、`stats.json`，再构建并部署到 GitHub Pages。
+- **本地**：将 CookLikeHOC、HowToCook 放在上级目录或设置 `COOKLIKEHOC_PATH`、`HOWTOCOOK_PATH`，执行 `npm run sync` 后 `npm run docs:build`。
+- **手动触发**：**Actions → Sync & Build → Run workflow** 可立即同步并发布。
 
 | 场景 | 操作 |
 |------|------|
-| 更新菜谱内容 | 在 CookLikeHOC 或 HowToCook fork 里修改并推送；回到 MyCook 推送一次即可同步发布 |
-| 更改站点主题/首页 | 直接改 MyCook 里的文件，推送到 main 后自动重建 |
-| 立即强制同步 | **Actions → Sync & Build → Run workflow** |
-
-自动同步时间：每天 UTC 2:00（北京时间 10:00）
+| 更新菜谱 | 在 CookLikeHOC 或 HowToCook fork 中修改并推送，再在 MyCook 触发 Sync & Build 或等每日定时 |
+| 改主题/首页 | 直接改 MyCook 内文件，推送到 main 后自动重建 |
 
 ---
 
@@ -139,6 +148,10 @@ npm run docs:preview
 - **[CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC)** by [Gar-b-age](https://github.com/Gar-b-age) - 像老乡鸡那样做饭
 
 本仓库非上述项目官方站点，为个人整理维护。
+
+### 衍生推荐
+
+- **[HowToCook 图片版](https://king-jingxiang.github.io/HowToCook/)**（[king-jingxiang/HowToCook](https://github.com/king-jingxiang/HowToCook)）— 将原版 Markdown 转为 4K 菜谱图，支持分类浏览、收藏、导出 PDF/长图。与本站 HowToCook 同源但技术栈不同（Vite + 图片生成），**无法与本站内容合并**；本站首页与导航已提供入口，可另站打开使用。若需自托管图片版，可单独克隆该仓库并按其 README 构建部署。
 
 ## 许可证
 

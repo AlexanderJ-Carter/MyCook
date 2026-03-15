@@ -50,6 +50,8 @@ jobs:
               env:
                   COOKLIKEHOC_PATH: ${{ github.workspace }}/upstream/CookLikeHOC
                   HOWTOCOOK_PATH: ${{ github.workspace }}/upstream/HowToCook
+                  COOKLIKEHOC_BRANCH: main
+                  HOWTOCOOK_BRANCH: master
                   VITEPRESS_BASE: /
               run: |
                   npm ci
