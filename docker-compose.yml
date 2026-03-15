@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mycook:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mycook:latest
+    container_name: mycook
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # 开发模式：本地构建不包含内容，需要挂载
+  mycook-dev:
+    image: node:22-alpine
+    container_name: mycook-dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run docs:dev -- --host 0.0.0.0"
+    profiles:
+      - dev

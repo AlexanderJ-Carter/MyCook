@@ -309,3 +309,207 @@
         padding-left: 1rem;
     }
 }
+
+/* ========== 增强样式 ========== */
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--vp-c-divider);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--vp-c-text-3);
+}
+
+/* 图片样式增强 */
+.vp-doc img {
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    max-width: 100%;
+    margin: 1rem 0;
+}
+
+/* 表格样式增强 */
+.vp-doc table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+.vp-doc th {
+    background: var(--vp-c-bg-soft);
+}
+
+/* 代码块样式 */
+.vp-doc [class*='language-'] {
+    border-radius: 10px;
+}
+
+/* 返回顶部按钮 */
+.VPLocalNav.back-to-top {
+    border-radius: 8px;
+}
+
+/* 页面过渡 */
+.VPContent {
+    transition: background-color 0.3s;
+}
+
+/* 深色模式下的调整 */
+.dark .home-entry-card:hover {
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.25);
+}
+.dark .vp-doc img {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 打印样式 */
+@media print {
+    .VPNav,
+    .VPSidebar,
+    .VPDocFooter,
+    .VPLocalNav,
+    .home-entries,
+    .recent-updates {
+        display: none !important;
+    }
+    .VPContent {
+        padding: 0 !important;
+    }
+    .vp-doc {
+        max-width: 100% !important;
+    }
+}
+
+/* 食材列表样式增强 */
+.vp-doc ul {
+    line-height: 1.8;
+}
+.vp-doc li {
+    margin: 0.25rem 0;
+}
+
+/* 高亮重要内容 */
+.vp-doc strong {
+    color: var(--vp-c-brand-1);
+}
+
+/* 步骤编号样式 */
+.vp-doc ol {
+    counter-reset: step-counter;
+    padding-left: 1.5rem;
+}
+.vp-doc ol > li {
+    position: relative;
+    padding-left: 0.5rem;
+}
+
+/* 外部链接标识 */
+.vp-doc a[target="_blank"]::after {
+    content: ' ↗';
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+
+/* 快速入口区块 */
+.home-quick-links {
+    margin: 3rem auto;
+    padding: 2rem;
+    max-width: 800px;
+    border-radius: 16px;
+    background: var(--vp-c-bg-soft);
+    border: 1px solid var(--vp-c-divider);
+}
+.home-quick-links h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: var(--vp-c-text-1);
+    text-align: center;
+}
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+.quick-links-grid a {
+    display: block;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    border-radius: 8px;
+    background: var(--vp-c-bg);
+    border: 1px solid var(--vp-c-divider);
+    color: var(--vp-c-text-1);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+.quick-links-grid a:hover {
+    border-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+    .quick-links-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* 统计区块样式 */
+.stats-section {
+    margin: 2rem auto;
+    max-width: 800px;
+    padding: 0 1rem;
+}
+.stats-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: var(--vp-c-text-1);
+    text-align: center;
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+.stat-card {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 12px;
+    background: var(--vp-c-bg-soft);
+    border: 1px solid var(--vp-c-divider);
+}
+.stat-number {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--vp-c-brand-1);
+    line-height: 1.2;
+}
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--vp-c-text-2);
+    margin-top: 0.25rem;
+}
+.stat-card.cooklikehoc .stat-number {
+    color: #c17f3a;
+}
+.stat-card.howtocook .stat-number {
+    color: #2d7d5e;
+}
+
+@media (max-width: 640px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

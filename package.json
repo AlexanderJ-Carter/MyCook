@@ -1,17 +1,31 @@
 {
   "name": "my-cook",
+  "version": "1.2.0",
   "private": true,
-  "version": "1.0.0",
   "type": "module",
+  "description": "老乡鸡风格菜谱 + 程序员做饭指南，合并整理的静态网站",
+  "author": "AlexanderJ-Carter",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlexanderJ-Carter/MyCook.git"
+  },
+  "homepage": "https://cook.alexander.xin",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "sync": "node scripts/sync-upstream.js",
-    "docs:dev": "node scripts/generate-recent.js && vitepress dev .",
-    "docs:build": "node scripts/generate-recent.js && vitepress build .",
+    "generate": "node scripts/generate-recent.js && node scripts/generate-stats.js",
+    "docs:dev": "npm run generate && vitepress dev .",
+    "docs:build": "npm run generate && vitepress build .",
     "docs:preview": "vitepress preview .",
     "build": "npm run docs:build",
-    "start": "npm run docs:dev"
+    "start": "npm run docs:dev",
+    "docker:build": "docker build -t mycook:latest .",
+    "docker:run": "docker run -d -p 8080:80 mycook:latest"
   },
   "devDependencies": {
-    "vitepress": "^1.3.4"
+    "vitepress": "^1.6.0"
   }
 }
