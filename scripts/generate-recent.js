@@ -17,7 +17,6 @@ function collectMd(dir, basePath, list) {
     const entries = fs.readdirSync(dir);
     for (const name of entries) {
         const full = path.join(dir, name);
-        const rel = path.relative(ROOT, full);
         const stat = fs.statSync(full);
         if (stat.isDirectory()) {
             if (!name.startsWith('.') && name !== 'images')

@@ -11,7 +11,7 @@ export default defineConfig({
     cleanUrls: true,
     base: process.env.VITEPRESS_BASE || '/',
     ignoreDeadLinks: true,
-    srcExclude: ['README.md'],  // 只排除仓库根目录 README，保留各分类下的 README 作为目录页
+    srcExclude: ['README.md', 'howtocook/*.md'], // 排除根 README 及 howtocook 根目录项目说明文件，保留各分类下的 README 作为目录页
     themeConfig: {
         nav: [
             { text: '首页', link: '/' },

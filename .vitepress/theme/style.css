@@ -237,7 +237,6 @@
 
 /* 两种风格内页：左侧色条与背景区分 */
 .layout-cooklikehoc .vp-doc .container {
-    padding-left: 1rem;
     border-left: 3px solid var(--vp-c-brand-1);
     margin-left: 0;
     padding-left: 1.25rem;
@@ -248,7 +247,6 @@
 }
 
 .layout-howtocook .vp-doc .container {
-    padding-left: 1rem;
     border-left: 3px solid #2d7d5e;
     margin-left: 0;
     padding-left: 1.25rem;
