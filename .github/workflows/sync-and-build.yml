@@ -37,7 +37,7 @@ jobs:
               env:
                   COOKLIKEHOC_PATH: ${{ github.workspace }}/upstream/CookLikeHOC
                   HOWTOCOOK_PATH: ${{ github.workspace }}/upstream/HowToCook
-                  VITEPRESS_BASE: /${{ github.event.repository.name }}/
+                  VITEPRESS_BASE: /
               run: |
                   npm ci
                   node scripts/sync-upstream.js

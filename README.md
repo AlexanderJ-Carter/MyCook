@@ -10,18 +10,15 @@
 2. 仓库 **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**（不要选 “Deploy from a branch”）。
 3. **推送 main 后会自动触发构建并发布**；也可在 **Actions** 里选 **Sync & Build** → **Run workflow**。每天定时也会跑一次。
 
-**访问地址（必带仓库名和末尾斜杠）**：  
-`https://alexanderj-carter.github.io/MyCook/`
-
-若用**自定义域名**（如 cook.alexander.xin）且打开是 404，在 `.github/workflows/sync-and-build.yml` 里把 `VITEPRESS_BASE: /${{ github.event.repository.name }}/` 改成 `VITEPRESS_BASE: '/'`，保存后推送，等 Actions 跑完再访问自定义域名。
+**访问地址**：`https://cook.alexander.xin`（已按自定义域名配置，构建使用 base `/`）。
 
 ---
 
 ## 打不开时检查
 
-- Source 是否为 **GitHub Actions**（不是 gh-pages 分支）。
-- 地址是否带 **仓库名** 和 **末尾斜杠**：`.../MyCook/`。
-- **Actions** 里最近一次 **Sync & Build** 是否绿色成功；失败则看日志修错后再推送。
+- **Settings → Pages** 里 Source 选 **GitHub Actions**，Custom domain 填好 `cook.alexander.xin` 并 Save。
+- 域名解析：`cook.alexander.xin` 的 CNAME 指向 `alexanderj-carter.github.io`（或按 GitHub 保存后页面的提示配置）。
+- **Actions** 里最近一次 **Sync & Build** 是否成功；失败则看日志修错后再推送。
 
 ---
 
