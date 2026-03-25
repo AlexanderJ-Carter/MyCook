@@ -1,5 +1,6 @@
 # MyCook - 构建阶段会从 GitHub 克隆 fork 仓库并同步内容，无需本地预置
 # 使用：docker build -t mycook:latest .
+# 多架构构建：docker buildx build --platform linux/amd64,linux/arm64 -t mycook:latest .
 
 # ============================
 # Build Stage
@@ -24,10 +25,26 @@ ARG HOWTOCOOK_REPO=https://github.com/AlexanderJ-Carter/HowToCook.git
 ARG COOKLIKEHOC_BRANCH=main
 ARG HOWTOCOOK_BRANCH=master
 
-# 克隆时重试 3 次，避免网络/限流导致 exit 128
-RUN for i in 1 2 3; do git clone --depth 1 --branch "${COOKLIKEHOC_BRANCH}" "${COOKLIKEHOC_REPO}" upstream/CookLikeHOC && break; rm -rf upstream/CookLikeHOC; [ "$i" = 3 ] && exit 1; sleep 5; done
-RUN for i in 1 2 3; do git clone --depth 1 --branch "${HOWTOCOOK_BRANCH}" "${HOWTOCOOK_REPO}" upstream/HowToCook && break; rm -rf upstream/HowToCook; [ "$i" = 3 ] && exit 1; sleep 5; done
-RUN git clone --depth 1 https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages
+# 克隆函数：重试 3 次，避免网络/限流导致 exit 128
+RUN clone_with_retry() { \
+      local repo=$1; \
+      local dest=$2; \
+      local branch=$3; \
+      for i in 1 2 3; do \
+        if git clone --depth 1 --branch "$branch" "$repo" "$dest"; then \
+          echo "Successfully cloned $repo"; \
+          exit 0; \
+        fi; \
+        echo "Attempt $i failed, retrying in 5s..."; \
+        rm -rf "$dest"; \
+        sleep 5; \
+      done; \
+      echo "Failed to clone $repo after 3 attempts"; \
+      exit 1; \
+    }; \
+    clone_with_retry "${COOKLIKEHOC_REPO}" upstream/CookLikeHOC "${COOKLIKEHOC_BRANCH}" && \
+    clone_with_retry "${HOWTOCOOK_REPO}" upstream/HowToCook "${HOWTOCOOK_BRANCH}" && \
+    clone_with_retry "https://github.com/king-jingxiang/HowToCook.git" upstream/HowToCookImages master
 
 # 同步内容并构建（含图片版子路径 public/howtocook-images/）
 ENV COOKLIKEHOC_PATH=/app/upstream/CookLikeHOC
@@ -48,9 +65,11 @@ LABEL org.opencontainers.image.description="MyCook - 老乡鸡风格 + 程序员
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.authors="AlexanderJ-Carter"
 
+# 复制构建产物
 COPY --from=builder /app/.vitepress/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+# 健康检查
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
 

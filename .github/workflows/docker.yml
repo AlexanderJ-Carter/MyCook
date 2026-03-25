@@ -17,12 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Clone CookLikeHOC
-        run: git clone --depth 1 https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC
-
-      - name: Clone HowToCook
-        run: git clone --depth 1 https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook
-
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -52,6 +46,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            COOKLIKEHOC_PATH=${{ github.workspace }}/upstream/CookLikeHOC
-            HOWTOCOOK_PATH=${{ github.workspace }}/upstream/HowToCook
+          platforms: linux/amd64,linux/arm64

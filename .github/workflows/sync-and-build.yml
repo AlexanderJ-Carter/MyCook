@@ -17,8 +17,8 @@ permissions:
     id-token: write
 
 concurrency:
-    group: pages
-    cancel-in-progress: false
+    group: pages-${{ github.ref }}
+    cancel-in-progress: true
 
 jobs:
     sync-and-build:
@@ -32,17 +32,28 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Clone CookLikeHOC
+            - name: Clone upstream repos with retry
               run: |
-                  git clone --depth 1 https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC
+                  # 克隆时重试 3 次，避免网络/限流导致失败
+                  clone_with_retry() {
+                    local repo=$1
+                    local dest=$2
+                    for i in 1 2 3; do
+                      if git clone --depth 1 "$repo" "$dest"; then
+                        echo "Successfully cloned $repo"
+                        return 0
+                      fi
+                      echo "Attempt $i failed, retrying in 5s..."
+                      rm -rf "$dest"
+                      sleep 5
+                    done
+                    echo "Failed to clone $repo after 3 attempts"
+                    return 1
+                  }
 
-            - name: Clone HowToCook
-              run: |
-                  git clone --depth 1 https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook
-
-            - name: Clone HowToCook (images)
-              run: |
-                  git clone --depth 1 https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages
+                  clone_with_retry https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC
+                  clone_with_retry https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook
+                  clone_with_retry https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -50,7 +61,10 @@ jobs:
                   node-version: '22'
                   cache: 'npm'
 
-            - name: Install & Sync & Build
+            - name: Install dependencies
+              run: npm ci --prefer-offline --no-audit
+
+            - name: Sync & Build
               env:
                   COOKLIKEHOC_PATH: ${{ github.workspace }}/upstream/CookLikeHOC
                   HOWTOCOOK_PATH: ${{ github.workspace }}/upstream/HowToCook
@@ -58,7 +72,6 @@ jobs:
                   HOWTOCOOK_BRANCH: master
                   VITEPRESS_BASE: /
               run: |
-                  npm ci
                   node scripts/sync-upstream.js
                   npm run docs:build
 

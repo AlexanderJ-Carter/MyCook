@@ -11,6 +11,14 @@
   <a href="#本地开发">本地开发</a>
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/github/actions/workflow/status/AlexanderJ-Carter/MyCook/sync-and-build.yml?branch=main&label=Build&style=flat-square" alt="Build Status">
+  <img src="https://img.shields.io/github/v/release/AlexanderJ-Carter/MyCook?style=flat-square&display_name=tag" alt="Release">
+  <img src="https://img.shields.io/github/license/AlexanderJ-Carter/MyCook?style=flat-square" alt="License">
+  <img src="https://img.shields.io/github/last-commit/AlexanderJ-Carter/MyCook?style=flat-square" alt="Last Commit">
+  <img src="https://img.shields.io/docker/pulls/ghcr.io/alexanderj-carter/mycook?style=flat-square" alt="Docker Pulls">
+</p>
+
 ---
 
 ## 简介
@@ -161,3 +169,31 @@ npm run docs:preview
 本项目采用 [MIT License](./LICENSE) 开源。
 
 内容版权归原作者所有。
+
+## 更新日志
+
+### v1.2.0
+
+- 新增阅读进度条和回到顶部按钮
+- 新增自定义 404 页面
+- 新增帮助和关于页面
+- 优化暗色模式配色
+- 完善 Open Graph 和 SEO 结构化数据
+- CI/CD 流水线优化（并发控制、多架构 Docker 镜像）
+- 字体加载优化（DNS 预连接）
+
+查看 [Releases](https://github.com/AlexanderJ-Carter/MyCook/releases) 了解更多历史版本。
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'feat: add amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 提交 Pull Request
+
+## Star History
+
+如果这个项目对你有帮助，欢迎在 GitHub 上点个 ⭐ 支持一下！

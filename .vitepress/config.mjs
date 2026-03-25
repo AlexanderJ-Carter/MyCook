@@ -19,6 +19,11 @@ export default defineConfig({
     ],
 
     head: [
+        // DNS 预连接优化
+        ['link', { rel: 'dns-prefetch', href: 'https://fonts.googleapis.com' }],
+        ['link', { rel: 'dns-prefetch', href: 'https://fonts.gstatic.com' }],
+        ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com', crossorigin: '' }],
+        ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
         ['meta', { name: 'theme-color', content: '#c17f3a' }],
         [
             'meta',
@@ -31,7 +36,15 @@ export default defineConfig({
         ['meta', { name: 'og:type', content: 'website' }],
         ['meta', { name: 'og:locale', content: 'zh-CN' }],
         ['meta', { name: 'og:title', content: 'MyCook - 在家做饭一站搞定' }],
-        ['link', { rel: 'icon', href: '/favicon.ico' }],
+        ['meta', { name: 'og:description', content: '老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
+        ['meta', { name: 'og:site_name', content: 'MyCook' }],
+        ['meta', { name: 'og:image', content: '/banner.png' }],
+        ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+        ['meta', { name: 'twitter:title', content: 'MyCook - 在家做饭一站搞定' }],
+        ['meta', { name: 'twitter:description', content: '老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
+        ['meta', { name: 'twitter:image', content: '/banner.png' }],
+        ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+        ['link', { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     ],
 
     themeConfig: {
@@ -67,6 +80,8 @@ export default defineConfig({
                     },
                 ],
             },
+            { text: '帮助', link: '/help' },
+            { text: '关于', link: '/about' },
         ],
 
         sidebar,
@@ -130,7 +145,27 @@ export default defineConfig({
     },
 
     vite: {
-        server: { host: true },
+        server: {
+            host: true,
+        },
+        plugins: [
+            {
+                name: 'serve-spa-subpath',
+                configureServer(server) {
+                    server.middlewares.use((req, res, next) => {
+                        const url = req.url?.split('?')[0] || '';
+                        // 处理 /howtocook-images/ 目录请求和 SPA 子路由
+                        if (url === '/howtocook-images/' || url === '/howtocook-images') {
+                            req.url = '/howtocook-images/index.html';
+                        } else if (url.startsWith('/howtocook-images/') && !url.includes('.')) {
+                            // SPA 子路由（无文件扩展名）
+                            req.url = '/howtocook-images/index.html';
+                        }
+                        next();
+                    });
+                }
+            }
+        ],
         assetsInclude: [
             '**/*.jpg',
             '**/*.jpeg',

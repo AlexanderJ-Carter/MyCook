@@ -27,6 +27,7 @@ function run(cmd, args, opts = {}) {
         stdio: 'inherit',
         cwd: opts.cwd || ROOT,
         shell: opts.shell ?? true,
+        env: opts.env || process.env,
     });
     if (r.status !== 0)
         throw new Error(`${cmd} ${args.join(' ')} exited ${r.status}`);

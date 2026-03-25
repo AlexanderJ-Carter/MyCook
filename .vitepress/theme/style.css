@@ -1,4 +1,5 @@
 /* MyCook 自定义主题：暖色菜谱站 */
+/* 字体加载优化：使用 font-display:swap 确保内容优先显示 */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap');
 
 :root {
@@ -374,6 +375,36 @@
 }
 .dark .vp-doc img {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 深色模式品牌色优化 */
+.dark {
+    --vp-c-brand-1: #d4954a;
+    --vp-c-brand-2: #c17f3a;
+    --vp-c-brand-3: #a66b2d;
+    --vp-c-brand-soft: rgba(212, 149, 74, 0.14);
+}
+
+/* 深色模式 HowToCook 标识色 */
+.dark .layout-howtocook .vp-doc .container {
+    border-left-color: #3da87f;
+}
+.dark .layout-howtocook .vp-doc {
+    --vp-custom-block-tip-border: #3da87f;
+    --vp-custom-block-tip-bg: rgba(61, 168, 127, 0.1);
+}
+
+/* 深色模式统计卡片 */
+.dark .stat-card.cooklikehoc .stat-number {
+    color: #d4954a;
+}
+.dark .stat-card.howtocook .stat-number {
+    color: #3da87f;
+}
+
+/* 深色模式快速入口 */
+.dark .quick-links-grid a:hover {
+    background: var(--vp-c-bg-soft);
 }
 
 /* 打印样式 */
