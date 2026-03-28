@@ -1,6 +1,6 @@
 {
   "name": "my-cook",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "type": "module",
   "description": "老乡鸡风格菜谱 + 程序员做饭指南，合并整理的静态网站",
@@ -18,8 +18,9 @@
     "sync": "node scripts/sync-upstream.js",
     "build:images": "node scripts/build-howtocook-images.js",
     "generate": "node scripts/generate-recent.js && node scripts/generate-stats.js",
+    "generate:sitemap": "node scripts/generate-sitemap.js",
     "docs:dev": "npm run generate && vitepress dev .",
-    "docs:build": "npm run build:images || true && npm run generate && vitepress build .",
+    "docs:build": "npm run build:images || true && npm run generate && vitepress build . && npm run generate:sitemap",
     "docs:preview": "vitepress preview .",
     "build": "npm run docs:build",
     "start": "npm run docs:dev",

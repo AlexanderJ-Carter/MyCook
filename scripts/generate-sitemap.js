@@ -1,0 +1,145 @@
+/**
+ * 生成 sitemap.xml 用于 SEO
+ * 扫描所有菜谱页面，生成标准的 sitemap 格式
+ */
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dirname, '..');
+const PUBLIC_DIR = path.join(ROOT, 'public');
+const OUT_FILE = path.join(ROOT, '.vitepress/dist', 'sitemap.xml');
+
+const BASE_URL = 'https://cook.alexander.xin';
+
+function collectMdFiles(dir, basePath, list) {
+  if (!fs.existsSync(dir)) return;
+  const entries = fs.readdirSync(dir);
+  for (const name of entries) {
+    if (name.startsWith('.')) continue;
+    const full = path.join(dir, name);
+    const stat = fs.statSync(full);
+    if (stat.isDirectory()) {
+      if (name !== 'images') {
+        collectMdFiles(full, basePath, list);
+      }
+    } else if (name.endsWith('.md') && name !== 'README.md') {
+      const rel = path
+        .relative(path.join(ROOT, basePath), full)
+        .replace(/\\/g, '/')
+        .replace(/\.md$/i, '');
+      const link = '/' + basePath + '/' + rel;
+      const title = name.replace(/\.md$/i, '');
+      list.push({
+        loc: BASE_URL + link,
+        lastmod: stat.mtime.toISOString().split('T')[0],
+        changefreq: 'weekly',
+        priority: 0.8
+      });
+    }
+  }
+}
+
+function collectHowToCookDishes(dishesDir, list) {
+  if (!fs.existsSync(dishesDir)) return;
+  const cats = fs.readdirSync(dishesDir);
+  for (const cat of cats) {
+    const catPath = path.join(dishesDir, cat);
+    if (!fs.statSync(catPath).isDirectory()) continue;
+    const entries = fs.readdirSync(catPath);
+    for (const e of entries) {
+      const full = path.join(catPath, e);
+      if (fs.statSync(full).isDirectory()) {
+        const subMd = fs.readdirSync(full).find(f => f.endsWith('.md'));
+        if (subMd) {
+          const link = BASE_URL + '/howtocook/dishes/' + cat + '/' + e + '/' + subMd.replace(/\.md$/i, '');
+          list.push({
+            loc: link,
+            lastmod: fs.statSync(path.join(full, subMd)).mtime.toISOString().split('T')[0],
+            changefreq: 'weekly',
+            priority: 0.8
+          });
+        }
+      } else if (e.endsWith('.md') && e !== 'README.md') {
+        const link = BASE_URL + '/howtocook/dishes/' + cat + '/' + e.replace(/\.md$/i, '');
+        list.push({
+          loc: link,
+          lastmod: fs.statSync(full).mtime.toISOString().split('T')[0],
+          changefreq: 'weekly',
+          priority: 0.8
+        });
+      }
+    }
+  }
+}
+
+function generateSitemap() {
+  const urls = [];
+
+  // 首页
+  urls.push({
+    loc: BASE_URL + '/',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'daily',
+    priority: 1.0
+  });
+
+  // 帮助和关于页
+  urls.push({
+    loc: BASE_URL + '/help',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'monthly',
+    priority: 0.5
+  });
+  urls.push({
+    loc: BASE_URL + '/about',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'monthly',
+    priority: 0.5
+  });
+
+  // CookLikeHOC
+  const cooklikehocDir = path.join(ROOT, 'cooklikehoc');
+  if (fs.existsSync(cooklikehocDir)) {
+    collectMdFiles(cooklikehocDir, 'cooklikehoc', urls);
+  }
+
+  // HowToCook
+  const howtocookDir = path.join(ROOT, 'howtocook');
+  if (fs.existsSync(howtocookDir)) {
+    const dishes = path.join(howtocookDir, 'dishes');
+    if (fs.existsSync(dishes)) {
+      collectHowToCookDishes(dishes, urls);
+    }
+    // tips 和 starsystem
+    for (const sub of ['tips', 'starsystem']) {
+      const p = path.join(howtocookDir, sub);
+      if (fs.existsSync(p)) {
+        collectMdFiles(p, 'howtocook/' + sub, urls);
+      }
+    }
+  }
+
+  // 生成 XML
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(url => `  <url>
+    <loc>${url.loc}</loc>
+    <lastmod>${url.lastmod}</lastmod>
+    <changefreq>${url.changefreq}</changefreq>
+    <priority>${url.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+  // 确保输出目录存在
+  const distDir = path.join(ROOT, '.vitepress/dist');
+  if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir, { recursive: true });
+  }
+
+  fs.writeFileSync(OUT_FILE, xml, 'utf8');
+  console.log('[generate-sitemap] generated sitemap.xml with', urls.length, 'URLs');
+}
+
+generateSitemap();

@@ -1,6 +1,6 @@
 /* MyCook 自定义主题：暖色菜谱站 */
-/* 字体加载优化：使用 font-display:swap 确保内容优先显示 */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap');
+/* 字体加载优化：使用国内 CDN 镜像，提升中国用户访问速度 */
+@import url('https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap');
 
 :root {
     --vp-font-family-base:
@@ -414,7 +414,10 @@
     .VPDocFooter,
     .VPLocalNav,
     .home-entries,
-    .recent-updates {
+    .recent-updates,
+    .back-to-top,
+    .reading-progress,
+    .print-button {
         display: none !important;
     }
     .VPContent {
@@ -422,6 +425,33 @@
     }
     .vp-doc {
         max-width: 100% !important;
+    }
+    body {
+        font-size: 12pt;
+        line-height: 1.6;
+    }
+    .vp-doc img {
+        max-width: 100%;
+        page-break-inside: avoid;
+    }
+    .vp-doc h1,
+    .vp-doc h2,
+    .vp-doc h3 {
+        page-break-after: avoid;
+    }
+    .vp-doc ul,
+    .vp-doc ol {
+        page-break-inside: avoid;
+    }
+    /* 打印时显示链接 URL */
+    .vp-doc a[href]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #666;
+    }
+    .vp-doc a[href^="#"]:after,
+    .vp-doc a[href^="javascript"]:after {
+        content: "";
     }
 }
 

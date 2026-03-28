@@ -1,12 +1,12 @@
 {
   "cooklikehoc": {
-    "categories": 0,
-    "dishes": 0
+    "categories": 15,
+    "dishes": 198
   },
   "howtocook": {
-    "categories": 0,
-    "dishes": 0
+    "categories": 12,
+    "dishes": 371
   },
-  "total": 0,
-  "lastUpdated": "2026-03-15"
+  "total": 569,
+  "lastUpdated": "2026-03-28"
 }

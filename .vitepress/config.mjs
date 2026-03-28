@@ -45,6 +45,11 @@ export default defineConfig({
         ['meta', { name: 'twitter:image', content: '/banner.png' }],
         ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
         ['link', { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+        // PWA manifest
+        ['link', { rel: 'manifest', href: '/manifest.json' }],
+        ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
+        ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }],
+        ['meta', { name: 'apple-mobile-web-app-title', content: 'MyCook' }],
     ],
 
     themeConfig: {

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://cook.alexander.xin/sitemap.xml
+
+# Crawl delay (optional, be polite)
+Crawl-delay: 1

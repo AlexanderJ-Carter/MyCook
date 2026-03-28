@@ -5,6 +5,9 @@ import { computed } from 'vue';
 import ReadingProgress from './ReadingProgress.vue';
 import BackToTop from './BackToTop.vue';
 import RecipeSchema from './RecipeSchema.vue';
+import PWA from './PWA.vue';
+import SearchShortcut from './SearchShortcut.vue';
+import Favorites from './Favorites.vue';
 
 const route = useRoute();
 const layoutClass = computed(() => {
@@ -20,9 +23,12 @@ const showProgress = computed(() => route.path !== '/');
 
 <template>
     <div class="mycook-layout" :class="layoutClass">
+        <PWA />
+        <SearchShortcut />
         <ReadingProgress v-if="showProgress" />
         <DefaultTheme.Layout />
         <BackToTop />
         <RecipeSchema />
+        <Favorites />
     </div>
 </template>

@@ -1,0 +1,26 @@
+{
+  "name": "MyCook - 在家做饭一站搞定",
+  "short_name": "MyCook",
+  "description": "老乡鸡风格菜谱 + 程序员做饭指南，在家做饭一站搞定",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#c17f3a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["food", "lifestyle"],
+  "lang": "zh-CN",
+  "prefer_related_applications": false
+}
