@@ -25,26 +25,26 @@ ARG HOWTOCOOK_REPO=https://github.com/AlexanderJ-Carter/HowToCook.git
 ARG COOKLIKEHOC_BRANCH=main
 ARG HOWTOCOOK_BRANCH=master
 
-# 克隆函数：重试 3 次，避免网络/限流导致 exit 128
+# 克隆仓库，重试 3 次避免网络/限流导致 exit 128
 RUN clone_with_retry() { \
       local repo=$1; \
       local dest=$2; \
       local branch=$3; \
       for i in 1 2 3; do \
-        if git clone --depth 1 --branch "$branch" "$repo" "$dest"; then \
+        if git clone --depth 1 --branch "$branch" "$repo" "$dest" 2>/dev/null; then \
           echo "Successfully cloned $repo"; \
-          exit 0; \
+          return 0; \
         fi; \
         echo "Attempt $i failed, retrying in 5s..."; \
         rm -rf "$dest"; \
         sleep 5; \
       done; \
       echo "Failed to clone $repo after 3 attempts"; \
-      exit 1; \
-    }; \
-    clone_with_retry "${COOKLIKEHOC_REPO}" upstream/CookLikeHOC "${COOKLIKEHOC_BRANCH}" && \
-    clone_with_retry "${HOWTOCOOK_REPO}" upstream/HowToCook "${HOWTOCOOK_BRANCH}" && \
-    clone_with_retry "https://github.com/king-jingxiang/HowToCook.git" upstream/HowToCookImages master
+      return 1; \
+    } \
+    && clone_with_retry "${COOKLIKEHOC_REPO}" /app/upstream/CookLikeHOC "${COOKLIKEHOC_BRANCH}" \
+    && clone_with_retry "${HOWTOCOOK_REPO}" /app/upstream/HowToCook "${HOWTOCOOK_BRANCH}" \
+    && clone_with_retry "https://github.com/king-jingxiang/HowToCook.git" /app/upstream/HowToCookImages master
 
 # 同步内容并构建（含图片版子路径 public/howtocook-images/）
 ENV COOKLIKEHOC_PATH=/app/upstream/CookLikeHOC
