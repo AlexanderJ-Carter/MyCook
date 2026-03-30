@@ -64,13 +64,12 @@ RUN clone_with_retry_optional() { \
     } \
     && clone_with_retry_optional "https://github.com/king-jingxiang/HowToCook.git" /app/upstream/HowToCookImages master || true
 
-# 同步内容并构建（图片版可选，失败时自动跳过）
+# 同步内容并构建（图片版构建失败不会导致整体失败，因为 docs:build 已有 || true）
 ENV COOKLIKEHOC_PATH=/app/upstream/CookLikeHOC
 ENV HOWTOCOOK_PATH=/app/upstream/HowToCook
 ENV COOKLIKEHOC_BRANCH=${COOKLIKEHOC_BRANCH}
 ENV HOWTOCOOK_BRANCH=${HOWTOCOOK_BRANCH}
 ENV VITEPRESS_BASE=/
-ENV SKIP_IMAGES=$([ ! -d /app/upstream/HowToCookImages ] && echo "1" || echo "0")
 
 RUN node scripts/sync-upstream.js && npm run docs:build
 
