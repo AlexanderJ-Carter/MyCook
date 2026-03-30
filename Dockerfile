@@ -25,33 +25,52 @@ ARG HOWTOCOOK_REPO=https://github.com/AlexanderJ-Carter/HowToCook.git
 ARG COOKLIKEHOC_BRANCH=main
 ARG HOWTOCOOK_BRANCH=master
 
-# 克隆仓库，重试 3 次避免网络/限流导致 exit 128
+# 克隆核心仓库（必须成功）
 RUN clone_with_retry() { \
       local repo=$1; \
       local dest=$2; \
       local branch=$3; \
-      for i in 1 2 3; do \
+      for i in 1 2 3 4 5; do \
         if git clone --depth 1 --branch "$branch" "$repo" "$dest" 2>/dev/null; then \
           echo "Successfully cloned $repo"; \
           return 0; \
         fi; \
-        echo "Attempt $i failed, retrying in 5s..."; \
+        echo "Attempt $i failed, retrying in 10s..."; \
         rm -rf "$dest"; \
-        sleep 5; \
+        sleep 10; \
       done; \
-      echo "Failed to clone $repo after 3 attempts"; \
+      echo "Failed to clone $repo after 5 attempts"; \
       return 1; \
     } \
     && clone_with_retry "${COOKLIKEHOC_REPO}" /app/upstream/CookLikeHOC "${COOKLIKEHOC_BRANCH}" \
-    && clone_with_retry "${HOWTOCOOK_REPO}" /app/upstream/HowToCook "${HOWTOCOOK_BRANCH}" \
-    && clone_with_retry "https://github.com/king-jingxiang/HowToCook.git" /app/upstream/HowToCookImages master
+    && clone_with_retry "${HOWTOCOOK_REPO}" /app/upstream/HowToCook "${HOWTOCOOK_BRANCH}"
 
-# 同步内容并构建（含图片版子路径 public/howtocook-images/）
+# 可选：克隆图片版仓库，失败不影响构建
+RUN clone_with_retry_optional() { \
+      local repo=$1; \
+      local dest=$2; \
+      local branch=$3; \
+      for i in 1 2 3 4 5; do \
+        if git clone --depth 1 --branch "$branch" "$repo" "$dest" 2>/dev/null; then \
+          echo "Successfully cloned $repo"; \
+          return 0; \
+        fi; \
+        echo "Warning: Attempt $i failed for $repo, retrying in 10s..."; \
+        rm -rf "$dest"; \
+        sleep 10; \
+      done; \
+      echo "Warning: Failed to clone optional $repo after 5 attempts - continuing without it"; \
+      return 0; \
+    } \
+    && clone_with_retry_optional "https://github.com/king-jingxiang/HowToCook.git" /app/upstream/HowToCookImages master || true
+
+# 同步内容并构建（图片版可选，失败时自动跳过）
 ENV COOKLIKEHOC_PATH=/app/upstream/CookLikeHOC
 ENV HOWTOCOOK_PATH=/app/upstream/HowToCook
 ENV COOKLIKEHOC_BRANCH=${COOKLIKEHOC_BRANCH}
 ENV HOWTOCOOK_BRANCH=${HOWTOCOOK_BRANCH}
 ENV VITEPRESS_BASE=/
+ENV SKIP_IMAGES=$([ ! -d /app/upstream/HowToCookImages ] && echo "1" || echo "0")
 
 RUN node scripts/sync-upstream.js && npm run docs:build
 
