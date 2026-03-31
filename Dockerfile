@@ -1,6 +1,6 @@
 # MyCook - 构建阶段会从 GitHub 克隆 fork 仓库并同步内容，无需本地预置
 # 使用：docker build -t mycook:latest .
-# 多架构构建：docker buildx build --platform linux/amd64,linux/arm64 -t mycook:latest .
+# 多架构构建已禁用（arm64 在 QEMU 下 Node.js 会触发 Illegal instruction）
 
 # ============================
 # Build Stage
