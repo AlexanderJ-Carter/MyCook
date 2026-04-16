@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const DOC_EXT = ['.md'];
-const ROOT = process.cwd();
 
 const TOPLEVEL_EXCLUDE = new Set([
     '.git',
@@ -94,8 +93,14 @@ function sectionToNavAndSidebar(
     };
 }
 
-function scanContentRoot(contentRoot, baseLink, excludeSubdirs, titleMap = {}) {
-    const abs = path.join(ROOT, contentRoot);
+function scanContentRoot(
+    rootDir,
+    contentRoot,
+    baseLink,
+    excludeSubdirs,
+    titleMap = {},
+) {
+    const abs = path.join(rootDir, contentRoot);
     if (!fs.existsSync(abs) || !fs.statSync(abs).isDirectory())
         return { navItems: [], sidebar: {} };
     const entries = fs.readdirSync(abs);
@@ -144,6 +149,7 @@ function sectionToNavAndSidebarHowToCookDishes(
         } else if (fs.statSync(full).isDirectory()) {
             const subMd = fs
                 .readdirSync(full)
+                .sort(sortByPinyinOrName)
                 .find((f) => isMarkdown(path.join(full, f)));
             if (subMd) {
                 const encSub = encodeURI(e);
@@ -164,17 +170,19 @@ function sectionToNavAndSidebarHowToCookDishes(
 }
 
 export function generateNavAndSidebar(_rootDir) {
+    const rootDir = _rootDir || process.cwd();
     const nav = [];
     const sidebar = {};
 
     const topDirs = fs
-        .readdirSync(ROOT)
-        .filter((e) => isDirectory(path.join(ROOT, e)))
+        .readdirSync(rootDir)
+        .filter((e) => isDirectory(path.join(rootDir, e)))
         .filter((e) => !TOPLEVEL_EXCLUDE.has(e) && !e.startsWith('.'));
 
     for (const top of topDirs) {
         if (top === 'cooklikehoc') {
             const { navItems, sidebar: s } = scanContentRoot(
+                rootDir,
                 'cooklikehoc',
                 '/cooklikehoc',
                 COOKLIKEHOC_EXCLUDE,
@@ -188,7 +196,7 @@ export function generateNavAndSidebar(_rootDir) {
                 Object.assign(sidebar, s);
             }
         } else if (top === 'howtocook') {
-            const howRoot = path.join(ROOT, 'howtocook');
+            const howRoot = path.join(rootDir, 'howtocook');
             const dishesPath = path.join(howRoot, 'dishes');
             const navItems = [];
             if (fs.existsSync(dishesPath)) {

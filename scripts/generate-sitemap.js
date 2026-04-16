@@ -8,10 +8,30 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const PUBLIC_DIR = path.join(ROOT, 'public');
 const OUT_FILE = path.join(ROOT, '.vitepress/dist', 'sitemap.xml');
 
 const BASE_URL = 'https://cook.alexander.xin';
+
+function encodeUrlPath(pathname) {
+  return pathname
+    .split('/')
+    .map((segment) => encodeURIComponent(segment))
+    .join('/')
+    .replace(/%2F/g, '/');
+}
+
+function xmlEscape(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function dateFromFile(filePath) {
+  return fs.statSync(filePath).mtime.toISOString().split('T')[0];
+}
 
 function collectMdFiles(dir, basePath, list) {
   if (!fs.existsSync(dir)) return;
@@ -29,8 +49,7 @@ function collectMdFiles(dir, basePath, list) {
         .relative(path.join(ROOT, basePath), full)
         .replace(/\\/g, '/')
         .replace(/\.md$/i, '');
-      const link = '/' + basePath + '/' + rel;
-      const title = name.replace(/\.md$/i, '');
+      const link = encodeUrlPath('/' + basePath + '/' + rel);
       list.push({
         loc: BASE_URL + link,
         lastmod: stat.mtime.toISOString().split('T')[0],
@@ -51,9 +70,9 @@ function collectHowToCookDishes(dishesDir, list) {
     for (const e of entries) {
       const full = path.join(catPath, e);
       if (fs.statSync(full).isDirectory()) {
-        const subMd = fs.readdirSync(full).find(f => f.endsWith('.md'));
+        const subMd = fs.readdirSync(full).sort().find(f => f.endsWith('.md'));
         if (subMd) {
-          const link = BASE_URL + '/howtocook/dishes/' + cat + '/' + e + '/' + subMd.replace(/\.md$/i, '');
+          const link = BASE_URL + encodeUrlPath('/howtocook/dishes/' + cat + '/' + e + '/' + subMd.replace(/\.md$/i, ''));
           list.push({
             loc: link,
             lastmod: fs.statSync(path.join(full, subMd)).mtime.toISOString().split('T')[0],
@@ -62,7 +81,7 @@ function collectHowToCookDishes(dishesDir, list) {
           });
         }
       } else if (e.endsWith('.md') && e !== 'README.md') {
-        const link = BASE_URL + '/howtocook/dishes/' + cat + '/' + e.replace(/\.md$/i, '');
+        const link = BASE_URL + encodeUrlPath('/howtocook/dishes/' + cat + '/' + e.replace(/\.md$/i, ''));
         list.push({
           loc: link,
           lastmod: fs.statSync(full).mtime.toISOString().split('T')[0],
@@ -80,7 +99,7 @@ function generateSitemap() {
   // 首页
   urls.push({
     loc: BASE_URL + '/',
-    lastmod: new Date().toISOString().split('T')[0],
+    lastmod: dateFromFile(path.join(ROOT, 'index.md')),
     changefreq: 'daily',
     priority: 1.0
   });
@@ -88,13 +107,13 @@ function generateSitemap() {
   // 帮助和关于页
   urls.push({
     loc: BASE_URL + '/help',
-    lastmod: new Date().toISOString().split('T')[0],
+    lastmod: dateFromFile(path.join(ROOT, 'help.md')),
     changefreq: 'monthly',
     priority: 0.5
   });
   urls.push({
     loc: BASE_URL + '/about',
-    lastmod: new Date().toISOString().split('T')[0],
+    lastmod: dateFromFile(path.join(ROOT, 'about.md')),
     changefreq: 'monthly',
     priority: 0.5
   });
@@ -125,10 +144,10 @@ function generateSitemap() {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(url => `  <url>
-    <loc>${url.loc}</loc>
-    <lastmod>${url.lastmod}</lastmod>
-    <changefreq>${url.changefreq}</changefreq>
-    <priority>${url.priority}</priority>
+    <loc>${xmlEscape(url.loc)}</loc>
+    <lastmod>${xmlEscape(url.lastmod)}</lastmod>
+    <changefreq>${xmlEscape(url.changefreq)}</changefreq>
+    <priority>${xmlEscape(url.priority)}</priority>
   </url>`).join('\n')}
 </urlset>`;
 

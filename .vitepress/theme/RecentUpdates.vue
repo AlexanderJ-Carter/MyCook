@@ -1,10 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { withBase } from 'vitepress';
 
 const items = ref([]);
 onMounted(async () => {
     try {
-        const res = await fetch('/recent.json');
+        const res = await fetch(withBase('/recent.json'));
         const data = await res.json();
         items.value = data.items || [];
     } catch (_) {

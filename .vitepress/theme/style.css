@@ -19,11 +19,26 @@
     --vp-custom-block-tip-bg: rgba(193, 127, 58, 0.08);
     --vp-button-brand-border: transparent;
     --vp-button-brand-hover-border: transparent;
+    --mycook-green: #2d7d5e;
+    --mycook-ink: #1f2521;
+    --mycook-paper: #f6efe3;
+    --mycook-line: rgba(78, 57, 33, 0.14);
 }
 
 /* 首页 Hero 区域 */
 .VPHero {
-    padding: 3rem 0 2.5rem;
+    padding: 4.5rem 0 2.75rem;
+    position: relative;
+}
+.VPHero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at top left, rgba(193, 127, 58, 0.16), transparent 34%),
+        radial-gradient(circle at 80% 30%, rgba(45, 125, 94, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(246, 239, 227, 0.78), transparent 72%);
+    pointer-events: none;
 }
 .VPHero .name {
     font-family: 'Noto Serif SC', serif;
@@ -40,17 +55,24 @@
     opacity: 0.92;
     font-size: 1.05rem;
     margin-top: 0.6rem;
-    max-width: 32em;
+    max-width: 34em;
     margin-left: auto;
     margin-right: auto;
 }
 .VPHero .actions {
     margin-top: 1.75rem;
     gap: 0.85rem;
+    justify-content: center;
 }
 .VPHero .actions .VPButton {
-    padding: 0.5rem 1.25rem;
-    border-radius: 10px;
+    padding: 0.65rem 1.4rem;
+    border-radius: 999px;
+}
+.VPHero .image {
+    margin-top: 2rem;
+}
+.VPHero .image img {
+    filter: drop-shadow(0 18px 34px rgba(87, 56, 18, 0.18));
 }
 
 /* 首页简短说明 */
@@ -63,53 +85,234 @@
 }
 
 /* 首页入口卡片容器（三栏：两源 + 衍生） */
-.home-entries {
+.home-pantry {
+    max-width: 1080px;
+    margin: 2.25rem auto 3.5rem;
+}
+.home-pantry-hero {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin: 2.75rem auto 3rem;
-    max-width: 960px;
+    grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.8fr);
+    gap: 1.25rem;
+    align-items: stretch;
 }
-.home-entry-card {
-    display: block;
-    padding: 1.85rem 2rem;
-    border-radius: 16px;
-    border: 1px solid var(--vp-c-divider);
-    background: var(--vp-c-bg-soft);
-    transition:
-        border-color 0.2s,
-        box-shadow 0.25s,
-        transform 0.2s;
-    text-decoration: none;
-    color: var(--vp-c-text-1);
+.home-pantry-copy,
+.home-pantry-metrics,
+.home-panel,
+.home-source-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--mycook-line);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(246, 239, 227, 0.92)),
+        var(--vp-c-bg-soft);
+    box-shadow: 0 18px 40px rgba(78, 57, 33, 0.08);
 }
-.home-entry-card:hover {
-    border-color: var(--vp-c-brand-1);
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.08);
-    transform: translateY(-4px);
+.home-pantry-copy {
+    padding: 2rem;
+    border-radius: 28px;
 }
-.home-entry-label {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--vp-c-brand-1);
+.home-pantry-copy::after {
+    content: '';
+    position: absolute;
+    right: -2.5rem;
+    bottom: -2.5rem;
+    width: 12rem;
+    height: 12rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(193, 127, 58, 0.18), transparent 70%);
+}
+.home-pantry-kicker,
+.home-panel-head p,
+.home-source-eyebrow {
+    margin: 0 0 0.75rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.55rem;
+    color: var(--vp-c-text-3);
 }
-.home-entry-card h3 {
-    margin: 0 0 0.5rem;
-    font-family: 'Noto Serif SC', serif;
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--vp-c-text-1);
-    line-height: 1.35;
-}
-.home-entry-card p {
+.home-pantry-copy h2 {
     margin: 0;
-    font-size: 0.9rem;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    line-height: 1.15;
+    max-width: 12ch;
+}
+.home-pantry-summary {
+    position: relative;
+    margin: 1rem 0 0;
+    max-width: 44rem;
+    font-size: 1rem;
+    line-height: 1.8;
     color: var(--vp-c-text-2);
-    line-height: 1.65;
+}
+.home-pantry-metrics {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border-radius: 28px;
+    background:
+        linear-gradient(160deg, rgba(31, 37, 33, 0.98), rgba(63, 47, 31, 0.96)),
+        var(--mycook-ink);
+}
+.home-metric {
+    padding: 1rem 1.05rem;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+}
+.home-metric strong {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff3e2;
+}
+.home-metric span {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.88rem;
+    color: rgba(255, 244, 229, 0.76);
+}
+.home-source-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.home-source-card {
+    display: block;
+    min-height: 260px;
+    padding: 1.5rem;
+    border-radius: 24px;
+    text-decoration: none;
+    color: inherit;
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+}
+.home-source-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 44px rgba(78, 57, 33, 0.14);
+}
+.home-source-card.is-amber {
+    background: linear-gradient(180deg, rgba(255, 248, 239, 0.98), rgba(249, 237, 215, 0.94));
+}
+.home-source-card.is-jade {
+    background: linear-gradient(180deg, rgba(243, 251, 247, 0.98), rgba(227, 243, 236, 0.94));
+}
+.home-source-card.is-ink {
+    background: linear-gradient(180deg, rgba(245, 244, 242, 0.98), rgba(232, 229, 223, 0.94));
+}
+.home-source-card h3 {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.38rem;
+    line-height: 1.3;
+}
+.home-source-card p {
+    margin: 0.85rem 0 0;
+    color: var(--vp-c-text-2);
+    line-height: 1.7;
+}
+.home-source-stats {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 1.15rem 0 0;
+    padding: 0;
+}
+.home-source-stats li {
+    margin: 0;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(80, 59, 35, 0.1);
+    color: var(--vp-c-text-2);
+    font-size: 0.8rem;
+}
+.home-rail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.home-panel {
+    padding: 1.5rem;
+    border-radius: 24px;
+}
+.home-panel-head h3 {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.4rem;
+}
+.home-link-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.2rem;
+}
+.home-link-chip {
+    display: block;
+    padding: 1rem 0.9rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(80, 59, 35, 0.1);
+    text-decoration: none;
+    color: inherit;
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background-color 0.18s ease;
+}
+.home-link-chip:hover {
+    transform: translateY(-2px);
+    border-color: var(--vp-c-brand-1);
+    background: rgba(255, 255, 255, 0.96);
+}
+.home-link-chip strong,
+.home-link-chip span {
+    display: block;
+}
+.home-link-chip strong {
+    font-size: 0.98rem;
+}
+.home-link-chip span {
+    margin-top: 0.3rem;
+    font-size: 0.76rem;
+    color: var(--vp-c-text-3);
+}
+.home-flow-list {
+    margin: 1.2rem 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: home-flow;
+}
+.home-flow-list li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 3.2rem;
+    min-height: 2.5rem;
+    color: var(--vp-c-text-2);
+    line-height: 1.8;
+}
+.home-flow-list li + li {
+    margin-top: 1rem;
+}
+.home-flow-list li::before {
+    counter-increment: home-flow;
+    content: counter(home-flow);
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+    color: white;
+    font-weight: 700;
 }
 
 /* 文档内容区：标题与段落 */
@@ -185,9 +388,9 @@
     margin: 3.5rem auto 2rem;
     padding: 2rem 2.25rem;
     max-width: 800px;
-    border-radius: 16px;
-    background: var(--vp-c-bg-soft);
-    border: 1px solid var(--vp-c-divider);
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 239, 227, 0.88));
+    border: 1px solid var(--mycook-line);
 }
 .home-credits-title {
     font-family: 'Noto Serif SC', serif;
@@ -275,9 +478,13 @@
 
 /* 平板：两栏 */
 @media (max-width: 960px) {
-    .home-entries {
-        grid-template-columns: repeat(2, 1fr);
-        max-width: 100%;
+    .home-pantry-hero,
+    .home-rail-grid,
+    .home-source-grid {
+        grid-template-columns: 1fr;
+    }
+    .home-link-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
@@ -289,13 +496,21 @@
     .VPHero .text {
         font-size: 1.5rem;
     }
-    .home-entries {
-        grid-template-columns: 1fr;
-        margin: 1.5rem 0 2rem;
-        max-width: 100%;
+    .home-pantry {
+        margin-top: 1.5rem;
     }
-    .home-entry-card {
-        padding: 1.35rem 1.5rem;
+    .home-pantry-copy,
+    .home-panel,
+    .home-source-card {
+        padding: 1.2rem;
+        border-radius: 20px;
+    }
+    .home-pantry-copy h2 {
+        max-width: none;
+        font-size: 1.8rem;
+    }
+    .home-link-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .recent-updates {
         margin-left: 0;
@@ -485,52 +700,6 @@
     opacity: 0.7;
 }
 
-/* 快速入口区块 */
-.home-quick-links {
-    margin: 3rem auto;
-    padding: 2rem;
-    max-width: 800px;
-    border-radius: 16px;
-    background: var(--vp-c-bg-soft);
-    border: 1px solid var(--vp-c-divider);
-}
-.home-quick-links h2 {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 1rem;
-    color: var(--vp-c-text-1);
-    text-align: center;
-}
-.quick-links-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 0.75rem;
-}
-.quick-links-grid a {
-    display: block;
-    padding: 0.75rem 1rem;
-    text-align: center;
-    border-radius: 8px;
-    background: var(--vp-c-bg);
-    border: 1px solid var(--vp-c-divider);
-    color: var(--vp-c-text-1);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-}
-.quick-links-grid a:hover {
-    border-color: var(--vp-c-brand-1);
-    color: var(--vp-c-brand-1);
-    transform: translateY(-2px);
-}
-
-@media (max-width: 640px) {
-    .quick-links-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
 /* 统计区块样式 */
 .stats-section {
     margin: 2rem auto;
@@ -553,9 +722,9 @@
 .stat-card {
     text-align: center;
     padding: 1rem;
-    border-radius: 12px;
-    background: var(--vp-c-bg-soft);
-    border: 1px solid var(--vp-c-divider);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 239, 227, 0.82));
+    border: 1px solid var(--mycook-line);
 }
 .stat-number {
     display: block;

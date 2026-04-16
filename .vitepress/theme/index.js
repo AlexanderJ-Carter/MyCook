@@ -8,6 +8,7 @@ import SearchShortcut from './SearchShortcut.vue';
 import PrintButton from './PrintButton.vue';
 import CookingTimer from './CookingTimer.vue';
 import Favorites from './Favorites.vue';
+import HomePantry from './HomePantry.vue';
 import './style.css';
 
 export default {
@@ -22,5 +23,6 @@ export default {
         app.component('PrintButton', PrintButton);
         app.component('CookingTimer', CookingTimer);
         app.component('Favorites', Favorites);
+        app.component('HomePantry', HomePantry);
     },
 };

@@ -11,6 +11,23 @@ const ROOT = path.resolve(__dirname, '..');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const OUT_FILE = path.join(PUBLIC_DIR, 'stats.json');
 
+function getLatestMtime(dir, excludeDirs = new Set()) {
+  if (!fs.existsSync(dir)) return 0;
+  let latest = 0;
+  const entries = fs.readdirSync(dir);
+  for (const name of entries) {
+    if (name.startsWith('.') || excludeDirs.has(name)) continue;
+    const full = path.join(dir, name);
+    const stat = fs.statSync(full);
+    if (stat.isDirectory()) {
+      latest = Math.max(latest, getLatestMtime(full, excludeDirs));
+    } else if (name.endsWith('.md')) {
+      latest = Math.max(latest, stat.mtimeMs);
+    }
+  }
+  return latest;
+}
+
 function countMdFiles(dir, excludeDirs = new Set()) {
   if (!fs.existsSync(dir)) return 0;
   let count = 0;
@@ -85,11 +102,16 @@ function main() {
     dishes: howtocookDishes.dishes + tipsCount
   };
 
+  const contentLatestMtime = Math.max(
+    getLatestMtime(cooklikehocDir, new Set(['images', '.git', '.vitepress', 'node_modules', 'docker_support', 'docs'])),
+    getLatestMtime(howtocookDir)
+  );
+
   const stats = {
     cooklikehoc,
     howtocook,
     total: cooklikehoc.dishes + howtocook.dishes,
-    lastUpdated: new Date().toISOString().split('T')[0]
+    lastUpdated: new Date(contentLatestMtime || Date.now()).toISOString().split('T')[0]
   };
 
   if (!fs.existsSync(PUBLIC_DIR)) fs.mkdirSync(PUBLIC_DIR, { recursive: true });

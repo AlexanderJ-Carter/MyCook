@@ -1,21 +1,14 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted } from 'vue';
+import { withBase } from 'vitepress';
 
 onMounted(() => {
-  // 注册 Service Worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then((registration) => {
-        console.log('[PWA] Service Worker registered:', registration.scope)
-      })
-      .catch((error) => {
-        console.error('[PWA] Service Worker registration failed:', error)
-      })
-  }
-})
-</script>
+    if (!('serviceWorker' in navigator)) return;
 
-<template>
-  <div></div>
-</template>
+    navigator.serviceWorker.register(withBase('/sw.js')).catch((error) => {
+        if (import.meta.env.DEV) {
+            console.error('[PWA] Service Worker registration failed:', error);
+        }
+    });
+});
+</script>

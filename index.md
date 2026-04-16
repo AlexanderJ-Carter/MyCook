@@ -3,66 +3,29 @@ layout: home
 hero:
   name: MyCook
   text: 在家做饭，一站搞定
-  tagline: 老乡鸡风格 + 程序员做饭指南，双源合并，随用随查
-features:
-  - title: 双源菜谱
-    details: CookLikeHOC（按烹饪方式）+ HowToCook（按食材），一站浏览
-  - title: 站内搜索
-    details: 顶部搜索框支持模糊匹配，快速定位菜谱与技巧
-  - title: 深色模式
-    details: 跟随系统或手动切换，阅读更舒适
-  - title: 响应式
-    details: 桌面与移动端均可良好使用
-  - title: 自动同步
-    details: 每日从 fork 仓库拉取更新并发布
-  - title: Docker
-    details: 镜像内自动克隆并构建，无需本地预置内容
+  tagline: 一个站点，同时容纳“按做法找菜”和“按食材找菜”
+  image:
+    src: /logo.svg
+    alt: MyCook
+  actions:
+    - theme: brand
+      text: 从老乡鸡风格开始
+      link: /cooklikehoc/炒菜/README
+    - theme: alt
+      text: 从程序员做饭开始
+      link: /howtocook/dishes/vegetable_dish/西红柿炒鸡蛋
+    - theme: alt
+      text: 打开图片版
+      link: /howtocook-images/
 ---
 
-<p class="home-tip">点击下方卡片进入分类，或使用顶部导航、搜索查找菜谱。</p>
+<p class="home-tip">顶部搜索适合“知道菜名”，下方入口适合“只知道今天想做什么”。</p>
+
+<HomePantry />
 
 <Stats />
 
-<div class="home-entries">
-
-<a class="home-entry-card" href="/cooklikehoc/炒菜/README">
-  <span class="home-entry-label">老乡鸡风格</span>
-  <h3>炒菜 · 卤味 · 汤</h3>
-  <p>《老乡鸡菜品溯源报告》整理，炒菜、卤味、凉菜、砂锅、主食等，按烹饪方式分类。</p>
-</a>
-
-<a class="home-entry-card" href="/howtocook/dishes/vegetable_dish/西红柿炒鸡蛋">
-  <span class="home-entry-label">程序员做饭</span>
-  <h3>素菜 · 荤菜 · 主食</h3>
-  <p>按食材分类浏览，素菜、荤菜、水产、主食、饮料、甜品，每道菜独立成篇。</p>
-</a>
-
-<a class="home-entry-card" href="/howtocook-images/">
-  <span class="home-entry-label">衍生 · 图片版</span>
-  <h3>HowToCook 图片版</h3>
-  <p>基于原版 Markdown 生成的 4K 菜谱图，分类浏览、收藏、导出 PDF/长图。源自 king-jingxiang/HowToCook。</p>
-</a>
-
-</div>
-
 <RecentUpdates />
-
-<section class="home-quick-links">
-  <h2>快速入口</h2>
-  <div class="quick-links-grid">
-    <a href="/cooklikehoc/炒菜/README">🔥 炒菜</a>
-    <a href="/cooklikehoc/炖菜/README">🍲 炖菜</a>
-    <a href="/cooklikehoc/汤/README">🍵 汤</a>
-    <a href="/cooklikehoc/卤菜/README">🥘 卤菜</a>
-    <a href="/cooklikehoc/凉拌/README">🥗 凉拌</a>
-    <a href="/howtocook/dishes/vegetable_dish/西红柿炒鸡蛋">🥬 素菜</a>
-    <a href="/howtocook/dishes/meat_dish/红烧鸡翅">🍖 荤菜</a>
-    <a href="/howtocook/dishes/soup/西红柿鸡蛋汤/西红柿鸡蛋汤">🥣 汤与粥</a>
-    <a href="/howtocook/dishes/breakfast/茶叶蛋">🍳 早餐</a>
-    <a href="/howtocook/dishes/drink/柠檬汁/柠檬汁">🍹 饮料</a>
-    <a href="/howtocook/dishes/dessert/烤蛋挞/烤蛋挞">🍰 甜品</a>
-  </div>
-</section>
 
 <section class="home-credits" id="credits">
   <h2 class="home-credits-title">致谢</h2>

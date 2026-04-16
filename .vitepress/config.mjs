@@ -13,6 +13,8 @@ export default defineConfig({
     ignoreDeadLinks: true,
     srcExclude: [
         'README.md',
+        'AGENTS.md',
+        'CLAUDE.md',
         'cooklikehoc/README.md',
         'howtocook/*.md',
         'upstream/**',
@@ -20,10 +22,8 @@ export default defineConfig({
 
     head: [
         // DNS 预连接优化
-        ['link', { rel: 'dns-prefetch', href: 'https://fonts.googleapis.com' }],
-        ['link', { rel: 'dns-prefetch', href: 'https://fonts.gstatic.com' }],
-        ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com', crossorigin: '' }],
-        ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+        ['link', { rel: 'dns-prefetch', href: 'https://fonts.loli.net' }],
+        ['link', { rel: 'preconnect', href: 'https://fonts.loli.net', crossorigin: '' }],
         ['meta', { name: 'theme-color', content: '#c17f3a' }],
         [
             'meta',
@@ -44,7 +44,6 @@ export default defineConfig({
         ['meta', { name: 'twitter:description', content: '老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
         ['meta', { name: 'twitter:image', content: '/banner.png' }],
         ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
-        ['link', { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
         // PWA manifest
         ['link', { rel: 'manifest', href: '/manifest.json' }],
         ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],

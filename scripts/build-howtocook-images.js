@@ -22,11 +22,21 @@ const OUT_PATH = path.join(PUBLIC_DIR, OUT_SUBDIR);
 const DEFAULT_REPO = 'https://github.com/king-jingxiang/HowToCook.git';
 const UPSTREAM_DIR = path.join(ROOT, 'upstream', 'HowToCookImages');
 
+function resolveCommand(cmd) {
+    if (process.platform !== 'win32' || path.extname(cmd)) {
+        return cmd;
+    }
+    if (cmd === 'npm' || cmd === 'npx' || cmd === 'corepack' || cmd === 'pnpm') {
+        return `${cmd}.cmd`;
+    }
+    return cmd;
+}
+
 function run(cmd, args, opts = {}) {
-    const r = spawnSync(cmd, args, {
+    const r = spawnSync(resolveCommand(cmd), args, {
         stdio: 'inherit',
         cwd: opts.cwd || ROOT,
-        shell: opts.shell ?? true,
+        shell: false,
         env: opts.env || process.env,
     });
     if (r.status !== 0)
@@ -56,7 +66,7 @@ function writePlaceholder(reason) {
 <body>
   <h1>HowToCook 图片版</h1>
   <p>${escaped}</p>
-  <p><a href="/">返回 MyCook 首页</a></p>
+  <p><a href="../">返回 MyCook 首页</a></p>
 </body>
 </html>`;
     fs.writeFileSync(path.join(OUT_PATH, 'index.html'), html, 'utf8');
@@ -107,6 +117,11 @@ function main() {
         }
 
         const buildEnv = { ...process.env, VITE_BASE_PATH: '/howtocook-images/' };
+        const installEnv = {
+            ...buildEnv,
+            CI: process.env.CI || 'true',
+            NPM_CONFIG_CACHE: path.join(ROOT, '.npm-cache'),
+        };
         const hasPnpmLock = fs.existsSync(path.join(srcDir, 'pnpm-lock.yaml'));
         const hasNpmLock = fs.existsSync(path.join(srcDir, 'package-lock.json'));
 
@@ -123,6 +138,7 @@ function main() {
             try {
                 run('corepack', ['pnpm', 'install', '--frozen-lockfile'], {
                     cwd: srcDir,
+                    env: installEnv,
                 });
                 run('corepack', ['pnpm', 'run', 'build'], {
                     cwd: srcDir,
@@ -146,7 +162,7 @@ function main() {
                     (hasNpmLock ? 'ci (package-lock found)' : 'install (no lockfile)') +
                     '...',
             );
-            run('npm', installArgs, { cwd: srcDir });
+            run('npm', installArgs, { cwd: srcDir, env: installEnv });
             run('npm', ['run', 'build'], { cwd: srcDir, env: buildEnv });
         }
 

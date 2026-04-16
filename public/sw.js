@@ -1,14 +1,15 @@
 // Service Worker for MyCook PWA
 const CACHE_NAME = 'mycook-cache-v1';
 const STATIC_CACHE = 'mycook-static-v1';
+const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, '');
+const withBase = (value) => `${BASE_PATH}${value}`;
 
 // 需要缓存的静态资源
 const STATIC_ASSETS = [
-  '/',
-  '/manifest.json',
-  '/logo.svg',
-  '/favicon.svg',
-  '/favicon.ico'
+  withBase('/'),
+  withBase('/manifest.json'),
+  withBase('/logo.svg'),
+  withBase('/favicon.svg')
 ];
 
 // 安装事件
@@ -16,11 +17,9 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        console.log('[SW] Caching static assets');
         return cache.addAll(STATIC_ASSETS);
       })
       .then(() => {
-        console.log('[SW] Skip waiting');
         return self.skipWaiting();
       })
   );
@@ -34,14 +33,10 @@ self.addEventListener('activate', (event) => {
         return Promise.all(
           cacheNames
             .filter((name) => name !== CACHE_NAME && name !== STATIC_CACHE)
-            .map((name) => {
-              console.log('[SW] Deleting old cache:', name);
-              return caches.delete(name);
-            })
+            .map((name) => caches.delete(name))
         );
       })
       .then(() => {
-        console.log('[SW] Claiming clients');
         return self.clients.claim();
       })
   );
@@ -72,7 +67,7 @@ self.addEventListener('fetch', (event) => {
         .catch(() => {
           // 网络失败，从缓存读取
           return caches.match(request).then((response) => {
-            return response || caches.match('/');
+            return response || caches.match(withBase('/'));
           });
         })
     );

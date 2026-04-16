@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { withBase } from 'vitepress';
 
 const stats = ref({
   cooklikehoc: { categories: 0, dishes: 0 },
@@ -9,8 +10,7 @@ const stats = ref({
 
 onMounted(async () => {
   try {
-    // 从页面元数据获取统计信息
-    const res = await fetch('/stats.json');
+    const res = await fetch(withBase('/stats.json'));
     if (res.ok) {
       stats.value = await res.json();
     }
