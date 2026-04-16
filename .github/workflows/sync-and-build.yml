@@ -87,6 +87,7 @@ jobs:
                   HOWTOCOOK_PATH: ${{ github.workspace }}/upstream/HowToCook
                   COOKLIKEHOC_BRANCH: main
                   HOWTOCOOK_BRANCH: master
+                  HOWTOCOOK_IMAGES_TIMEOUT_MS: '480000'
                   VITEPRESS_BASE: /
               run: |
                   node scripts/sync-upstream.js

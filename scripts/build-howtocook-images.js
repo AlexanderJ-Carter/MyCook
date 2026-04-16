@@ -18,6 +18,10 @@ const ROOT = path.resolve(__dirname, '..');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const OUT_SUBDIR = 'howtocook-images';
 const OUT_PATH = path.join(PUBLIC_DIR, OUT_SUBDIR);
+const COMMAND_TIMEOUT_MS = Number.parseInt(
+    process.env.HOWTOCOOK_IMAGES_TIMEOUT_MS || `${8 * 60 * 1000}`,
+    10,
+);
 
 const DEFAULT_REPO = 'https://github.com/king-jingxiang/HowToCook.git';
 const UPSTREAM_DIR = path.join(ROOT, 'upstream', 'HowToCookImages');
@@ -38,7 +42,19 @@ function run(cmd, args, opts = {}) {
         cwd: opts.cwd || ROOT,
         shell: false,
         env: opts.env || process.env,
+        timeout: opts.timeout ?? COMMAND_TIMEOUT_MS,
     });
+    if (r.error) {
+        if (r.error.code === 'ETIMEDOUT') {
+            throw new Error(
+                `${cmd} ${args.join(' ')} timed out after ${opts.timeout ?? COMMAND_TIMEOUT_MS}ms`,
+            );
+        }
+        throw r.error;
+    }
+    if (r.signal) {
+        throw new Error(`${cmd} ${args.join(' ')} terminated by signal ${r.signal}`);
+    }
     if (r.status !== 0)
         throw new Error(`${cmd} ${args.join(' ')} exited ${r.status}`);
 }
@@ -122,6 +138,7 @@ function main() {
             CI: process.env.CI || 'true',
             NPM_CONFIG_CACHE: path.join(ROOT, '.npm-cache'),
         };
+        const isCi = installEnv.CI === 'true';
         const hasPnpmLock = fs.existsSync(path.join(srcDir, 'pnpm-lock.yaml'));
         const hasNpmLock = fs.existsSync(path.join(srcDir, 'package-lock.json'));
 
@@ -150,6 +167,11 @@ function main() {
                     '[build-howtocook-images] pnpm install/build failed, will fall back to npm:',
                     err.message,
                 );
+                if (isCi) {
+                    throw new Error(
+                        `pnpm build failed in CI and npm fallback is disabled: ${err.message}`,
+                    );
+                }
             }
         }
 
