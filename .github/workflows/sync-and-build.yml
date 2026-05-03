@@ -51,26 +51,8 @@ jobs:
                     return 1
                   }
 
-                  # 可选仓库：失败时仅警告，不中断构建
-                  clone_with_retry_optional() {
-                    local repo=$1
-                    local dest=$2
-                    for i in 1 2 3; do
-                      if git clone --depth 1 "$repo" "$dest"; then
-                        echo "Successfully cloned $repo"
-                        return 0
-                      fi
-                      echo "Warning: Attempt $i failed for optional repo $repo, retrying in 5s..."
-                      rm -rf "$dest"
-                      sleep 5
-                    done
-                    echo "Warning: Failed to clone optional $repo after 3 attempts - continuing without it"
-                    return 0
-                  }
-
                   clone_with_retry https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC
                   clone_with_retry https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook
-                  clone_with_retry_optional https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -87,7 +69,7 @@ jobs:
                   HOWTOCOOK_PATH: ${{ github.workspace }}/upstream/HowToCook
                   COOKLIKEHOC_BRANCH: main
                   HOWTOCOOK_BRANCH: master
-                  HOWTOCOOK_IMAGES_TIMEOUT_MS: '480000'
+                  SKIP_IMAGES: '1'
                   VITEPRESS_BASE: /
               run: |
                   node scripts/sync-upstream.js
