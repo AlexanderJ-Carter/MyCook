@@ -24,6 +24,9 @@ export default defineConfig({
         // DNS 预连接优化
         ['link', { rel: 'dns-prefetch', href: 'https://fonts.loli.net' }],
         ['link', { rel: 'preconnect', href: 'https://fonts.loli.net', crossorigin: '' }],
+        // LCP 预加载优化
+        ['link', { rel: 'preload', href: '/logo.svg', as: 'image' }],
+        // 主题色
         ['meta', { name: 'theme-color', content: '#c17f3a' }],
         [
             'meta',
@@ -179,5 +182,11 @@ export default defineConfig({
             '**/*.webp',
             '**/*.svg',
         ],
+        build: {
+            // 性能优化：代码分割
+            chunkSizeWarningLimit: 1000,
+            cssMinify: true,
+            minify: 'esbuild',
+        },
     },
 });
