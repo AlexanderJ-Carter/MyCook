@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const timers = ref([])
 const newTimerName = ref('')
@@ -77,12 +77,15 @@ const updateTimers = () => {
   })
 }
 
-// 每秒更新计时器
-intervalId = setInterval(updateTimers, 1000)
+onMounted(() => {
+  // 每秒更新计时器（仅在客户端挂载后启动，避免 SSR 构建进程常驻）
+  intervalId = setInterval(updateTimers, 1000)
+})
 
 onUnmounted(() => {
   if (intervalId) {
     clearInterval(intervalId)
+    intervalId = null
   }
 })
 </script>
