@@ -46,7 +46,12 @@ const schemaData = computed(() => {
     },
     recipeCategory: recipeSource.value === 'CookLikeHOC' ? '中式家常菜' : '家常菜',
     recipeCuisine: 'Chinese',
-    keywords: ['菜谱', '做饭', '家常菜', recipeName.value]
+    keywords: ['菜谱', '做饭', '家常菜', recipeName.value],
+    datePublished: new Date().toISOString(),
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://cook.alexander.xin${route.path}`
+    }
   };
 });
 </script>

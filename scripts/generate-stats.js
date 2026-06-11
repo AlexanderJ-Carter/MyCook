@@ -111,7 +111,9 @@ function main() {
     cooklikehoc,
     howtocook,
     total: cooklikehoc.dishes + howtocook.dishes,
-    lastUpdated: new Date(contentLatestMtime || Date.now()).toISOString().split('T')[0]
+    totalCategories: cooklikehoc.categories + howtocook.categories,
+    lastUpdated: new Date(contentLatestMtime || Date.now()).toISOString().split('T')[0],
+    generatedAt: new Date().toISOString()
   };
 
   if (!fs.existsSync(PUBLIC_DIR)) fs.mkdirSync(PUBLIC_DIR, { recursive: true });

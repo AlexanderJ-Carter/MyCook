@@ -84,7 +84,7 @@ onUnmounted(() => {
 }
 
 .back-to-top:hover {
-  transform: translateY(-3px);
+  transform: translateY(-3px) scale(1.05);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
 }
 
@@ -134,5 +134,8 @@ onUnmounted(() => {
 /* 深色模式 */
 .dark .back-to-top {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+.dark .back-to-top:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
 }
 </style>

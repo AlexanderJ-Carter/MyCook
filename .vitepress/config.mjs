@@ -24,10 +24,15 @@ export default defineConfig({
         // DNS 预连接优化
         ['link', { rel: 'dns-prefetch', href: 'https://fonts.loli.net' }],
         ['link', { rel: 'preconnect', href: 'https://fonts.loli.net', crossorigin: '' }],
+        ['link', { rel: 'dns-prefetch', href: 'https://cdn.jsdelivr.net' }],
+        ['link', { rel: 'preconnect', href: 'https://cdn.jsdelivr.net', crossorigin: '' }],
         // LCP 预加载优化
         ['link', { rel: 'preload', href: '/logo.svg', as: 'image' }],
         // 主题色
-        ['meta', { name: 'theme-color', content: '#c17f3a' }],
+        ['meta', { name: 'theme-color', content: '#c17f3a', media: '(prefers-color-scheme: light)' }],
+        ['meta', { name: 'theme-color', content: '#1a1612', media: '(prefers-color-scheme: dark)' }],
+        // 移动端优化
+        ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' }],
         [
             'meta',
             {
@@ -42,6 +47,8 @@ export default defineConfig({
         ['meta', { name: 'og:description', content: '老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
         ['meta', { name: 'og:site_name', content: 'MyCook' }],
         ['meta', { name: 'og:image', content: '/banner.png' }],
+        ['meta', { name: 'og:image:width', content: '1200' }],
+        ['meta', { name: 'og:image:height', content: '630' }],
         ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
         ['meta', { name: 'twitter:title', content: 'MyCook - 在家做饭一站搞定' }],
         ['meta', { name: 'twitter:description', content: '老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
@@ -52,6 +59,7 @@ export default defineConfig({
         ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
         ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }],
         ['meta', { name: 'apple-mobile-web-app-title', content: 'MyCook' }],
+        ['link', { rel: 'apple-touch-icon', href: '/logo.svg' }],
     ],
 
     themeConfig: {
@@ -187,6 +195,8 @@ export default defineConfig({
             chunkSizeWarningLimit: 1000,
             cssMinify: true,
             minify: 'esbuild',
+            // 启用 CSS 代码分割
+            cssCodeSplit: true,
         },
     },
 });

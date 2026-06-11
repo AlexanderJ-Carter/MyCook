@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vitepress'
+import { useRoute, withBase } from 'vitepress'
 
 const route = useRoute()
 const favorites = ref([])
@@ -13,8 +13,8 @@ const loadFavorites = () => {
     if (stored) {
       favorites.value = JSON.parse(stored)
     }
-  } catch (e) {
-    console.error('Failed to load favorites:', e)
+  } catch {
+    // 忽略解析错误
   }
 }
 
@@ -22,8 +22,8 @@ const loadFavorites = () => {
 const saveFavorites = () => {
   try {
     localStorage.setItem('mycook-favorites', JSON.stringify(favorites.value))
-  } catch (e) {
-    console.error('Failed to save favorites:', e)
+  } catch {
+    // 忽略存储错误
   }
 }
 
@@ -131,14 +131,14 @@ onMounted(() => {
   color: var(--vp-c-text-1);
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .favorite-button:hover {
   border-color: #ff6b6b;
   color: #ff6b6b;
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -146,6 +146,10 @@ onMounted(() => {
   background: #ff6b6b;
   color: white;
   border-color: #ff6b6b;
+}
+
+.favorite-button.is-favorite:hover {
+  background: #ff5252;
 }
 
 .favorite-button svg {
@@ -170,12 +174,13 @@ onMounted(() => {
   color: var(--vp-c-text-1);
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .show-favorites-button:hover {
   background: var(--vp-c-bg-soft);
+  transform: translateY(-1px);
 }
 
 .show-favorites-button svg {
@@ -216,7 +221,7 @@ onMounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  transition: color 0.2s;
+  transition: color 0.2s ease;
 }
 
 .favorite-link:hover {
@@ -237,16 +242,17 @@ onMounted(() => {
   font-size: 1.2rem;
   cursor: pointer;
   line-height: 1;
-  transition: color 0.2s;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .remove-button:hover {
   color: #ff6b6b;
+  transform: scale(1.1);
 }
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 
 .slide-enter-from,
@@ -273,6 +279,20 @@ onMounted(() => {
     min-width: 250px;
     max-width: calc(100vw - 2rem);
   }
+}
+
+/* 深色模式 */
+.dark .favorite-button {
+  background: var(--vp-c-bg);
+}
+
+.dark .favorite-button:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.dark .show-favorites-button {
+  background: var(--vp-c-bg);
 }
 
 /* 打印时隐藏 */

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   src: {
@@ -18,29 +18,43 @@ const props = defineProps({
 
 const imgRef = ref(null)
 const isLoaded = ref(false)
-const observer = ref(null)
+const hasError = ref(false)
+let observer = null
 
 onMounted(() => {
   if (props.loading === 'lazy' && 'IntersectionObserver' in window) {
-    observer.value = new IntersectionObserver((entries) => {
+    observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           imgRef.value.src = props.src
-          observer.value.unobserve(entry.target)
+          observer.unobserve(entry.target)
           isLoaded.value = true
         }
       })
     }, {
-      rootMargin: '50px'
+      rootMargin: '100px',
+      threshold: 0.1
     })
 
-    observer.value.observe(imgRef.value)
+    if (imgRef.value) {
+      observer.observe(imgRef.value)
+    }
   } else {
     // 如果不支持 IntersectionObserver，直接加载
     imgRef.value.src = props.src
     isLoaded.value = true
   }
 })
+
+onUnmounted(() => {
+  if (observer && imgRef.value) {
+    observer.unobserve(imgRef.value)
+  }
+})
+
+const handleError = () => {
+  hasError.value = true
+}
 </script>
 
 <template>
@@ -48,8 +62,8 @@ onMounted(() => {
     ref="imgRef"
     :alt="alt"
     :loading="loading"
-    :class="{ 'img-loaded': isLoaded }"
-    loading="lazy"
+    :class="{ 'img-loaded': isLoaded, 'img-error': hasError }"
+    @error="handleError"
   />
 </template>
 
@@ -65,5 +79,14 @@ img {
 
 .img-loaded {
   opacity: 1;
+}
+
+.img-error {
+  opacity: 0.5;
+}
+
+/* 深色模式 */
+.dark img {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 </style>

@@ -23,12 +23,23 @@
     --mycook-ink: #1f2521;
     --mycook-paper: #f6efe3;
     --mycook-line: rgba(78, 57, 33, 0.14);
+
+    /* 动画性能优化 */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s ease;
+    --transition-slow: 0.35s ease;
+
+    /* 阴影层级 */
+    --shadow-sm: 0 2px 8px rgba(78, 57, 33, 0.06);
+    --shadow-md: 0 8px 24px rgba(78, 57, 33, 0.1);
+    --shadow-lg: 0 16px 48px rgba(78, 57, 33, 0.14);
 }
 
 /* 首页 Hero 区域 */
 .VPHero {
     padding: 4.5rem 0 2.75rem;
     position: relative;
+    contain: layout style;
 }
 .VPHero::before {
     content: '';
@@ -39,17 +50,20 @@
         radial-gradient(circle at 80% 30%, rgba(45, 125, 94, 0.12), transparent 28%),
         linear-gradient(180deg, rgba(246, 239, 227, 0.78), transparent 72%);
     pointer-events: none;
+    will-change: transform;
 }
 .VPHero .name {
     font-family: 'Noto Serif SC', serif;
     font-weight: 700;
     letter-spacing: 0.03em;
+    text-rendering: optimizeLegibility;
 }
 .VPHero .text {
     font-family: 'Noto Serif SC', serif;
     font-weight: 600;
     font-size: 1.85rem;
     line-height: 1.3;
+    text-rendering: optimizeLegibility;
 }
 .VPHero .tagline {
     opacity: 0.92;
@@ -58,6 +72,7 @@
     max-width: 34em;
     margin-left: auto;
     margin-right: auto;
+    text-wrap: balance;
 }
 .VPHero .actions {
     margin-top: 1.75rem;
@@ -67,12 +82,21 @@
 .VPHero .actions .VPButton {
     padding: 0.65rem 1.4rem;
     border-radius: 999px;
+    transition: all var(--transition-normal);
+}
+.VPHero .actions .VPButton:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 .VPHero .image {
     margin-top: 2rem;
 }
 .VPHero .image img {
     filter: drop-shadow(0 18px 34px rgba(87, 56, 18, 0.18));
+    transition: transform var(--transition-slow);
+}
+.VPHero .image img:hover {
+    transform: scale(1.02);
 }
 
 /* 首页简短说明 */
@@ -186,13 +210,14 @@
     text-decoration: none;
     color: inherit;
     transition:
-        transform 0.22s ease,
-        box-shadow 0.22s ease,
-        border-color 0.22s ease;
+        transform var(--transition-normal),
+        box-shadow var(--transition-normal),
+        border-color var(--transition-normal);
+    will-change: transform;
 }
 .home-source-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 22px 44px rgba(78, 57, 33, 0.14);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
 }
 .home-source-card.is-amber {
     background: linear-gradient(180deg, rgba(255, 248, 239, 0.98), rgba(249, 237, 215, 0.94));
@@ -261,14 +286,16 @@
     text-decoration: none;
     color: inherit;
     transition:
-        transform 0.18s ease,
-        border-color 0.18s ease,
-        background-color 0.18s ease;
+        transform var(--transition-fast),
+        border-color var(--transition-fast),
+        background-color var(--transition-fast),
+        box-shadow var(--transition-fast);
 }
 .home-link-chip:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     border-color: var(--vp-c-brand-1);
     background: rgba(255, 255, 255, 0.96);
+    box-shadow: var(--shadow-sm);
 }
 .home-link-chip strong,
 .home-link-chip span {
@@ -375,12 +402,13 @@
     color: var(--vp-c-text-2);
     text-decoration: none;
     font-size: 0.875rem;
-    transition: color 0.15s;
+    transition: color var(--transition-fast);
     display: block;
     padding: 0.2rem 0;
 }
 .recent-updates-list a:hover {
     color: var(--vp-c-brand-1);
+    transform: translateX(2px);
 }
 
 /* 致谢区块 */
@@ -419,11 +447,12 @@
     color: var(--vp-c-brand-1);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.15s;
+    transition: color var(--transition-fast);
 }
 .home-credits-list a:hover {
     color: var(--vp-c-brand-2);
     text-decoration: underline;
+    text-underline-offset: 3px;
 }
 .home-credits-note {
     margin: 0;
@@ -496,6 +525,9 @@
     .VPHero .text {
         font-size: 1.5rem;
     }
+    .VPHero .image img {
+        max-width: 120px;
+    }
     .home-pantry {
         margin-top: 1.5rem;
     }
@@ -511,6 +543,10 @@
     }
     .home-link-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+    }
+    .home-link-chip {
+        padding: 0.8rem;
     }
     .recent-updates {
         margin-left: 0;
@@ -531,6 +567,11 @@
     .layout-howtocook .VPDoc .vp-doc .container {
         margin-left: 0;
         padding-left: 1rem;
+    }
+    /* 移动端触摸优化 */
+    .home-source-card,
+    .home-link-chip {
+        -webkit-tap-highlight-color: transparent;
     }
 }
 
@@ -586,10 +627,16 @@
 
 /* 深色模式下的调整 */
 .dark .home-entry-card:hover {
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-lg);
 }
 .dark .vp-doc img {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
+}
+.dark .home-source-card:hover {
+    box-shadow: var(--shadow-lg);
+}
+.dark .home-link-chip:hover {
+    box-shadow: var(--shadow-sm);
 }
 
 /* 深色模式品牌色优化 */
@@ -598,6 +645,10 @@
     --vp-c-brand-2: #c17f3a;
     --vp-c-brand-3: #a66b2d;
     --vp-c-brand-soft: rgba(212, 149, 74, 0.14);
+    --mycook-line: rgba(212, 149, 74, 0.12);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.25);
 }
 
 /* 深色模式 HowToCook 标识色 */
@@ -632,7 +683,8 @@
     .recent-updates,
     .back-to-top,
     .reading-progress,
-    .print-button {
+    .print-button,
+    .favorites-widget {
         display: none !important;
     }
     .VPContent {
@@ -681,6 +733,27 @@
 /* 高亮重要内容 */
 .vp-doc strong {
     color: var(--vp-c-brand-1);
+    font-weight: 600;
+}
+
+/* 页面加载动画 */
+.VPContent {
+    animation: fadeIn 0.4s ease-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 侧边栏过渡 */
+.VPSidebar {
+    transition: transform var(--transition-normal);
+}
+
+/* 导航栏增强 */
+.VPNavBar {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 /* 步骤编号样式 */

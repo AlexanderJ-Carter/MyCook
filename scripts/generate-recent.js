@@ -97,10 +97,14 @@ if (fs.existsSync(howtocookDir)) {
 list.sort((a, b) => b.mtime - a.mtime);
 const items = list
     .slice(0, MAX_ITEMS)
-    .map(({ title, link }) => ({ title, link }));
+    .map(({ title, link, mtime }) => ({ 
+        title, 
+        link,
+        date: new Date(mtime).toISOString().split('T')[0]
+    }));
 
 if (!fs.existsSync(PUBLIC_DIR)) fs.mkdirSync(PUBLIC_DIR, { recursive: true });
-fs.writeFileSync(OUT_FILE, JSON.stringify({ items }, null, 0), 'utf8');
+fs.writeFileSync(OUT_FILE, JSON.stringify({ items, generatedAt: new Date().toISOString() }, null, 0), 'utf8');
 console.log(
     '[generate-recent] wrote',
     items.length,

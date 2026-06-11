@@ -42,17 +42,20 @@ const printRecipe = () => {
   color: var(--vp-c-text-1);
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .print-button:hover {
   border-color: var(--vp-c-brand-1);
   color: var(--vp-c-brand-1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .print-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .print-button svg {
@@ -64,6 +67,16 @@ const printRecipe = () => {
   .print-text {
     display: none;
   }
+}
+
+/* 深色模式 */
+.dark .print-button {
+  background: var(--vp-c-bg-soft);
+}
+
+.dark .print-button:hover {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
 }
 
 /* 打印时隐藏按钮 */

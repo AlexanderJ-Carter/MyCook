@@ -69,8 +69,8 @@ const updateTimers = () => {
         try {
           const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleQoA')
           audio.play()
-        } catch (e) {
-          console.log('Audio play failed:', e)
+        } catch {
+          // 忽略音频播放错误
         }
       }
     }
@@ -101,6 +101,7 @@ onUnmounted(() => {
         type="text"
         placeholder="计时器名称（如：煮面条）"
         class="timer-input"
+        @keyup.enter="addTimer"
       />
       <input
         v-model.number="newTimerMinutes"
@@ -182,6 +183,12 @@ h3 {
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
   font-size: 0.9rem;
+  transition: border-color 0.2s ease;
+}
+
+.timer-input:focus {
+  outline: none;
+  border-color: var(--vp-c-brand-1);
 }
 
 .timer-minutes {
@@ -192,6 +199,12 @@ h3 {
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
   font-size: 0.9rem;
+  transition: border-color 0.2s ease;
+}
+
+.timer-minutes:focus {
+  outline: none;
+  border-color: var(--vp-c-brand-1);
 }
 
 .timer-unit {
@@ -209,11 +222,12 @@ h3 {
   color: white;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .add-button:hover {
   background: var(--vp-c-brand-2);
+  transform: translateY(-1px);
 }
 
 .timers-list {
@@ -226,11 +240,18 @@ h3 {
   background: var(--vp-c-bg);
   border-radius: 8px;
   border: 1px solid var(--vp-c-divider);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .timer-item.timer-finished {
   border-color: var(--vp-c-brand-1);
   background: var(--vp-c-brand-soft);
+  animation: pulse 1s ease-in-out 3;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 
 .timer-header {
@@ -254,11 +275,12 @@ h3 {
   font-size: 1.5rem;
   cursor: pointer;
   line-height: 1;
-  transition: color 0.2s;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .delete-button:hover {
   color: var(--vp-c-text-1);
+  transform: scale(1.1);
 }
 
 .timer-display {
@@ -268,6 +290,7 @@ h3 {
   text-align: center;
   margin: 0.75rem 0;
   font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
 }
 
 .timer-controls {
@@ -284,12 +307,13 @@ h3 {
   color: var(--vp-c-text-1);
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .control-button:hover {
   border-color: var(--vp-c-brand-1);
   color: var(--vp-c-brand-1);
+  transform: translateY(-1px);
 }
 
 .control-button.start {
@@ -300,6 +324,7 @@ h3 {
 
 .control-button.start:hover {
   background: var(--vp-c-brand-2);
+  transform: translateY(-1px);
 }
 
 .no-timers {
@@ -321,6 +346,12 @@ h3 {
   .timer-minutes {
     width: 100%;
   }
+}
+
+/* 深色模式 */
+.dark .timer-input,
+.dark .timer-minutes {
+  background: var(--vp-c-bg);
 }
 
 /* 打印时隐藏 */

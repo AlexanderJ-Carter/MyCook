@@ -8,14 +8,18 @@ const stats = ref({
   total: 0
 });
 
+const isLoaded = ref(false);
+
 onMounted(async () => {
   try {
     const res = await fetch(withBase('/stats.json'));
     if (res.ok) {
       stats.value = await res.json();
     }
-  } catch (_) {
+  } catch {
     // 使用默认值
+  } finally {
+    isLoaded.value = true;
   }
 });
 </script>
@@ -23,7 +27,7 @@ onMounted(async () => {
 <template>
   <div class="stats-section">
     <h2 class="stats-title">菜谱统计</h2>
-    <div class="stats-grid">
+    <div class="stats-grid" :class="{ 'is-loaded': isLoaded }">
       <div class="stat-card">
         <span class="stat-number">{{ stats.total }}</span>
         <span class="stat-label">道菜谱</span>
@@ -43,4 +47,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-

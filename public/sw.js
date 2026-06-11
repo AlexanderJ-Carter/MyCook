@@ -1,6 +1,6 @@
 // Service Worker for MyCook PWA
-const CACHE_NAME = 'mycook-cache-v1';
-const STATIC_CACHE = 'mycook-static-v1';
+const CACHE_NAME = 'mycook-cache-v2';
+const STATIC_CACHE = 'mycook-static-v2';
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, '');
 const withBase = (value) => `${BASE_PATH}${value}`;
 
@@ -9,7 +9,9 @@ const STATIC_ASSETS = [
   withBase('/'),
   withBase('/manifest.json'),
   withBase('/logo.svg'),
-  withBase('/favicon.svg')
+  withBase('/favicon.svg'),
+  withBase('/stats.json'),
+  withBase('/recent.json')
 ];
 
 // 安装事件
@@ -74,28 +76,48 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 对于其他请求，使用缓存优先策略
-  event.respondWith(
-    caches.match(request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          // 返回缓存，同时后台更新
-          fetch(request).then((response) => {
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, response);
+  // 对于静态资源（CSS、JS、图片），使用缓存优先策略
+  if (url.pathname.match(/\.(css|js|png|jpg|jpeg|gif|webp|svg|woff|woff2|ttf|eot)$/)) {
+    event.respondWith(
+      caches.match(request)
+        .then((cachedResponse) => {
+          if (cachedResponse) {
+            // 返回缓存，同时后台更新
+            fetch(request).then((response) => {
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, response);
+              });
             });
-          });
-          return cachedResponse;
-        }
+            return cachedResponse;
+          }
 
-        // 没有缓存，从网络获取
-        return fetch(request).then((response) => {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone);
+          // 没有缓存，从网络获取
+          return fetch(request).then((response) => {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseClone);
+            });
+            return response;
           });
-          return response;
+        })
+    );
+    return;
+  }
+
+  // 对于其他请求，使用网络优先策略
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        // 缓存响应
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(request, responseClone);
         });
+        return response;
+      })
+      .catch(() => {
+        // 网络失败，从缓存读取
+        return caches.match(request);
       })
   );
 });
