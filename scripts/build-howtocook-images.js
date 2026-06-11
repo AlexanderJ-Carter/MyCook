@@ -152,7 +152,7 @@ function main() {
                 '[build-howtocook-images] pnpm-lock.yaml detected, using pnpm via corepack...',
             );
             try {
-                run('corepack', ['pnpm', 'install', '--frozen-lockfile'], {
+                run('corepack', ['pnpm', 'install', '--ignore-scripts'], {
                     cwd: srcDir,
                     env: installEnv,
                 });
