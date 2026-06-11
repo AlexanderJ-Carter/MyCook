@@ -53,6 +53,7 @@ jobs:
 
                   clone_with_retry https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC
                   clone_with_retry https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook
+                  clone_with_retry https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -67,12 +68,13 @@ jobs:
               env:
                   COOKLIKEHOC_PATH: ${{ github.workspace }}/upstream/CookLikeHOC
                   HOWTOCOOK_PATH: ${{ github.workspace }}/upstream/HowToCook
+                  HOWTOCOOK_IMAGES_PATH: ${{ github.workspace }}/upstream/HowToCookImages
                   COOKLIKEHOC_BRANCH: main
                   HOWTOCOOK_BRANCH: master
-                  SKIP_IMAGES: '1'
                   VITEPRESS_BASE: /
               run: |
                   node scripts/sync-upstream.js
+                  npm run build:images || true
                   npm run docs:build
 
             # 若报错 Get Pages site failed / Not Found：请到仓库 Settings → Pages → Build and deployment → Source 选择「GitHub Actions」

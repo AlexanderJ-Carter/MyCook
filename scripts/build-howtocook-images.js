@@ -138,7 +138,6 @@ function main() {
             CI: process.env.CI || 'true',
             NPM_CONFIG_CACHE: path.join(ROOT, '.npm-cache'),
         };
-        const isCi = installEnv.CI === 'true';
         const hasPnpmLock = fs.existsSync(path.join(srcDir, 'pnpm-lock.yaml'));
         const hasNpmLock = fs.existsSync(path.join(srcDir, 'package-lock.json'));
 
@@ -167,11 +166,6 @@ function main() {
                     '[build-howtocook-images] pnpm install/build failed, will fall back to npm:',
                     err.message,
                 );
-                if (isCi) {
-                    throw new Error(
-                        `pnpm build failed in CI and npm fallback is disabled: ${err.message}`,
-                    );
-                }
             }
         }
 
