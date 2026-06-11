@@ -1,5 +1,4 @@
 /* MyCook 自定义主题：暖色菜谱站 */
-/* 字体加载优化：使用国内 CDN 镜像，提升中国用户访问速度 */
 @import url('https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap');
 
 :root {
@@ -9,7 +8,6 @@
     --vp-font-family-mono:
         ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
 
-    /* 暖色主色：姜黄/琥珀 */
     --vp-c-brand-1: #c17f3a;
     --vp-c-brand-2: #a66b2d;
     --vp-c-brand-3: #8b5a24;
@@ -24,18 +22,16 @@
     --mycook-paper: #f6efe3;
     --mycook-line: rgba(78, 57, 33, 0.14);
 
-    /* 动画性能优化 */
     --transition-fast: 0.15s ease;
     --transition-normal: 0.25s ease;
     --transition-slow: 0.35s ease;
 
-    /* 阴影层级 */
     --shadow-sm: 0 2px 8px rgba(78, 57, 33, 0.06);
     --shadow-md: 0 8px 24px rgba(78, 57, 33, 0.1);
     --shadow-lg: 0 16px 48px rgba(78, 57, 33, 0.14);
 }
 
-/* 首页 Hero 区域 */
+/* ===== Hero ===== */
 .VPHero {
     padding: 4.5rem 0 2.75rem;
     position: relative;
@@ -50,13 +46,16 @@
         radial-gradient(circle at 80% 30%, rgba(45, 125, 94, 0.12), transparent 28%),
         linear-gradient(180deg, rgba(246, 239, 227, 0.78), transparent 72%);
     pointer-events: none;
-    will-change: transform;
 }
 .VPHero .name {
     font-family: 'Noto Serif SC', serif;
     font-weight: 700;
     letter-spacing: 0.03em;
     text-rendering: optimizeLegibility;
+    background: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 .VPHero .text {
     font-family: 'Noto Serif SC', serif;
@@ -83,10 +82,17 @@
     padding: 0.65rem 1.4rem;
     border-radius: 999px;
     transition: all var(--transition-normal);
+    font-weight: 500;
 }
 .VPHero .actions .VPButton:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+}
+.VPHero .actions .VPButton.brand {
+    background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+}
+.VPHero .actions .VPButton.brand:hover {
+    background: linear-gradient(135deg, var(--vp-c-brand-2), var(--vp-c-brand-3));
 }
 .VPHero .image {
     margin-top: 2rem;
@@ -99,16 +105,21 @@
     transform: scale(1.02);
 }
 
-/* 首页简短说明 */
+/* ===== Home Tip ===== */
 .home-tip {
     max-width: 820px;
     margin: 0 auto 1.5rem;
     font-size: 0.9rem;
     color: var(--vp-c-text-2);
     line-height: 1.5;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    background: var(--vp-c-brand-soft);
+    border-radius: 999px;
+    border: 1px solid rgba(193, 127, 58, 0.12);
 }
 
-/* 首页入口卡片容器（三栏：两源 + 衍生） */
+/* ===== Home Pantry ===== */
 .home-pantry {
     max-width: 1080px;
     margin: 2.25rem auto 3.5rem;
@@ -129,7 +140,8 @@
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(246, 239, 227, 0.92)),
         var(--vp-c-bg-soft);
-    box-shadow: 0 18px 40px rgba(78, 57, 33, 0.08);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 .home-pantry-copy {
     padding: 2rem;
@@ -183,12 +195,17 @@
     border-radius: 18px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.04);
+    transition: background var(--transition-fast);
+}
+.home-metric:hover {
+    background: rgba(255, 255, 255, 0.08);
 }
 .home-metric strong {
     display: block;
     font-size: 1.4rem;
     font-weight: 700;
     color: #fff3e2;
+    line-height: 1.2;
 }
 .home-metric span {
     display: block;
@@ -196,6 +213,8 @@
     font-size: 0.88rem;
     color: rgba(255, 244, 229, 0.76);
 }
+
+/* ===== Source Cards ===== */
 .home-source-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -209,10 +228,7 @@
     border-radius: 24px;
     text-decoration: none;
     color: inherit;
-    transition:
-        transform var(--transition-normal),
-        box-shadow var(--transition-normal),
-        border-color var(--transition-normal);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
     will-change: transform;
 }
 .home-source-card:hover {
@@ -221,12 +237,24 @@
 }
 .home-source-card.is-amber {
     background: linear-gradient(180deg, rgba(255, 248, 239, 0.98), rgba(249, 237, 215, 0.94));
+    border-left: 4px solid var(--vp-c-brand-1);
+}
+.home-source-card.is-amber:hover {
+    border-left-color: var(--vp-c-brand-2);
 }
 .home-source-card.is-jade {
     background: linear-gradient(180deg, rgba(243, 251, 247, 0.98), rgba(227, 243, 236, 0.94));
+    border-left: 4px solid var(--mycook-green);
+}
+.home-source-card.is-jade:hover {
+    border-left-color: #239068;
 }
 .home-source-card.is-ink {
     background: linear-gradient(180deg, rgba(245, 244, 242, 0.98), rgba(232, 229, 223, 0.94));
+    border-left: 4px solid var(--vp-c-text-3);
+}
+.home-source-card.is-ink:hover {
+    border-left-color: var(--vp-c-text-2);
 }
 .home-source-card h3 {
     margin: 0;
@@ -256,6 +284,8 @@
     color: var(--vp-c-text-2);
     font-size: 0.8rem;
 }
+
+/* ===== Quick Links & Flow ===== */
 .home-rail-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
@@ -278,28 +308,21 @@
     margin-top: 1.2rem;
 }
 .home-link-chip {
-    display: block;
+    display: flex;
+    flex-direction: column;
     padding: 1rem 0.9rem;
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.78);
     border: 1px solid rgba(80, 59, 35, 0.1);
     text-decoration: none;
     color: inherit;
-    transition:
-        transform var(--transition-fast),
-        border-color var(--transition-fast),
-        background-color var(--transition-fast),
-        box-shadow var(--transition-fast);
+    transition: transform var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .home-link-chip:hover {
     transform: translateY(-3px);
     border-color: var(--vp-c-brand-1);
     background: rgba(255, 255, 255, 0.96);
     box-shadow: var(--shadow-sm);
-}
-.home-link-chip strong,
-.home-link-chip span {
-    display: block;
 }
 .home-link-chip strong {
     font-size: 0.98rem;
@@ -309,6 +332,8 @@
     font-size: 0.76rem;
     color: var(--vp-c-text-3);
 }
+
+/* Flow List */
 .home-flow-list {
     margin: 1.2rem 0 0;
     padding: 0;
@@ -337,12 +362,14 @@
     border-radius: 999px;
     display: grid;
     place-items: center;
-    background: linear-gradient(180deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+    background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
     color: white;
     font-weight: 700;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 8px rgba(193, 127, 58, 0.3);
 }
 
-/* 文档内容区：标题与段落 */
+/* ===== Doc Content ===== */
 .VPDoc .content .vp-doc h1 {
     font-family: 'Noto Serif SC', serif;
 }
@@ -358,7 +385,7 @@
     margin-top: 0;
 }
 
-/* 侧边栏与导航 */
+/* Sidebar */
 .VPSidebarItem.level-0 > .item > .link {
     font-weight: 500;
 }
@@ -367,13 +394,13 @@
     font-weight: 600;
 }
 
-/* 搜索框与按钮 */
+/* Search */
 .VPButton.medium.brand {
     border-radius: 8px;
     font-weight: 500;
 }
 
-/* 最近更新区块 */
+/* ===== Recent Updates ===== */
 .recent-updates {
     margin: 3rem auto 3rem;
     padding: 2rem 0 0;
@@ -408,10 +435,9 @@
 }
 .recent-updates-list a:hover {
     color: var(--vp-c-brand-1);
-    transform: translateX(2px);
 }
 
-/* 致谢区块 */
+/* ===== Credits ===== */
 .home-credits {
     margin: 3.5rem auto 2rem;
     padding: 2rem 2.25rem;
@@ -452,7 +478,6 @@
 .home-credits-list a:hover {
     color: var(--vp-c-brand-2);
     text-decoration: underline;
-    text-underline-offset: 3px;
 }
 .home-credits-note {
     margin: 0;
@@ -468,8 +493,9 @@
     text-decoration: underline;
 }
 
-/* 两种风格内页：左侧色条与背景区分 */
-.layout-cooklikehoc .vp-doc .container {
+/* ===== Recipe Layout Borders ===== */
+.layout-cooklikehoc .vp-doc .container,
+.layout-cooklikehoc .VPDoc .vp-doc .container {
     border-left: 3px solid var(--vp-c-brand-1);
     margin-left: 0;
     padding-left: 1.25rem;
@@ -478,9 +504,9 @@
     --vp-custom-block-tip-border: #c17f3a;
     --vp-custom-block-tip-bg: rgba(193, 127, 58, 0.06);
 }
-
-.layout-howtocook .vp-doc .container {
-    border-left: 3px solid #2d7d5e;
+.layout-howtocook .vp-doc .container,
+.layout-howtocook .VPDoc .vp-doc .container {
+    border-left: 3px solid var(--mycook-green);
     margin-left: 0;
     padding-left: 1.25rem;
 }
@@ -488,96 +514,14 @@
     --vp-custom-block-tip-border: #2d7d5e;
     --vp-custom-block-tip-bg: rgba(45, 125, 94, 0.06);
 }
-
-/* 文档容器在 VitePress 中可能不同，用 content 主区域 */
 .layout-cooklikehoc .vp-doc .content,
 .layout-howtocook .vp-doc .content {
     padding-left: 0;
 }
-.layout-cooklikehoc .VPDoc .vp-doc .container {
-    border-left: 3px solid var(--vp-c-brand-1);
-    padding-left: 1.25rem;
-    margin-left: 0;
-}
-.layout-howtocook .VPDoc .vp-doc .container {
-    border-left: 3px solid #2d7d5e;
-    padding-left: 1.25rem;
-    margin-left: 0;
-}
 
-/* 平板：两栏 */
-@media (max-width: 960px) {
-    .home-pantry-hero,
-    .home-rail-grid,
-    .home-source-grid {
-        grid-template-columns: 1fr;
-    }
-    .home-link-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-}
+/* ===== Enhanced Styles ===== */
 
-/* 移动端 */
-@media (max-width: 768px) {
-    .VPHero {
-        padding: 2rem 0 1.5rem;
-    }
-    .VPHero .text {
-        font-size: 1.5rem;
-    }
-    .VPHero .image img {
-        max-width: 120px;
-    }
-    .home-pantry {
-        margin-top: 1.5rem;
-    }
-    .home-pantry-copy,
-    .home-panel,
-    .home-source-card {
-        padding: 1.2rem;
-        border-radius: 20px;
-    }
-    .home-pantry-copy h2 {
-        max-width: none;
-        font-size: 1.8rem;
-    }
-    .home-link-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.6rem;
-    }
-    .home-link-chip {
-        padding: 0.8rem;
-    }
-    .recent-updates {
-        margin-left: 0;
-        margin-right: 0;
-    }
-    .recent-updates-list {
-        grid-template-columns: 1fr;
-    }
-    .home-tip {
-        margin-left: 0;
-        margin-right: 0;
-    }
-    .home-credits {
-        margin: 2.5rem 0 1.5rem;
-        padding: 1.5rem 1.25rem;
-    }
-    .layout-cooklikehoc .VPDoc .vp-doc .container,
-    .layout-howtocook .VPDoc .vp-doc .container {
-        margin-left: 0;
-        padding-left: 1rem;
-    }
-    /* 移动端触摸优化 */
-    .home-source-card,
-    .home-link-chip {
-        -webkit-tap-highlight-color: transparent;
-    }
-}
-
-/* ========== 增强样式 ========== */
-
-/* 滚动条样式 */
+/* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -593,15 +537,19 @@
     background: var(--vp-c-text-3);
 }
 
-/* 图片样式增强 */
+/* Images */
 .vp-doc img {
     border-radius: 8px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     max-width: 100%;
     margin: 1rem 0;
+    transition: transform var(--transition-normal);
+}
+.vp-doc img:hover {
+    transform: scale(1.01);
 }
 
-/* 表格样式增强 */
+/* Table */
 .vp-doc table {
     border-radius: 8px;
     overflow: hidden;
@@ -610,36 +558,17 @@
     background: var(--vp-c-bg-soft);
 }
 
-/* 代码块样式 */
+/* Code */
 .vp-doc [class*='language-'] {
     border-radius: 10px;
 }
 
-/* 返回顶部按钮 */
-.VPLocalNav.back-to-top {
-    border-radius: 8px;
-}
-
-/* 页面过渡 */
+/* Page transition */
 .VPContent {
     transition: background-color 0.3s;
 }
 
-/* 深色模式下的调整 */
-.dark .home-entry-card:hover {
-    box-shadow: var(--shadow-lg);
-}
-.dark .vp-doc img {
-    box-shadow: var(--shadow-md);
-}
-.dark .home-source-card:hover {
-    box-shadow: var(--shadow-lg);
-}
-.dark .home-link-chip:hover {
-    box-shadow: var(--shadow-sm);
-}
-
-/* 深色模式品牌色优化 */
+/* ===== Dark Mode ===== */
 .dark {
     --vp-c-brand-1: #d4954a;
     --vp-c-brand-2: #c17f3a;
@@ -650,30 +579,72 @@
     --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
     --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.25);
 }
-
-/* 深色模式 HowToCook 标识色 */
-.dark .layout-howtocook .vp-doc .container {
+.dark .VPHero .name {
+    background: linear-gradient(135deg, #d4954a, #e8b87a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.dark .home-tip {
+    background: rgba(212, 149, 74, 0.08);
+    border-color: rgba(212, 149, 74, 0.12);
+}
+.dark .home-source-card.is-amber {
+    background: linear-gradient(180deg, rgba(60, 45, 30, 0.98), rgba(50, 38, 25, 0.94));
+}
+.dark .home-source-card.is-jade {
+    background: linear-gradient(180deg, rgba(25, 50, 40, 0.98), rgba(20, 42, 33, 0.94));
+}
+.dark .home-source-card.is-ink {
+    background: linear-gradient(180deg, rgba(40, 38, 35, 0.98), rgba(35, 33, 30, 0.94));
+}
+.dark .home-source-stats li {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+.dark .home-link-chip {
+    background: rgba(255, 255, 255, 0.06);
+}
+.dark .home-link-chip:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.dark .home-credits {
+    background: linear-gradient(180deg, rgba(40, 35, 30, 0.92), rgba(30, 25, 20, 0.88));
+}
+.dark .home-entry-card:hover {
+    box-shadow: var(--shadow-lg);
+}
+.dark .vp-doc img {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+.dark .home-source-card:hover {
+    box-shadow: var(--shadow-lg);
+}
+.dark .home-link-chip:hover {
+    box-shadow: var(--shadow-sm);
+}
+.dark .layout-howtocook .vp-doc .container,
+.dark .layout-howtocook .VPDoc .vp-doc .container {
     border-left-color: #3da87f;
 }
 .dark .layout-howtocook .vp-doc {
     --vp-custom-block-tip-border: #3da87f;
     --vp-custom-block-tip-bg: rgba(61, 168, 127, 0.1);
 }
-
-/* 深色模式统计卡片 */
 .dark .stat-card.cooklikehoc .stat-number {
     color: #d4954a;
 }
 .dark .stat-card.howtocook .stat-number {
     color: #3da87f;
 }
-
-/* 深色模式快速入口 */
 .dark .quick-links-grid a:hover {
     background: var(--vp-c-bg-soft);
 }
+.dark .stat-card {
+    background: linear-gradient(180deg, rgba(50, 45, 40, 0.92), rgba(40, 35, 30, 0.82));
+}
 
-/* 打印样式 */
+/* ===== Print ===== */
 @media print {
     .VPNav,
     .VPSidebar,
@@ -710,7 +681,6 @@
     .vp-doc ol {
         page-break-inside: avoid;
     }
-    /* 打印时显示链接 URL */
     .vp-doc a[href]:after {
         content: " (" attr(href) ")";
         font-size: 0.8em;
@@ -722,21 +692,19 @@
     }
 }
 
-/* 食材列表样式增强 */
+/* ===== Content Styles ===== */
 .vp-doc ul {
     line-height: 1.8;
 }
 .vp-doc li {
     margin: 0.25rem 0;
 }
-
-/* 高亮重要内容 */
 .vp-doc strong {
     color: var(--vp-c-brand-1);
     font-weight: 600;
 }
 
-/* 页面加载动画 */
+/* Page load animation */
 .VPContent {
     animation: fadeIn 0.4s ease-out;
 }
@@ -745,18 +713,18 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* 侧边栏过渡 */
+/* Sidebar */
 .VPSidebar {
     transition: transform var(--transition-normal);
 }
 
-/* 导航栏增强 */
+/* Nav backdrop */
 .VPNavBar {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
 
-/* 步骤编号样式 */
+/* Step numbers */
 .vp-doc ol:not(.home-flow-list) {
     counter-reset: step-counter;
     padding-left: 1.5rem;
@@ -766,14 +734,14 @@
     padding-left: 0.5rem;
 }
 
-/* 外部链接标识 */
+/* External links */
 .vp-doc a[target="_blank"]::after {
     content: ' ↗';
     font-size: 0.85em;
     opacity: 0.7;
 }
 
-/* 统计区块样式 */
+/* ===== Stats ===== */
 .stats-section {
     margin: 2rem auto;
     max-width: 800px;
@@ -798,6 +766,11 @@
     border-radius: 18px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 239, 227, 0.82));
     border: 1px solid var(--mycook-line);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 .stat-number {
     display: block;
@@ -819,8 +792,138 @@
     color: #2d7d5e;
 }
 
-@media (max-width: 640px) {
+/* ===== Responsive: Tablet ===== */
+@media (max-width: 960px) {
+    .home-pantry-hero,
+    .home-rail-grid,
+    .home-source-grid {
+        grid-template-columns: 1fr;
+    }
+    .home-link-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* ===== Responsive: Mobile ===== */
+@media (max-width: 768px) {
+    .VPHero {
+        padding: 2rem 0 1.5rem;
+    }
+    .VPHero .text {
+        font-size: 1.4rem;
+    }
+    .VPHero .tagline {
+        font-size: 0.95rem;
+    }
+    .VPHero .image img {
+        max-width: 100px;
+    }
+    .VPHero .actions {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    .VPHero .actions .VPButton {
+        width: 100%;
+        max-width: 260px;
+        text-align: center;
+    }
+    .home-pantry {
+        margin-top: 1.5rem;
+    }
+    .home-pantry-copy,
+    .home-panel,
+    .home-source-card {
+        padding: 1.2rem;
+        border-radius: 20px;
+    }
+    .home-pantry-copy h2 {
+        max-width: none;
+        font-size: 1.6rem;
+    }
+    .home-source-card {
+        min-height: auto;
+    }
+    .home-link-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+    }
+    .home-link-chip {
+        padding: 0.8rem;
+    }
+    .recent-updates {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .recent-updates-list {
+        grid-template-columns: 1fr;
+    }
+    .home-tip {
+        margin-left: 0;
+        margin-right: 0;
+        font-size: 0.85rem;
+    }
+    .home-credits {
+        margin: 2.5rem 0 1.5rem;
+        padding: 1.5rem 1.25rem;
+    }
+    .home-flow-list li {
+        padding-left: 2.8rem;
+    }
+    .home-flow-list li::before {
+        width: 1.8rem;
+        height: 1.8rem;
+        font-size: 0.8rem;
+    }
+    .layout-cooklikehoc .VPDoc .vp-doc .container,
+    .layout-howtocook .VPDoc .vp-doc .container {
+        margin-left: 0;
+        padding-left: 1rem;
+    }
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    .home-source-card,
+    .home-link-chip {
+        -webkit-tap-highlight-color: transparent;
+    }
+    .VPNavBar {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+
+/* ===== Responsive: Small Mobile ===== */
+@media (max-width: 480px) {
+    .VPHero .name {
+        font-size: 2rem;
+    }
+    .VPHero .text {
+        font-size: 1.25rem;
+    }
+    .home-pantry-copy h2 {
+        font-size: 1.4rem;
+    }
+    .home-link-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    .home-link-chip {
+        padding: 0.6rem;
+    }
+    .home-link-chip strong {
+        font-size: 0.9rem;
+    }
+    .home-link-chip span {
+        font-size: 0.7rem;
+    }
+}
+
+/* ===== Focus States (Accessibility) ===== */
+.home-source-card:focus-visible,
+.home-link-chip:focus-visible,
+.recent-updates-list a:focus-visible,
+.home-credits-list a:focus-visible {
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: 2px;
 }

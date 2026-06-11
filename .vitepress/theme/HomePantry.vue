@@ -7,7 +7,7 @@ const sourceCards = [
         eyebrow: 'CookLikeHOC',
         title: '像菜单一样，按做法下厨',
         description:
-            '炒菜、炖菜、卤菜、凉拌、砂锅、主食，适合“今天想做这一类”的找法。',
+            '炒菜、炖菜、卤菜、凉拌、砂锅、主食，适合"今天想做这一类"的找法。',
         accent: 'amber',
         href: '/cooklikehoc/炒菜/README',
         stats: ['15 个分类', '198 道整理菜谱'],
@@ -16,7 +16,7 @@ const sourceCards = [
         eyebrow: 'HowToCook',
         title: '像索引一样，按食材进厨房',
         description:
-            '素菜、荤菜、水产、主食、甜品、饮料，适合“手头有这个食材”的找法。',
+            '素菜、荤菜、水产、主食、甜品、饮料，适合"手头有这个食材"的找法。',
         accent: 'jade',
         href: '/howtocook/dishes/vegetable_dish/西红柿炒鸡蛋',
         stats: ['12 个分类', '371 道实用菜谱'],
@@ -28,7 +28,7 @@ const sourceCards = [
             '需要图文感更强的浏览方式时，直接进入图片版，按图索菜更直觉。',
         accent: 'ink',
         href: '/howtocook-images/',
-        stats: ['站内子路径', '失败时自动回退占位页'],
+        stats: ['站内子路径', '图文并茂'],
     },
 ];
 
@@ -54,7 +54,7 @@ const quickLinks = [
 ];
 
 const workflow = [
-    '先决定你是按“做法”还是按“食材”找菜。',
+    '先决定你是按"做法"还是按"食材"找菜。',
     '再用顶部搜索或快捷入口缩短路径。',
     '最终落到单篇菜谱，直接做饭，不需要理解仓库结构。',
 ];
@@ -98,7 +98,7 @@ onMounted(async () => {
                 <p class="home-pantry-kicker">Kitchen Atlas</p>
                 <h2>把两个气质完全不同的菜谱库，整理成一个顺手的厨房入口。</h2>
                 <p class="home-pantry-summary">
-                    这里不是简单聚合，而是把“做法导向”和“食材导向”放在同一张桌面上，
+                    这里不是简单聚合，而是把"做法导向"和"食材导向"放在同一张桌面上，
                     让找菜这一步比做菜本身更省脑子。
                 </p>
             </div>
