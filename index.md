@@ -3,23 +3,20 @@ layout: home
 hero:
   name: MyCook
   text: 在家做饭，一站搞定
-  tagline: 一个站点，同时容纳“按做法找菜”和“按食材找菜”
-  image:
-    src: /logo.svg
-    alt: MyCook
+  tagline: 老乡鸡风格做法库 × 程序员食材指南，合并成一个顺手的厨房入口
   actions:
     - theme: brand
-      text: 从老乡鸡风格开始
+      text: 按做法开始
       link: /cooklikehoc/炒菜/README
     - theme: alt
-      text: 从程序员做饭开始
+      text: 按食材开始
       link: /howtocook/dishes/vegetable_dish/西红柿炒鸡蛋
     - theme: alt
-      text: 打开图片版
+      text: 图片版
       link: /howtocook-images/
 ---
 
-<p class="home-tip">顶部搜索适合“知道菜名”，下方入口适合“只知道今天想做什么”。</p>
+<DailyPick />
 
 <HomePantry />
 

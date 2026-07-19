@@ -29,8 +29,8 @@ export default defineConfig({
         // LCP 预加载优化
         ['link', { rel: 'preload', href: '/logo.svg', as: 'image' }],
         // 主题色
-        ['meta', { name: 'theme-color', content: '#c17f3a', media: '(prefers-color-scheme: light)' }],
-        ['meta', { name: 'theme-color', content: '#1a1612', media: '(prefers-color-scheme: dark)' }],
+        ['meta', { name: 'theme-color', content: '#b83a28', media: '(prefers-color-scheme: light)' }],
+        ['meta', { name: 'theme-color', content: '#1e1c19', media: '(prefers-color-scheme: dark)' }],
         // 移动端优化
         ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' }],
         [

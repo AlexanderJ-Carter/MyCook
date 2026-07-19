@@ -19,24 +19,24 @@ MyCook 是一个合并整理两个菜谱项目的静态网站：
 
 ### 配置文件
 
-| 文件 | 用途 |
-|------|------|
-| `.vitepress/navSidebar.mjs` | 导航和侧边栏自动生成逻辑 |
-| `.vitepress/theme/style.css` | 全局样式定义 |
-| `.vitepress/theme/Layout.vue` | 自定义布局组件 |
-| `index.md` | 首页配置（Hero、卡片、致谢） |
+| 文件                          | 用途                         |
+| ----------------------------- | ---------------------------- |
+| `.vitepress/navSidebar.mjs`   | 导航和侧边栏自动生成逻辑     |
+| `.vitepress/theme/style.css`  | 全局样式定义                 |
+| `.vitepress/theme/Layout.vue` | 自定义布局组件               |
+| `index.md`                    | 首页配置（Hero、卡片、致谢） |
 
 ### 构建脚本
 
-| 文件 | 用途 |
-|------|------|
-| `scripts/sync-upstream.js` | 从上游仓库同步内容到 `cooklikehoc/` 和 `howtocook/` |
-| `scripts/generate-recent.js` | 扫描文件生成最近更新列表 |
+| 文件                         | 用途                                                |
+| ---------------------------- | --------------------------------------------------- |
+| `scripts/sync-upstream.js`   | 从上游仓库同步内容到 `cooklikehoc/` 和 `howtocook/` |
+| `scripts/generate-recent.js` | 扫描文件生成最近更新列表                            |
 
 ### CI/CD
 
-| 文件 | 用途 |
-|------|------|
+| 文件                                   | 用途                   |
+| -------------------------------------- | ---------------------- |
 | `.github/workflows/sync-and-build.yml` | 同步 → 构建 → 发布流程 |
 
 ## 目录约定
@@ -88,22 +88,27 @@ CI 在构建时会克隆这两个仓库并同步内容。
 
 ## 样式约定
 
-### 主题色
+### 主题色（青钢灶台）
 
 ```css
-/* 品牌主色（姜黄/琥珀） */
---vp-c-brand-1: #c17f3a;
---vp-c-brand-2: #a66b2d;
---vp-c-brand-3: #8b5a24;
+/* 品牌主色（辣椒红） */
+--vp-c-brand-1: #c4452f;
+--vp-c-brand-2: #a83826;
+--vp-c-brand-3: #8c2e1f;
 
 /* HowToCook 区域标识色 */
-#2d7d5e (绿色)
+--mycook-jade: #2a7a62;
+
+/* 底与字 */
+--mycook-mist / --vp-c-bg: #eef1ef;
+--mycook-ink: #1a1f1c;
 ```
 
 ### 内容区区分
 
-- CookLikeHOC 内容页：左侧橙色边框
-- HowToCook 内容页：左侧绿色边框
+- CookLikeHOC 内容页：左侧辣椒红边框
+- HowToCook 内容页：左侧青绿色边框
+- 菜谱页工具：`RecipeToolbar`（收藏 / 打印 / 计时）
 
 ## 常见修改
 

@@ -1,31 +1,31 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from "vue";
 
-const showButton = ref(false)
-const scrollProgress = ref(0)
+const showButton = ref(false);
+const scrollProgress = ref(0);
 
 const handleScroll = () => {
-  const scrollTop = window.scrollY
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight
-  scrollProgress.value = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
-  showButton.value = scrollTop > 300
-}
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  scrollProgress.value = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  showButton.value = scrollTop > 300;
+};
 
 const scrollToTop = () => {
   window.scrollTo({
     top: 0,
-    behavior: 'smooth'
-  })
-}
+    behavior: "smooth",
+  });
+};
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll, { passive: true })
-  handleScroll()
-})
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
+});
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
+  window.removeEventListener("scroll", handleScroll);
+});
 </script>
 
 <template>
@@ -57,8 +57,14 @@ onUnmounted(() => {
           :stroke-dashoffset="100 - scrollProgress"
         />
       </svg>
-      <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M18 15l-6-6-6 6"/>
+      <svg
+        class="arrow-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M18 15l-6-6-6 6" />
       </svg>
     </button>
   </Transition>
@@ -71,21 +77,28 @@ onUnmounted(() => {
   right: 2rem;
   width: 48px;
   height: 48px;
-  border-radius: 50%;
-  border: none;
-  background: var(--vp-c-bg);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 999px;
+  border: 1px solid var(--mycook-line, rgba(28, 25, 21, 0.1));
+  background: color-mix(
+    in srgb,
+    var(--vp-c-bg-elv, var(--vp-c-bg)) 90%,
+    transparent
+  );
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md, 0 12px 32px rgba(28, 25, 21, 0.08));
   cursor: pointer;
   z-index: 99;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .back-to-top:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg, 0 24px 56px rgba(28, 25, 21, 0.12));
 }
 
 .progress-ring {
@@ -113,7 +126,9 @@ onUnmounted(() => {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s, transform 0.3s;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
 }
 
 .fade-enter-from,

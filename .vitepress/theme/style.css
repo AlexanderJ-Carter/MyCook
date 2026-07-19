@@ -1,5 +1,5 @@
-/* MyCook 自定义主题：暖色菜谱站 */
-@import url('https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap');
+/* MyCook — 窑火杂志：瓷青纸面 + 朱红印色 + 墨色标题 */
+@import url('https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
 
 :root {
     --vp-font-family-base:
@@ -8,640 +8,980 @@
     --vp-font-family-mono:
         ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
 
-    --vp-c-brand-1: #c17f3a;
-    --vp-c-brand-2: #a66b2d;
-    --vp-c-brand-3: #8b5a24;
-    --vp-c-brand-soft: rgba(193, 127, 58, 0.14);
+    --vp-c-brand-1: #b83a28;
+    --vp-c-brand-2: #9a2f20;
+    --vp-c-brand-3: #7c2519;
+    --vp-c-brand-soft: rgba(184, 58, 40, 0.11);
 
-    --vp-custom-block-tip-border: #c17f3a;
-    --vp-custom-block-tip-bg: rgba(193, 127, 58, 0.08);
+    --vp-c-bg: #f3f1ec;
+    --vp-c-bg-alt: #ebe8e1;
+    --vp-c-bg-soft: #eeebe5;
+    --vp-c-bg-elv: #faf8f4;
+
+    --vp-custom-block-tip-border: #b83a28;
+    --vp-custom-block-tip-bg: rgba(184, 58, 40, 0.07);
     --vp-button-brand-border: transparent;
     --vp-button-brand-hover-border: transparent;
-    --mycook-green: #2d7d5e;
-    --mycook-ink: #1f2521;
-    --mycook-paper: #f6efe3;
-    --mycook-line: rgba(78, 57, 33, 0.14);
+    --vp-button-brand-bg: #b83a28;
+    --vp-button-brand-hover-bg: #9a2f20;
+    --vp-button-brand-text: #fff;
 
-    --transition-fast: 0.15s ease;
-    --transition-normal: 0.25s ease;
-    --transition-slow: 0.35s ease;
+    --mycook-jade: #1f6f5b;
+    --mycook-jade-soft: rgba(31, 111, 91, 0.11);
+    --mycook-ink: #1c1915;
+    --mycook-steel: #5f584e;
+    --mycook-paper: #faf8f4;
+    --mycook-line: rgba(28, 25, 21, 0.1);
+    --mycook-display: 'Noto Serif SC', 'Songti SC', serif;
+    --mycook-radius: 14px;
 
-    --shadow-sm: 0 2px 8px rgba(78, 57, 33, 0.06);
-    --shadow-md: 0 8px 24px rgba(78, 57, 33, 0.1);
-    --shadow-lg: 0 16px 48px rgba(78, 57, 33, 0.14);
+    --transition-fast: 0.16s ease;
+    --transition-normal: 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-slow: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+
+    --shadow-sm: 0 2px 10px rgba(28, 25, 21, 0.05);
+    --shadow-md: 0 12px 32px rgba(28, 25, 21, 0.08);
+    --shadow-lg: 0 24px 56px rgba(28, 25, 21, 0.12);
+}
+
+.dark {
+    --vp-c-brand-1: #e86a56;
+    --vp-c-brand-2: #d4523e;
+    --vp-c-brand-3: #b83a28;
+    --vp-c-brand-soft: rgba(232, 106, 86, 0.16);
+    --mycook-jade: #3db892;
+    --mycook-jade-soft: rgba(61, 184, 146, 0.14);
+    --mycook-ink: #f4f1ea;
+    --mycook-steel: #b7b0a4;
+    --mycook-paper: #1e1c19;
+    --mycook-line: rgba(255, 244, 230, 0.1);
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.32);
+    --shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.4);
+}
+
+/* ===== Global page atmosphere ===== */
+.VPHome {
+    position: relative;
+    overflow: clip;
+}
+
+.VPHome::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 92vh;
+    background:
+        radial-gradient(ellipse 80% 55% at 8% -10%, rgba(184, 58, 40, 0.16), transparent 58%),
+        radial-gradient(ellipse 60% 50% at 100% 8%, rgba(31, 111, 91, 0.13), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50% 35%, rgba(255, 255, 255, 0.55), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.VPHome > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* ===== Hero ===== */
 .VPHero {
-    padding: 4.5rem 0 2.75rem;
-    position: relative;
-    contain: layout style;
-}
-.VPHero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(circle at top left, rgba(193, 127, 58, 0.16), transparent 34%),
-        radial-gradient(circle at 80% 30%, rgba(45, 125, 94, 0.12), transparent 28%),
-        linear-gradient(180deg, rgba(246, 239, 227, 0.78), transparent 72%);
-    pointer-events: none;
-}
-.VPHero .name {
-    font-family: 'Noto Serif SC', serif;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    text-rendering: optimizeLegibility;
-    background: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-2) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-.VPHero .text {
-    font-family: 'Noto Serif SC', serif;
-    font-weight: 600;
-    font-size: 1.85rem;
-    line-height: 1.3;
-    text-rendering: optimizeLegibility;
-}
-.VPHero .tagline {
-    opacity: 0.92;
-    font-size: 1.05rem;
-    margin-top: 0.6rem;
-    max-width: 34em;
-    margin-left: auto;
-    margin-right: auto;
-    text-wrap: balance;
-}
-.VPHero .actions {
-    margin-top: 1.75rem;
-    gap: 0.85rem;
-    justify-content: center;
-}
-.VPHero .actions .VPButton {
-    padding: 0.65rem 1.4rem;
-    border-radius: 999px;
-    transition: all var(--transition-normal);
-    font-weight: 500;
-}
-.VPHero .actions .VPButton:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-.VPHero .actions .VPButton.brand {
-    background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-}
-.VPHero .actions .VPButton.brand:hover {
-    background: linear-gradient(135deg, var(--vp-c-brand-2), var(--vp-c-brand-3));
-}
-.VPHero .image {
-    margin-top: 2rem;
-}
-.VPHero .image img {
-    filter: drop-shadow(0 18px 34px rgba(87, 56, 18, 0.18));
-    transition: transform var(--transition-slow);
-}
-.VPHero .image img:hover {
-    transform: scale(1.02);
-}
-
-/* ===== Home Tip ===== */
-.home-tip {
-    max-width: 820px;
-    margin: 0 auto 1.5rem;
-    font-size: 0.9rem;
-    color: var(--vp-c-text-2);
-    line-height: 1.5;
-    text-align: center;
-    padding: 0.6rem 1rem;
-    background: var(--vp-c-brand-soft);
-    border-radius: 999px;
-    border: 1px solid rgba(193, 127, 58, 0.12);
-}
-
-/* ===== Home Pantry ===== */
-.home-pantry {
-    max-width: 1080px;
-    margin: 2.25rem auto 3.5rem;
-}
-.home-pantry-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.8fr);
-    gap: 1.25rem;
-    align-items: stretch;
-}
-.home-pantry-copy,
-.home-pantry-metrics,
-.home-panel,
-.home-source-card {
+    padding: 4.75rem 0 2.25rem;
     position: relative;
     overflow: hidden;
-    border: 1px solid var(--mycook-line);
-    background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(246, 239, 227, 0.92)),
-        var(--vp-c-bg-soft);
-    box-shadow: var(--shadow-md);
-    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
-.home-pantry-copy {
-    padding: 2rem;
-    border-radius: 28px;
-}
-.home-pantry-copy::after {
-    content: '';
+
+.VPHero::before {
+    content: '厨';
     position: absolute;
-    right: -2.5rem;
-    bottom: -2.5rem;
-    width: 12rem;
-    height: 12rem;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(193, 127, 58, 0.18), transparent 70%);
+    left: 50%;
+    top: 42%;
+    transform: translate(-50%, -50%);
+    font-family: var(--mycook-display);
+    font-size: clamp(14rem, 42vw, 28rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--vp-c-brand-1);
+    opacity: 0.06;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 0.08em;
+    animation: seal-breathe 8s ease-in-out infinite;
 }
-.home-pantry-kicker,
-.home-panel-head p,
-.home-source-eyebrow {
-    margin: 0 0 0.75rem;
-    font-size: 0.78rem;
+
+@keyframes seal-breathe {
+    0%, 100% { opacity: 0.05; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.08; transform: translate(-50%, -50%) scale(1.02); }
+}
+
+.VPHero .container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.VPHero .main {
+    order: 1;
+    text-align: center;
+    width: 100%;
+    max-width: 42rem;
+}
+
+.VPHero .image {
+    display: none !important;
+}
+
+.VPHero .name {
+    font-family: var(--mycook-display);
+    font-weight: 700;
+    font-size: clamp(3.4rem, 9vw, 5.8rem);
+    letter-spacing: 0.08em;
+    line-height: 1;
+    animation: rise-in 0.75s var(--transition-slow) both;
+}
+
+.VPHero .name .clip,
+.VPHero .name {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: var(--mycook-ink);
+    color: var(--mycook-ink);
+}
+
+.dark .VPHero .name .clip,
+.dark .VPHero .name {
+    -webkit-text-fill-color: #f7f3ec;
+    color: #f7f3ec;
+}
+
+.VPHero .text {
+    font-family: var(--mycook-display);
+    font-weight: 600;
+    font-size: clamp(1.4rem, 3.2vw, 1.95rem);
+    line-height: 1.35;
+    color: var(--mycook-steel);
+    margin-top: 1rem;
+    animation: rise-in 0.75s 0.08s var(--transition-slow) both;
+}
+
+.VPHero .tagline {
+    margin-top: 1rem;
+    max-width: 26em;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--vp-c-text-2);
+    text-wrap: balance;
+    animation: rise-in 0.75s 0.16s var(--transition-slow) both;
+}
+
+.VPHero .actions {
+    margin-top: 2.1rem;
+    gap: 0.7rem;
+    justify-content: center;
+    animation: rise-in 0.75s 0.24s var(--transition-slow) both;
+}
+
+.VPHero .actions .VPButton {
+    padding: 0.78rem 1.45rem;
+    border-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition:
+        transform var(--transition-normal),
+        box-shadow var(--transition-normal),
+        background var(--transition-normal),
+        border-color var(--transition-normal);
+}
+
+.VPHero .actions .VPButton:hover {
+    transform: translateY(-2px);
+}
+
+.VPHero .actions .VPButton.brand {
+    background: linear-gradient(160deg, #d24a35, var(--vp-c-brand-1) 55%, var(--vp-c-brand-2));
+    box-shadow: 0 10px 28px rgba(184, 58, 40, 0.28);
+}
+
+.VPHero .actions .VPButton.brand:hover {
+    background: linear-gradient(160deg, #c44530, var(--vp-c-brand-2));
+    box-shadow: 0 14px 34px rgba(184, 58, 40, 0.34);
+}
+
+.VPHero .actions .VPButton.alt {
+    background: rgba(250, 248, 244, 0.72);
+    border-color: rgba(28, 25, 21, 0.12);
+    backdrop-filter: blur(8px);
+}
+
+.VPHero .actions .VPButton.alt:hover {
+    border-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+    box-shadow: var(--shadow-sm);
+}
+
+@keyframes rise-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Daily Pick ===== */
+.daily-pick {
+    position: relative;
+    max-width: 920px;
+    margin: 0.25rem auto 2.75rem;
+    padding: 1.85rem 4.5rem 1.85rem 2.15rem;
+    overflow: hidden;
+    border-radius: calc(var(--mycook-radius) + 4px);
+    border: 1px solid rgba(184, 58, 40, 0.14);
+    background:
+        linear-gradient(135deg, rgba(184, 58, 40, 0.08), transparent 42%),
+        linear-gradient(225deg, rgba(31, 111, 91, 0.08), transparent 46%),
+        var(--mycook-paper);
+    box-shadow: var(--shadow-md);
+    animation: rise-in 0.6s 0.28s both;
+}
+
+.daily-pick-seal {
+    position: absolute;
+    right: 1.2rem;
+    top: 1.1rem;
+    width: 3.1rem;
+    height: 3.1rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--mycook-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #faf4ee;
+    background: radial-gradient(circle at 30% 30%, #e2553d, #9e2f1d);
+    box-shadow: 0 8px 20px rgba(158, 47, 29, 0.28);
+    transform: rotate(8deg);
+}
+
+.daily-pick-kicker {
+    margin: 0 0 0.55rem;
+    font-size: 0.75rem;
     letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--vp-c-brand-1);
+    font-weight: 600;
+}
+
+.daily-pick h2 {
+    margin: 0;
+    max-width: 14em;
+    font-family: var(--mycook-display);
+    font-size: clamp(1.8rem, 4vw, 2.55rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--mycook-ink);
+}
+
+.daily-pick-desc {
+    margin: 0.75rem 0 0;
+    max-width: 28em;
+    color: var(--vp-c-text-2);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.daily-pick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.35rem;
+}
+
+.daily-pick-go,
+.daily-pick-shuffle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.55rem 1.2rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+a.daily-pick-go,
+.daily-pick-go {
+    background: var(--vp-c-brand-1);
+    color: #fff !important;
+    text-decoration: none !important;
+    box-shadow: 0 8px 20px rgba(184, 58, 40, 0.22);
+}
+
+a.daily-pick-go:hover,
+.daily-pick-go:hover {
+    background: var(--vp-c-brand-2);
+    color: #fff !important;
+    text-decoration: none !important;
+    transform: translateY(-1px);
+}
+
+.daily-pick-shuffle {
+    background: transparent;
+    color: var(--vp-c-text-1);
+    border-color: var(--mycook-line);
+}
+
+.daily-pick-shuffle:hover {
+    border-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+}
+
+/* ===== Home Explore ===== */
+.home-explore {
+    max-width: 1080px;
+    margin: 0 auto 3.5rem;
+    padding: 0 1.25rem;
+}
+
+.home-explore-intro {
+    text-align: center;
+    max-width: 34rem;
+    margin: 0 auto 2rem;
+}
+
+.home-explore-kicker {
+    margin: 0 0 0.55rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--vp-c-text-3);
 }
-.home-pantry-copy h2 {
+
+.home-explore-intro h2 {
     margin: 0;
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(1.8rem, 3vw, 2.8rem);
-    line-height: 1.15;
-    max-width: 12ch;
-}
-.home-pantry-summary {
-    position: relative;
-    margin: 1rem 0 0;
-    max-width: 44rem;
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--vp-c-text-2);
-}
-.home-pantry-metrics {
-    display: grid;
-    gap: 0.9rem;
-    padding: 1rem;
-    border-radius: 28px;
-    background:
-        linear-gradient(160deg, rgba(31, 37, 33, 0.98), rgba(63, 47, 31, 0.96)),
-        var(--mycook-ink);
-}
-.home-metric {
-    padding: 1rem 1.05rem;
-    border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.04);
-    transition: background var(--transition-fast);
-}
-.home-metric:hover {
-    background: rgba(255, 255, 255, 0.08);
-}
-.home-metric strong {
-    display: block;
-    font-size: 1.4rem;
+    font-family: var(--mycook-display);
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
     font-weight: 700;
-    color: #fff3e2;
-    line-height: 1.2;
-}
-.home-metric span {
-    display: block;
-    margin-top: 0.25rem;
-    font-size: 0.88rem;
-    color: rgba(255, 244, 229, 0.76);
+    color: var(--mycook-ink);
+    line-height: 1.25;
 }
 
-/* ===== Source Cards ===== */
-.home-source-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-}
-.home-source-card {
-    display: block;
-    min-height: 260px;
-    padding: 1.5rem;
-    border-radius: 24px;
-    text-decoration: none;
-    color: inherit;
-    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-    will-change: transform;
-}
-.home-source-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-lg);
-}
-.home-source-card.is-amber {
-    background: linear-gradient(180deg, rgba(255, 248, 239, 0.98), rgba(249, 237, 215, 0.94));
-    border-left: 4px solid var(--vp-c-brand-1);
-}
-.home-source-card.is-amber:hover {
-    border-left-color: var(--vp-c-brand-2);
-}
-.home-source-card.is-jade {
-    background: linear-gradient(180deg, rgba(243, 251, 247, 0.98), rgba(227, 243, 236, 0.94));
-    border-left: 4px solid var(--mycook-green);
-}
-.home-source-card.is-jade:hover {
-    border-left-color: #239068;
-}
-.home-source-card.is-ink {
-    background: linear-gradient(180deg, rgba(245, 244, 242, 0.98), rgba(232, 229, 223, 0.94));
-    border-left: 4px solid var(--vp-c-text-3);
-}
-.home-source-card.is-ink:hover {
-    border-left-color: var(--vp-c-text-2);
-}
-.home-source-card h3 {
-    margin: 0;
-    font-family: 'Noto Serif SC', serif;
-    font-size: 1.38rem;
-    line-height: 1.3;
-}
-.home-source-card p {
-    margin: 0.85rem 0 0;
+.home-explore-intro p {
+    margin: 0.7rem 0 0;
     color: var(--vp-c-text-2);
     line-height: 1.7;
 }
-.home-source-stats {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin: 1.15rem 0 0;
-    padding: 0;
-}
-.home-source-stats li {
-    margin: 0;
-    padding: 0.35rem 0.7rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(80, 59, 35, 0.1);
-    color: var(--vp-c-text-2);
-    font-size: 0.8rem;
+
+.home-paths {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr 0.95fr;
+    gap: 1rem;
 }
 
-/* ===== Quick Links & Flow ===== */
-.home-rail-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
-    gap: 1rem;
-    margin-top: 1rem;
-}
-.home-panel {
-    padding: 1.5rem;
-    border-radius: 24px;
-}
-.home-panel-head h3 {
-    margin: 0;
-    font-family: 'Noto Serif SC', serif;
-    font-size: 1.4rem;
-}
-.home-link-grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.75rem;
-    margin-top: 1.2rem;
-}
-.home-link-chip {
+.home-path {
+    position: relative;
     display: flex;
     flex-direction: column;
-    padding: 1rem 0.9rem;
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(80, 59, 35, 0.1);
-    text-decoration: none;
-    color: inherit;
-    transition: transform var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
-}
-.home-link-chip:hover {
-    transform: translateY(-3px);
-    border-color: var(--vp-c-brand-1);
-    background: rgba(255, 255, 255, 0.96);
+    min-height: 250px;
+    padding: 1.45rem 1.4rem 1.35rem;
+    border-radius: var(--mycook-radius);
+    text-decoration: none !important;
+    color: inherit !important;
+    border: 1px solid var(--mycook-line);
+    background: var(--mycook-paper);
     box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition:
+        transform var(--transition-normal),
+        box-shadow var(--transition-normal),
+        border-color var(--transition-normal);
 }
-.home-link-chip strong {
-    font-size: 0.98rem;
+
+.home-path::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: var(--vp-c-brand-1);
 }
-.home-link-chip span {
-    margin-top: 0.3rem;
-    font-size: 0.76rem;
+
+.home-path.is-jade::before {
+    background: var(--mycook-jade);
+}
+
+.home-path.is-ink::before {
+    background: var(--mycook-steel);
+}
+
+.home-path::after {
+    content: '';
+    position: absolute;
+    right: -2rem;
+    bottom: -2rem;
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(184, 58, 40, 0.1), transparent 70%);
+    pointer-events: none;
+}
+
+.home-path.is-jade::after {
+    background: radial-gradient(circle, rgba(31, 111, 91, 0.12), transparent 70%);
+}
+
+.home-path.is-ink::after {
+    background: radial-gradient(circle, rgba(95, 88, 78, 0.12), transparent 70%);
+}
+
+.home-path:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(184, 58, 40, 0.22);
+}
+
+.home-path.is-jade:hover {
+    border-color: rgba(31, 111, 91, 0.28);
+}
+
+.home-path-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.home-path-eyebrow {
+    margin: 0;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    color: var(--vp-c-text-3);
+    font-weight: 500;
+}
+
+.home-path-meta {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(28, 25, 21, 0.04);
     color: var(--vp-c-text-3);
 }
 
-/* Flow List */
-.home-flow-list {
-    margin: 1.2rem 0 0;
-    padding: 0;
-    list-style: none;
-    counter-reset: home-flow;
-}
-.home-flow-list li {
-    position: relative;
+.home-path h3 {
     margin: 0;
-    padding: 0 0 0 3.2rem;
-    min-height: 2.5rem;
-    color: var(--vp-c-text-2);
-    line-height: 1.8;
-}
-.home-flow-list li + li {
-    margin-top: 1rem;
-}
-.home-flow-list li::before {
-    counter-increment: home-flow;
-    content: counter(home-flow);
-    position: absolute;
-    left: 0;
-    top: 0.1rem;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 999px;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-    color: white;
+    font-family: var(--mycook-display);
+    font-size: 1.55rem;
     font-weight: 700;
-    font-size: 0.85rem;
-    box-shadow: 0 2px 8px rgba(193, 127, 58, 0.3);
+    line-height: 1.25;
 }
 
-/* ===== Doc Content ===== */
-.VPDoc .content .vp-doc h1 {
-    font-family: 'Noto Serif SC', serif;
+.home-path p {
+    margin: 0.75rem 0 0;
+    flex: 1;
+    color: var(--vp-c-text-2);
+    line-height: 1.7;
+    font-size: 0.92rem;
 }
+
+.home-path-go {
+    margin-top: 1.25rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--vp-c-brand-1) !important;
+    letter-spacing: 0.02em;
+    transition: letter-spacing var(--transition-fast);
+}
+
+.home-path.is-jade .home-path-go {
+    color: var(--mycook-jade) !important;
+}
+
+.home-path.is-ink .home-path-go {
+    color: var(--mycook-steel) !important;
+}
+
+.home-path:hover .home-path-go {
+    letter-spacing: 0.06em;
+}
+
+/* ===== Shelf ===== */
+.home-shelf {
+    margin-top: 2.5rem;
+    padding: 1.35rem;
+    border-radius: var(--mycook-radius);
+    background: rgba(250, 248, 244, 0.7);
+    border: 1px solid var(--mycook-line);
+    backdrop-filter: blur(8px);
+}
+
+.home-shelf-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.home-shelf-head h3 {
+    margin: 0;
+    font-family: var(--mycook-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.home-shelf-head span {
+    font-size: 0.8rem;
+    color: var(--vp-c-text-3);
+}
+
+.home-shelf-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+
+.home-shelf-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.95rem 0.85rem;
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    background: var(--mycook-paper);
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-sm);
+    transition:
+        transform var(--transition-fast),
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.home-shelf-link:hover {
+    transform: translateY(-3px);
+    border-color: rgba(184, 58, 40, 0.28);
+    box-shadow: var(--shadow-md);
+}
+
+.home-shelf-link strong {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--vp-c-text-1);
+}
+
+.home-shelf-link span {
+    font-size: 0.74rem;
+    color: var(--vp-c-text-3);
+}
+
+/* ===== Flow ===== */
+.home-flow {
+    margin-top: 2.5rem;
+}
+
+.home-flow h3 {
+    margin: 0 0 1.1rem;
+    font-family: var(--mycook-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.home-flow ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    counter-reset: flow;
+}
+
+.home-flow li {
+    position: relative;
+    padding: 1.2rem 1.2rem 1.2rem 3.4rem;
+    border-radius: var(--mycook-radius);
+    background: var(--mycook-paper);
+    border: 1px solid var(--mycook-line);
+    min-height: 5.5rem;
+}
+
+.home-flow li::before {
+    counter-increment: flow;
+    content: counter(flow, decimal-leading-zero);
+    position: absolute;
+    left: 1rem;
+    top: 1.15rem;
+    font-family: var(--mycook-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--vp-c-brand-1);
+}
+
+.home-flow li strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--mycook-ink);
+    font-size: 0.98rem;
+}
+
+.home-flow li span {
+    color: var(--vp-c-text-2);
+    line-height: 1.6;
+    font-size: 0.9rem;
+}
+
+/* ===== Doc ===== */
+.VPDoc .content .vp-doc h1,
 .VPDoc .content .vp-doc h2 {
-    font-family: 'Noto Serif SC', serif;
+    font-family: var(--mycook-display);
+    font-weight: 700;
+}
+
+.VPDoc .content .vp-doc h2 {
     padding-top: 1.2em;
     border-top: 1px solid var(--vp-c-divider);
     margin-top: 1.8em;
 }
+
 .VPDoc .content .vp-doc h2:first-child {
     border-top: none;
     padding-top: 0;
     margin-top: 0;
 }
 
-/* Sidebar */
-.VPSidebarItem.level-0 > .item > .link {
-    font-weight: 500;
-}
 .VPNavBarTitle .title {
-    font-family: 'Noto Serif SC', serif;
+    font-family: var(--mycook-display);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.VPNavBar {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.vp-doc img {
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+    max-width: 100%;
+    margin: 1rem 0;
+}
+
+.vp-doc table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.vp-doc th {
+    background: var(--vp-c-bg-soft);
+}
+
+.vp-doc [class*='language-'] {
+    border-radius: 10px;
+}
+
+.vp-doc ul {
+    line-height: 1.85;
+}
+
+.vp-doc li {
+    margin: 0.28rem 0;
+}
+
+.vp-doc strong {
+    color: var(--vp-c-brand-1);
     font-weight: 600;
 }
 
-/* Search */
-.VPButton.medium.brand {
-    border-radius: 8px;
-    font-weight: 500;
+.vp-doc a[target='_blank']::after {
+    content: ' ↗';
+    font-size: 0.85em;
+    opacity: 0.6;
 }
 
-/* ===== Recent Updates ===== */
-.recent-updates {
-    margin: 3rem auto 3rem;
-    padding: 2rem 0 0;
-    border-top: 1px solid var(--vp-c-divider);
-    max-width: 800px;
-}
-.recent-updates-title {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 1rem;
-    color: var(--vp-c-text-1);
-}
-.recent-updates-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.35rem 1.25rem;
-}
-.recent-updates-list li {
-    margin: 0;
-}
-.recent-updates-list a {
-    color: var(--vp-c-text-2);
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: color var(--transition-fast);
-    display: block;
-    padding: 0.2rem 0;
-}
-.recent-updates-list a:hover {
-    color: var(--vp-c-brand-1);
+.VPContent {
+    animation: rise-in 0.45s ease-out both;
 }
 
-/* ===== Credits ===== */
-.home-credits {
-    margin: 3.5rem auto 2rem;
-    padding: 2rem 2.25rem;
-    max-width: 800px;
-    border-radius: 22px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 239, 227, 0.88));
-    border: 1px solid var(--mycook-line);
-}
-.home-credits-title {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem;
-    color: var(--vp-c-text-1);
-}
-.home-credits-desc {
-    margin: 0 0 1rem;
-    font-size: 0.9rem;
-    color: var(--vp-c-text-2);
-    line-height: 1.5;
-}
-.home-credits-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 1rem;
-}
-.home-credits-list li {
-    margin: 0.4rem 0;
-    font-size: 0.9rem;
-    color: var(--vp-c-text-1);
-}
-.home-credits-list a {
-    color: var(--vp-c-brand-1);
+.vp-doc ul > li > a {
     text-decoration: none;
-    font-weight: 500;
-    transition: color var(--transition-fast);
-}
-.home-credits-list a:hover {
-    color: var(--vp-c-brand-2);
-    text-decoration: underline;
-}
-.home-credits-note {
-    margin: 0;
-    font-size: 0.8rem;
-    color: var(--vp-c-text-3);
-    line-height: 1.5;
-}
-.home-credits-note a {
-    color: var(--vp-c-brand-1);
-    text-decoration: none;
-}
-.home-credits-note a:hover {
-    text-decoration: underline;
+    border-bottom: 1px solid transparent;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
 }
 
-/* ===== Recipe Layout Borders ===== */
+.vp-doc ul > li > a:hover {
+    border-bottom-color: currentColor;
+}
+
+.layout-cooklikehoc .vp-doc ul > li,
+.layout-howtocook .vp-doc ul > li {
+    padding: 0.22rem 0;
+}
+
+.VPDocFooter .pager-link {
+    border-radius: 12px;
+    border-color: var(--mycook-line);
+    transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.VPDocFooter .pager-link:hover {
+    border-color: var(--vp-c-brand-1);
+    transform: translateY(-1px);
+}
+
+/* ===== Source borders ===== */
 .layout-cooklikehoc .vp-doc .container,
 .layout-cooklikehoc .VPDoc .vp-doc .container {
     border-left: 3px solid var(--vp-c-brand-1);
     margin-left: 0;
     padding-left: 1.25rem;
 }
+
 .layout-cooklikehoc .vp-doc {
-    --vp-custom-block-tip-border: #c17f3a;
-    --vp-custom-block-tip-bg: rgba(193, 127, 58, 0.06);
+    --vp-custom-block-tip-border: #b83a28;
+    --vp-custom-block-tip-bg: rgba(184, 58, 40, 0.06);
 }
+
 .layout-howtocook .vp-doc .container,
 .layout-howtocook .VPDoc .vp-doc .container {
-    border-left: 3px solid var(--mycook-green);
+    border-left: 3px solid var(--mycook-jade);
     margin-left: 0;
     padding-left: 1.25rem;
 }
+
 .layout-howtocook .vp-doc {
-    --vp-custom-block-tip-border: #2d7d5e;
-    --vp-custom-block-tip-bg: rgba(45, 125, 94, 0.06);
-}
-.layout-cooklikehoc .vp-doc .content,
-.layout-howtocook .vp-doc .content {
-    padding-left: 0;
+    --vp-custom-block-tip-border: #1f6f5b;
+    --vp-custom-block-tip-bg: rgba(31, 111, 91, 0.06);
 }
 
-/* ===== Enhanced Styles ===== */
+/* ===== Stats ===== */
+.stats-section {
+    margin: 2.25rem auto;
+    max-width: 1080px;
+    padding: 0 1.25rem;
+}
 
-/* Scrollbar */
+.stats-title {
+    font-family: var(--mycook-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    color: var(--mycook-ink);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.85rem;
+}
+
+.stat-card {
+    text-align: left;
+    padding: 1.25rem 1.3rem;
+    border-radius: var(--mycook-radius);
+    background: var(--mycook-paper);
+    border: 1px solid var(--mycook-line);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-number {
+    display: block;
+    font-family: var(--mycook-display);
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--vp-c-brand-1);
+    line-height: 1.1;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--vp-c-text-2);
+    margin-top: 0.4rem;
+}
+
+.stat-card.howtocook .stat-number {
+    color: var(--mycook-jade);
+}
+
+/* ===== Recent ===== */
+.recent-updates {
+    margin: 2rem auto 3rem;
+    padding: 0 1.25rem;
+    max-width: 1080px;
+}
+
+.recent-updates-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.recent-updates-title {
+    font-family: var(--mycook-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--mycook-ink);
+}
+
+.recent-updates-hint {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--vp-c-text-3);
+}
+
+.recent-updates-list {
+    list-style: none;
+    padding: 1rem 1.15rem;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 0.25rem 1rem;
+    border-radius: var(--mycook-radius);
+    background: var(--mycook-paper);
+    border: 1px solid var(--mycook-line);
+}
+
+.recent-updates-list li {
+    margin: 0;
+}
+
+.recent-updates-list a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    color: var(--vp-c-text-2);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.55rem 0.1rem;
+    transition: color var(--transition-fast);
+}
+
+.recent-updates-list a:hover {
+    color: var(--vp-c-brand-1);
+}
+
+.recent-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.recent-source {
+    flex-shrink: 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(28, 25, 21, 0.04);
+    color: var(--vp-c-text-3);
+}
+
+.recent-source.is-chili {
+    color: var(--vp-c-brand-1);
+    background: var(--vp-c-brand-soft);
+}
+
+.recent-source.is-jade {
+    color: var(--mycook-jade);
+    background: var(--mycook-jade-soft);
+}
+
+/* ===== Credits ===== */
+.home-credits {
+    margin: 2.5rem auto 3rem;
+    padding: 1.75rem 1.5rem;
+    max-width: 1080px;
+    border-radius: var(--mycook-radius);
+    background: var(--mycook-paper);
+    border: 1px solid var(--mycook-line);
+}
+
+.home-credits-title {
+    font-family: var(--mycook-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+}
+
+.home-credits-desc {
+    margin: 0 0 0.85rem;
+    font-size: 0.9rem;
+    color: var(--vp-c-text-2);
+    line-height: 1.55;
+}
+
+.home-credits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+}
+
+.home-credits-list li {
+    margin: 0.4rem 0;
+    font-size: 0.9rem;
+}
+
+.home-credits-list a {
+    color: var(--vp-c-brand-1);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.home-credits-list a:hover {
+    text-decoration: underline;
+}
+
+.home-credits-note {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--vp-c-text-3);
+    line-height: 1.55;
+}
+
+.home-credits-note a {
+    color: var(--vp-c-brand-1);
+    text-decoration: none;
+}
+
+/* ===== Scrollbar ===== */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
+
 ::-webkit-scrollbar-track {
     background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
     background: var(--vp-c-divider);
-    border-radius: 4px;
+    border-radius: 999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: var(--vp-c-text-3);
-}
-
-/* Images */
-.vp-doc img {
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    max-width: 100%;
-    margin: 1rem 0;
-    transition: transform var(--transition-normal);
-}
-.vp-doc img:hover {
-    transform: scale(1.01);
-}
-
-/* Table */
-.vp-doc table {
-    border-radius: 8px;
-    overflow: hidden;
-}
-.vp-doc th {
-    background: var(--vp-c-bg-soft);
-}
-
-/* Code */
-.vp-doc [class*='language-'] {
-    border-radius: 10px;
-}
-
-/* Page transition */
-.VPContent {
-    transition: background-color 0.3s;
-}
-
-/* ===== Dark Mode ===== */
-.dark {
-    --vp-c-brand-1: #d4954a;
-    --vp-c-brand-2: #c17f3a;
-    --vp-c-brand-3: #a66b2d;
-    --vp-c-brand-soft: rgba(212, 149, 74, 0.14);
-    --mycook-line: rgba(212, 149, 74, 0.12);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.25);
-}
-.dark .VPHero .name {
-    background: linear-gradient(135deg, #d4954a, #e8b87a);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-.dark .home-tip {
-    background: rgba(212, 149, 74, 0.08);
-    border-color: rgba(212, 149, 74, 0.12);
-}
-.dark .home-source-card.is-amber {
-    background: linear-gradient(180deg, rgba(60, 45, 30, 0.98), rgba(50, 38, 25, 0.94));
-}
-.dark .home-source-card.is-jade {
-    background: linear-gradient(180deg, rgba(25, 50, 40, 0.98), rgba(20, 42, 33, 0.94));
-}
-.dark .home-source-card.is-ink {
-    background: linear-gradient(180deg, rgba(40, 38, 35, 0.98), rgba(35, 33, 30, 0.94));
-}
-.dark .home-source-stats li {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.08);
-}
-.dark .home-link-chip {
-    background: rgba(255, 255, 255, 0.06);
-}
-.dark .home-link-chip:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-.dark .home-credits {
-    background: linear-gradient(180deg, rgba(40, 35, 30, 0.92), rgba(30, 25, 20, 0.88));
-}
-.dark .home-entry-card:hover {
-    box-shadow: var(--shadow-lg);
-}
-.dark .vp-doc img {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-}
-.dark .home-source-card:hover {
-    box-shadow: var(--shadow-lg);
-}
-.dark .home-link-chip:hover {
-    box-shadow: var(--shadow-sm);
-}
-.dark .layout-howtocook .vp-doc .container,
-.dark .layout-howtocook .VPDoc .vp-doc .container {
-    border-left-color: #3da87f;
-}
-.dark .layout-howtocook .vp-doc {
-    --vp-custom-block-tip-border: #3da87f;
-    --vp-custom-block-tip-bg: rgba(61, 168, 127, 0.1);
-}
-.dark .stat-card.cooklikehoc .stat-number {
-    color: #d4954a;
-}
-.dark .stat-card.howtocook .stat-number {
-    color: #3da87f;
-}
-.dark .quick-links-grid a:hover {
-    background: var(--vp-c-bg-soft);
-}
-.dark .stat-card {
-    background: linear-gradient(180deg, rgba(50, 45, 40, 0.92), rgba(40, 35, 30, 0.82));
 }
 
 /* ===== Print ===== */
@@ -650,280 +990,89 @@
     .VPSidebar,
     .VPDocFooter,
     .VPLocalNav,
-    .home-entries,
     .recent-updates,
+    .stats-section,
+    .home-explore,
+    .home-credits,
+    .daily-pick,
     .back-to-top,
     .reading-progress,
-    .print-button,
-    .favorites-widget {
+    .recipe-toolbar,
+    .source-chip {
         display: none !important;
     }
-    .VPContent {
-        padding: 0 !important;
-    }
-    .vp-doc {
-        max-width: 100% !important;
-    }
-    body {
-        font-size: 12pt;
-        line-height: 1.6;
-    }
-    .vp-doc img {
-        max-width: 100%;
-        page-break-inside: avoid;
-    }
-    .vp-doc h1,
-    .vp-doc h2,
-    .vp-doc h3 {
-        page-break-after: avoid;
-    }
-    .vp-doc ul,
-    .vp-doc ol {
-        page-break-inside: avoid;
-    }
-    .vp-doc a[href]:after {
-        content: " (" attr(href) ")";
-        font-size: 0.8em;
-        color: #666;
-    }
-    .vp-doc a[href^="#"]:after,
-    .vp-doc a[href^="javascript"]:after {
-        content: "";
-    }
 }
 
-/* ===== Content Styles ===== */
-.vp-doc ul {
-    line-height: 1.8;
-}
-.vp-doc li {
-    margin: 0.25rem 0;
-}
-.vp-doc strong {
-    color: var(--vp-c-brand-1);
-    font-weight: 600;
-}
-
-/* Page load animation */
-.VPContent {
-    animation: fadeIn 0.4s ease-out;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Sidebar */
-.VPSidebar {
-    transition: transform var(--transition-normal);
-}
-
-/* Nav backdrop */
-.VPNavBar {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-}
-
-/* Step numbers */
-.vp-doc ol:not(.home-flow-list) {
-    counter-reset: step-counter;
-    padding-left: 1.5rem;
-}
-.vp-doc ol:not(.home-flow-list) > li {
-    position: relative;
-    padding-left: 0.5rem;
-}
-
-/* External links */
-.vp-doc a[target="_blank"]::after {
-    content: ' ↗';
-    font-size: 0.85em;
-    opacity: 0.7;
-}
-
-/* ===== Stats ===== */
-.stats-section {
-    margin: 2rem auto;
-    max-width: 800px;
-    padding: 0 1rem;
-}
-.stats-title {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 1rem;
-    color: var(--vp-c-text-1);
-    text-align: center;
-}
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-}
-.stat-card {
-    text-align: center;
-    padding: 1rem;
-    border-radius: 18px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 239, 227, 0.82));
-    border: 1px solid var(--mycook-line);
-    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-}
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-}
-.stat-number {
-    display: block;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--vp-c-brand-1);
-    line-height: 1.2;
-}
-.stat-label {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--vp-c-text-2);
-    margin-top: 0.25rem;
-}
-.stat-card.cooklikehoc .stat-number {
-    color: #c17f3a;
-}
-.stat-card.howtocook .stat-number {
-    color: #2d7d5e;
-}
-
-/* ===== Responsive: Tablet ===== */
+/* ===== Responsive ===== */
 @media (max-width: 960px) {
-    .home-pantry-hero,
-    .home-rail-grid,
-    .home-source-grid {
+    .home-paths,
+    .home-flow ol {
         grid-template-columns: 1fr;
     }
-    .home-link-grid {
+
+    .home-shelf-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .daily-pick {
+        margin-left: 1.25rem;
+        margin-right: 1.25rem;
+        padding: 1.5rem 4rem 1.4rem 1.35rem;
     }
 }
 
-/* ===== Responsive: Mobile ===== */
 @media (max-width: 768px) {
     .VPHero {
-        padding: 2rem 0 1.5rem;
+        padding: 3.25rem 0 1.5rem;
     }
-    .VPHero .text {
-        font-size: 1.4rem;
-    }
-    .VPHero .tagline {
-        font-size: 0.95rem;
-    }
-    .VPHero .image img {
-        max-width: 100px;
-    }
+
     .VPHero .actions {
-        flex-direction: column;
-        align-items: center;
-        gap: 0.6rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.55rem;
     }
+
     .VPHero .actions .VPButton {
-        width: 100%;
-        max-width: 260px;
-        text-align: center;
+        padding: 0.65rem 1.05rem;
+        font-size: 0.88rem;
     }
-    .home-pantry {
-        margin-top: 1.5rem;
-    }
-    .home-pantry-copy,
-    .home-panel,
-    .home-source-card {
-        padding: 1.2rem;
-        border-radius: 20px;
-    }
-    .home-pantry-copy h2 {
-        max-width: none;
-        font-size: 1.6rem;
-    }
-    .home-source-card {
-        min-height: auto;
-    }
-    .home-link-grid {
+
+    .home-shelf-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.6rem;
     }
-    .home-link-chip {
-        padding: 0.8rem;
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
-    .recent-updates {
-        margin-left: 0;
-        margin-right: 0;
-    }
+
     .recent-updates-list {
         grid-template-columns: 1fr;
     }
-    .home-tip {
-        margin-left: 0;
-        margin-right: 0;
-        font-size: 0.85rem;
-    }
+
     .home-credits {
-        margin: 2.5rem 0 1.5rem;
-        padding: 1.5rem 1.25rem;
+        margin-left: 1.25rem;
+        margin-right: 1.25rem;
     }
-    .home-flow-list li {
-        padding-left: 2.8rem;
+
+    .VPNavBar {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
     }
-    .home-flow-list li::before {
-        width: 1.8rem;
-        height: 1.8rem;
-        font-size: 0.8rem;
-    }
+
     .layout-cooklikehoc .VPDoc .vp-doc .container,
     .layout-howtocook .VPDoc .vp-doc .container {
         margin-left: 0;
         padding-left: 1rem;
     }
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .home-source-card,
-    .home-link-chip {
-        -webkit-tap-highlight-color: transparent;
-    }
-    .VPNavBar {
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-    }
 }
 
-/* ===== Responsive: Small Mobile ===== */
-@media (max-width: 480px) {
-    .VPHero .name {
-        font-size: 2rem;
-    }
-    .VPHero .text {
-        font-size: 1.25rem;
-    }
-    .home-pantry-copy h2 {
-        font-size: 1.4rem;
-    }
-    .home-link-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-    .home-link-chip {
-        padding: 0.6rem;
-    }
-    .home-link-chip strong {
-        font-size: 0.9rem;
-    }
-    .home-link-chip span {
-        font-size: 0.7rem;
-    }
-}
-
-/* ===== Focus States (Accessibility) ===== */
-.home-source-card:focus-visible,
-.home-link-chip:focus-visible,
+.home-path:focus-visible,
+.home-shelf-link:focus-visible,
 .recent-updates-list a:focus-visible,
-.home-credits-list a:focus-visible {
+.home-credits-list a:focus-visible,
+.daily-pick-go:focus-visible,
+.daily-pick-shuffle:focus-visible {
     outline: 2px solid var(--vp-c-brand-1);
     outline-offset: 2px;
 }

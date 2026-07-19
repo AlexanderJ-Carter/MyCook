@@ -77,7 +77,7 @@ function writePlaceholder(reason) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HowToCook 图片版 - 构建未就绪</title>
-  <style>body{font-family:system-ui,sans-serif;max-width:36em;margin:2em auto;padding:0 1em;line-height:1.5;}a{color:#c17f3a;}</style>
+  <style>body{font-family:system-ui,sans-serif;max-width:36em;margin:2em auto;padding:0 1em;line-height:1.5;}a{color:#c4452f;}</style>
 </head>
 <body>
   <h1>HowToCook 图片版</h1>

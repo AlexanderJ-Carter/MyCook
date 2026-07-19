@@ -1,0 +1,569 @@
+<script setup>
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { useRoute, withBase } from "vitepress";
+
+const route = useRoute();
+const favorites = ref([]);
+const panel = ref(null); // 'favorites' | 'timer' | null
+const timers = ref([]);
+const timerName = ref("");
+const timerMinutes = ref(5);
+let intervalId = null;
+
+const isDocPage = computed(() => {
+  const path = route.path;
+  return (
+    path !== "/" && !path.startsWith("/help") && !path.startsWith("/about")
+  );
+});
+
+const isFavorite = computed(() =>
+  favorites.value.some((f) => f.path === route.path),
+);
+
+const loadFavorites = () => {
+  const stored = localStorage.getItem("mycook-favorites");
+  if (!stored) return;
+  favorites.value = JSON.parse(stored);
+};
+
+const saveFavorites = () => {
+  localStorage.setItem("mycook-favorites", JSON.stringify(favorites.value));
+};
+
+const toggleFavorite = () => {
+  if (isFavorite.value) {
+    favorites.value = favorites.value.filter((f) => f.path !== route.path);
+  } else {
+    const title =
+      document.querySelector("h1")?.textContent?.trim() || route.path;
+    favorites.value.push({
+      path: route.path,
+      title,
+      addedAt: new Date().toISOString(),
+    });
+  }
+  saveFavorites();
+};
+
+const removeFavorite = (path) => {
+  favorites.value = favorites.value.filter((f) => f.path !== path);
+  saveFavorites();
+};
+
+const formatDate = (iso) =>
+  new Date(iso).toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+const printRecipe = () => {
+  window.print();
+};
+
+const togglePanel = (name) => {
+  panel.value = panel.value === name ? null : name;
+};
+
+const addTimer = () => {
+  const name = timerName.value.trim();
+  if (!name) return;
+  const totalSeconds = Math.max(1, Number(timerMinutes.value) || 1) * 60;
+  timers.value.push({
+    id: Date.now(),
+    name,
+    totalSeconds,
+    remainingSeconds: totalSeconds,
+    isRunning: false,
+    isPaused: false,
+  });
+  timerName.value = "";
+  timerMinutes.value = 5;
+};
+
+const startTimer = (timer) => {
+  timer.isRunning = true;
+  timer.isPaused = false;
+};
+
+const pauseTimer = (timer) => {
+  timer.isPaused = true;
+};
+
+const resumeTimer = (timer) => {
+  timer.isPaused = false;
+};
+
+const resetTimer = (timer) => {
+  timer.remainingSeconds = timer.totalSeconds;
+  timer.isRunning = false;
+  timer.isPaused = false;
+};
+
+const deleteTimer = (id) => {
+  timers.value = timers.value.filter((t) => t.id !== id);
+};
+
+const formatTime = (seconds) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+};
+
+const tick = () => {
+  for (const timer of timers.value) {
+    if (!timer.isRunning || timer.isPaused || timer.remainingSeconds <= 0)
+      continue;
+    timer.remainingSeconds -= 1;
+    if (timer.remainingSeconds === 0) {
+      timer.isRunning = false;
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("计时结束", { body: timer.name });
+      }
+    }
+  }
+};
+
+watch(
+  () => route.path,
+  () => {
+    panel.value = null;
+  },
+);
+
+onMounted(() => {
+  loadFavorites();
+  intervalId = setInterval(tick, 1000);
+});
+
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId);
+});
+</script>
+
+<template>
+  <div v-if="isDocPage" class="recipe-toolbar" aria-label="菜谱工具">
+    <div class="recipe-toolbar-bar">
+      <button
+        type="button"
+        class="rt-btn"
+        :class="{ active: isFavorite }"
+        :title="isFavorite ? '取消收藏' : '收藏'"
+        :aria-pressed="isFavorite"
+        @click="toggleFavorite"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          :fill="isFavorite ? 'currentColor' : 'none'"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+          />
+        </svg>
+        <span class="rt-label">{{ isFavorite ? "已藏" : "收藏" }}</span>
+      </button>
+
+      <button type="button" class="rt-btn" title="打印" @click="printRecipe">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+          />
+          <rect x="6" y="14" width="12" height="8" />
+        </svg>
+        <span class="rt-label">打印</span>
+      </button>
+
+      <button
+        type="button"
+        class="rt-btn"
+        :class="{ open: panel === 'timer' }"
+        title="计时器"
+        :aria-expanded="panel === 'timer'"
+        @click="togglePanel('timer')"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="13" r="8" />
+          <path d="M12 9v4l2 2M9 2h6" />
+        </svg>
+        <span class="rt-label">计时</span>
+      </button>
+
+      <button
+        v-if="favorites.length"
+        type="button"
+        class="rt-btn"
+        :class="{ open: panel === 'favorites' }"
+        title="我的收藏"
+        :aria-expanded="panel === 'favorites'"
+        @click="togglePanel('favorites')"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+          />
+        </svg>
+        <span class="rt-label">{{ favorites.length }}</span>
+      </button>
+    </div>
+
+    <Transition name="rt-panel">
+      <div
+        v-if="panel === 'favorites'"
+        class="rt-panel"
+        role="dialog"
+        aria-label="收藏列表"
+      >
+        <div class="rt-panel-head">
+          <strong>我的收藏</strong>
+          <button type="button" class="rt-close" @click="panel = null">
+            ×
+          </button>
+        </div>
+        <div class="rt-fav-list">
+          <div v-for="fav in favorites" :key="fav.path" class="rt-fav-item">
+            <a :href="withBase(fav.path)">{{ fav.title }}</a>
+            <span>{{ formatDate(fav.addedAt) }}</span>
+            <button
+              type="button"
+              title="移除"
+              @click="removeFavorite(fav.path)"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <Transition name="rt-panel">
+      <div
+        v-if="panel === 'timer'"
+        class="rt-panel rt-timer"
+        role="dialog"
+        aria-label="烹饪计时器"
+      >
+        <div class="rt-panel-head">
+          <strong>烹饪计时</strong>
+          <button type="button" class="rt-close" @click="panel = null">
+            ×
+          </button>
+        </div>
+        <div class="rt-timer-add">
+          <input
+            v-model="timerName"
+            type="text"
+            placeholder="名称，如：煮面"
+            @keyup.enter="addTimer"
+          />
+          <input
+            v-model.number="timerMinutes"
+            type="number"
+            min="1"
+            max="999"
+          />
+          <span>分</span>
+          <button type="button" class="rt-add" @click="addTimer">添加</button>
+        </div>
+        <p v-if="!timers.length" class="rt-empty">还没有计时器</p>
+        <div
+          v-for="timer in timers"
+          :key="timer.id"
+          class="rt-timer-item"
+          :class="{ done: timer.remainingSeconds === 0 }"
+        >
+          <div class="rt-timer-top">
+            <span>{{ timer.name }}</span>
+            <button type="button" @click="deleteTimer(timer.id)">×</button>
+          </div>
+          <div class="rt-timer-clock">
+            {{ formatTime(timer.remainingSeconds) }}
+          </div>
+          <div class="rt-timer-actions">
+            <button
+              v-if="!timer.isRunning || timer.isPaused"
+              type="button"
+              class="primary"
+              @click="timer.isPaused ? resumeTimer(timer) : startTimer(timer)"
+            >
+              {{ timer.isPaused ? "继续" : "开始" }}
+            </button>
+            <button
+              v-if="timer.isRunning && !timer.isPaused"
+              type="button"
+              @click="pauseTimer(timer)"
+            >
+              暂停
+            </button>
+            <button type="button" @click="resetTimer(timer)">重置</button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </div>
+</template>
+
+<style scoped>
+.recipe-toolbar {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 5.5rem;
+  z-index: 98;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+}
+
+.recipe-toolbar-bar {
+  display: flex;
+  gap: 0.2rem;
+  padding: 0.35rem;
+  background: color-mix(in srgb, var(--vp-c-bg-elv) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--mycook-line);
+  border-radius: 999px;
+  box-shadow: var(--shadow-md);
+}
+
+.rt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--vp-c-text-1);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.rt-btn:hover,
+.rt-btn.open {
+  background: var(--vp-c-bg-soft);
+}
+
+.rt-btn.active {
+  color: var(--vp-c-brand-1);
+}
+
+.rt-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.rt-panel {
+  width: min(320px, calc(100vw - 2rem));
+  max-height: 360px;
+  overflow: auto;
+  padding: 0.9rem 1rem 1rem;
+  background: var(--vp-c-bg-elv);
+  border: 1px solid var(--mycook-line);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+}
+
+.rt-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.rt-panel-head strong {
+  font-family: var(--mycook-display);
+  font-weight: 400;
+  font-size: 1.05rem;
+}
+
+.rt-close {
+  border: none;
+  background: transparent;
+  color: var(--vp-c-text-3);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.rt-fav-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--mycook-line);
+  font-size: 0.85rem;
+}
+
+.rt-fav-item:last-child {
+  border-bottom: none;
+}
+
+.rt-fav-item a {
+  color: var(--vp-c-text-1);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rt-fav-item a:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.rt-fav-item span {
+  color: var(--vp-c-text-3);
+  font-size: 0.72rem;
+}
+
+.rt-fav-item button,
+.rt-timer-top button {
+  border: none;
+  background: transparent;
+  color: var(--vp-c-text-3);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.rt-timer-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.rt-timer-add input[type="text"] {
+  flex: 1;
+  min-width: 110px;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--mycook-line);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  font-size: 0.85rem;
+}
+
+.rt-timer-add input[type="number"] {
+  width: 56px;
+  padding: 0.4rem 0.45rem;
+  border: 1px solid var(--mycook-line);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  font-size: 0.85rem;
+}
+
+.rt-add {
+  padding: 0.4rem 0.7rem;
+  border: none;
+  background: var(--vp-c-brand-1);
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.rt-empty {
+  margin: 0;
+  text-align: center;
+  color: var(--vp-c-text-3);
+  font-size: 0.85rem;
+}
+
+.rt-timer-item {
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--mycook-line);
+}
+
+.rt-timer-item.done {
+  background: var(--vp-c-brand-soft);
+  margin: 0 -0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.rt-timer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.rt-timer-clock {
+  font-family: ui-monospace, monospace;
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--vp-c-brand-1);
+  letter-spacing: 0.04em;
+  margin: 0.35rem 0;
+}
+
+.rt-timer-actions {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.rt-timer-actions button {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--mycook-line);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.rt-timer-actions button.primary {
+  background: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+  color: #fff;
+}
+
+.rt-panel-enter-active,
+.rt-panel-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rt-panel-enter-from,
+.rt-panel-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+@media (max-width: 768px) {
+  .recipe-toolbar {
+    right: 1rem;
+    bottom: 4.75rem;
+  }
+
+  .rt-label {
+    display: none;
+  }
+}
+
+@media print {
+  .recipe-toolbar {
+    display: none !important;
+  }
+}
+</style>

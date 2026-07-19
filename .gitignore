@@ -8,6 +8,7 @@ node_modules/
 # Generated files (build/sync 时生成)
 public/recent.json
 public/stats.json
+public/recipes-index.json
 public/sync-info.json
 public/banner.png
 public/howtocook-images/

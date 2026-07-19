@@ -4,8 +4,8 @@
   "description": "老乡鸡风格菜谱 + 程序员做饭指南，在家做饭一站搞定",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#c17f3a",
+  "background_color": "#f3f1ec",
+  "theme_color": "#b83a28",
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [

@@ -1,39 +1,34 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { withBase } from 'vitepress';
+import { onMounted, ref } from "vue";
+import { withBase } from "vitepress";
 
 const stats = ref({
   cooklikehoc: { categories: 0, dishes: 0 },
   howtocook: { categories: 0, dishes: 0 },
-  total: 0
+  total: 0,
+  totalCategories: 0,
 });
 
-const isLoaded = ref(false);
-
 onMounted(async () => {
-  try {
-    const res = await fetch(withBase('/stats.json'));
-    if (res.ok) {
-      stats.value = await res.json();
-    }
-  } catch {
-    // 使用默认值
-  } finally {
-    isLoaded.value = true;
-  }
+  const res = await fetch(withBase("/stats.json"));
+  if (!res.ok) return;
+  stats.value = await res.json();
 });
 </script>
 
 <template>
-  <div class="stats-section">
-    <h2 class="stats-title">菜谱统计</h2>
-    <div class="stats-grid" :class="{ 'is-loaded': isLoaded }">
+  <section class="stats-section" aria-label="菜谱统计">
+    <h2 class="stats-title">此刻可查</h2>
+    <div class="stats-grid">
       <div class="stat-card">
         <span class="stat-number">{{ stats.total }}</span>
         <span class="stat-label">道菜谱</span>
       </div>
       <div class="stat-card">
-        <span class="stat-number">{{ stats.cooklikehoc.categories + stats.howtocook.categories }}</span>
+        <span class="stat-number">{{
+          stats.totalCategories ||
+          stats.cooklikehoc.categories + stats.howtocook.categories
+        }}</span>
         <span class="stat-label">个分类</span>
       </div>
       <div class="stat-card cooklikehoc">
@@ -45,5 +40,5 @@ onMounted(async () => {
         <span class="stat-label">程序员做饭</span>
       </div>
     </div>
-  </div>
+  </section>
 </template>
