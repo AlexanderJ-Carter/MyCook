@@ -9,6 +9,7 @@ import PWA from "./PWA.vue";
 import SearchShortcut from "./SearchShortcut.vue";
 import RecipeToolbar from "./RecipeToolbar.vue";
 import SourceChip from "./SourceChip.vue";
+import WebMcp from "./WebMcp.vue";
 
 const route = useRoute();
 const layoutClass = computed(() => {
@@ -28,6 +29,7 @@ const showSourceChip = computed(() => {
 <template>
   <div class="mycook-layout" :class="layoutClass">
     <PWA />
+    <WebMcp />
     <SearchShortcut />
     <ReadingProgress v-if="showProgress" />
     <DefaultTheme.Layout>

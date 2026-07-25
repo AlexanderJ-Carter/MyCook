@@ -17,7 +17,7 @@
   "scripts": {
     "sync": "node scripts/sync-upstream.js",
     "build:images": "node scripts/build-howtocook-images.js",
-    "generate": "node scripts/generate-recent.js && node scripts/generate-stats.js",
+    "generate": "node scripts/generate-recent.js && node scripts/generate-stats.js && node scripts/generate-agent-discovery.js",
     "generate:sitemap": "node scripts/generate-sitemap.js",
     "docs:dev": "npm run generate && vitepress dev .",
     "docs:build": "npm run build:images && npm run generate && vitepress build . && npm run generate:sitemap",

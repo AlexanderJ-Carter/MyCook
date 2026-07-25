@@ -1,5 +1,11 @@
 import { defineConfig } from 'vitepress';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateNavAndSidebar } from './navSidebar.mjs';
+import { agentReadyPlugin } from './agentReady.mjs';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const publicRoot = path.resolve(__dirname, '../public');
 
 const { nav, sidebar } = generateNavAndSidebar(process.cwd());
 
@@ -164,6 +170,7 @@ export default defineConfig({
             host: true,
         },
         plugins: [
+            agentReadyPlugin(publicRoot),
             {
                 name: 'serve-spa-subpath',
                 configureServer(server) {

@@ -1,0 +1,30 @@
+/*
+  X-Robots-Tag: all
+
+/
+  Link: </.well-known/api-catalog>; rel="api-catalog"
+  Link: </openapi.json>; rel="service-desc"; type="application/json"
+  Link: </help>; rel="service-doc"; type="text/html"
+  Link: </.well-known/agent-skills/index.json>; rel="describedby"
+  Link: </.well-known/mcp/server-card.json>; rel="describedby"
+
+/.well-known/api-catalog
+  Content-Type: application/linkset+json
+
+/.well-known/oauth-authorization-server
+  Content-Type: application/json
+
+/.well-known/oauth-protected-resource
+  Content-Type: application/json
+
+/.well-known/agent-skills/index.json
+  Content-Type: application/json
+
+/.well-known/mcp/server-card.json
+  Content-Type: application/json
+
+/index.md
+  Content-Type: text/markdown
+
+/*.md
+  Content-Type: text/markdown

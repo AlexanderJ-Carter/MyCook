@@ -1,0 +1,8 @@
+; DNS-AID records for cook.alexander.xin
+; Deploy to your authoritative DNS and enable DNSSEC signing.
+;
+; _index._agents  — discovery index
+; _mcp._agents    — MCP server card endpoint
+
+_index._agents.cook.alexander.xin. 3600 IN SVCB 1 cook.alexander.xin. alpn="h3,h2" port=443 mandatory=alpn,port
+_mcp._agents.cook.alexander.xin. 3600 IN HTTPS 1 cook.alexander.xin. alpn="h3,h2" port=443 mandatory=alpn,port endpoint="/.well-known/mcp/server-card.json"
