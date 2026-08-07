@@ -25,8 +25,9 @@ export default defineConfig({
         'howtocook/*.md',
         'upstream/**',
         // Agent markdown mirrors live under public/ for Accept: text/markdown.
-        // They must not be treated as VitePress pages (relative ../images would break).
-        'public/**',
+        // They must not be treated as VitePress pages.
+        '**/public/**',
+        'public/**/*.md',
     ],
 
     head: [

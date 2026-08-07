@@ -8,10 +8,12 @@ node_modules
 .DS_Store
 Thumbs.db
 
-# Exclude md files except those needed for the site
+# Exclude md files except those needed for the site / agent discovery
 *.md
 !README.md
 !index.md
 !help.md
 !about.md
 !404.md
+!AGENTS.md
+!CLAUDE.md

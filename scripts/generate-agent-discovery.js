@@ -36,9 +36,36 @@ function stripFrontmatter(markdown) {
     return markdown;
 }
 
-function mirrorMarkdown(srcPath, destPath) {
+/**
+ * Rewrite relative image links so VitePress/Rollup never resolves
+ * agent mirrors under public/ as local modules (missing images break CI).
+ */
+function rewriteRelativeImages(markdown, urlPrefix) {
+    return markdown.replace(
+        /(!?\[[^\]]*\])\((?:\.\.\/)+images\/([^)]+)\)/g,
+        `$1(/${urlPrefix}/images/$2)`,
+    );
+}
+
+function mirrorMarkdown(srcPath, destPath, urlPrefix) {
     if (!fs.existsSync(srcPath)) return;
-    writeText(destPath, stripFrontmatter(fs.readFileSync(srcPath, 'utf8')));
+    const body = rewriteRelativeImages(
+        stripFrontmatter(fs.readFileSync(srcPath, 'utf8')),
+        urlPrefix,
+    );
+    writeText(destPath, body);
+}
+
+function copyDir(src, dest) {
+    if (!fs.existsSync(src)) return;
+    ensureDir(dest);
+    for (const name of fs.readdirSync(src)) {
+        if (name.startsWith('.')) continue;
+        const from = path.join(src, name);
+        const to = path.join(dest, name);
+        if (fs.statSync(from).isDirectory()) copyDir(from, to);
+        else fs.copyFileSync(from, to);
+    }
 }
 
 function mirrorRecipeMarkdown(srcDir, urlPrefix, destPrefix) {
@@ -58,12 +85,16 @@ function mirrorRecipeMarkdown(srcDir, urlPrefix, destPrefix) {
             const slug = name.slice(0, -3);
             const rel = path.posix.join(relDir, slug).replace(/\\/g, '/');
             const dest = path.join(destPrefix, `${rel}.md`);
-            mirrorMarkdown(full, dest);
+            mirrorMarkdown(full, dest, urlPrefix);
             count += 1;
         }
     }
 
     walk(srcDir, urlPrefix);
+    const imagesSrc = path.join(srcDir, 'images');
+    if (fs.existsSync(imagesSrc)) {
+        copyDir(imagesSrc, path.join(destPrefix, urlPrefix, 'images'));
+    }
     return count;
 }
 
