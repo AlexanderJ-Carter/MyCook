@@ -24,6 +24,9 @@ export default defineConfig({
         'cooklikehoc/README.md',
         'howtocook/*.md',
         'upstream/**',
+        // Agent markdown mirrors live under public/ for Accept: text/markdown.
+        // They must not be treated as VitePress pages (relative ../images would break).
+        'public/**',
     ],
 
     head: [
