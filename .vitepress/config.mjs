@@ -21,11 +21,13 @@ export default defineConfig({
         'README.md',
         'AGENTS.md',
         'CLAUDE.md',
+        'CHANGELOG.md',
+        'CONTRIBUTING.md',
+        'SECURITY.md',
+        'demo.md',
         'cooklikehoc/README.md',
         'howtocook/*.md',
         'upstream/**',
-        // Agent markdown mirrors live under public/ for Accept: text/markdown.
-        // They must not be treated as VitePress pages.
         '**/public/**',
         'public/**/*.md',
     ],
@@ -34,6 +36,13 @@ export default defineConfig({
         // DNS 预连接优化
         ['link', { rel: 'dns-prefetch', href: 'https://fonts.loli.net' }],
         ['link', { rel: 'preconnect', href: 'https://fonts.loli.net', crossorigin: '' }],
+        [
+            'link',
+            {
+                rel: 'stylesheet',
+                href: 'https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap',
+            },
+        ],
         ['link', { rel: 'dns-prefetch', href: 'https://cdn.jsdelivr.net' }],
         ['link', { rel: 'preconnect', href: 'https://cdn.jsdelivr.net', crossorigin: '' }],
         // LCP 预加载优化
@@ -51,18 +60,20 @@ export default defineConfig({
                     'MyCook - 老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅',
             },
         ],
-        ['meta', { name: 'og:type', content: 'website' }],
-        ['meta', { name: 'og:locale', content: 'zh-CN' }],
-        ['meta', { name: 'og:title', content: 'MyCook - 在家做饭一站搞定' }],
-        ['meta', { name: 'og:description', content: '老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
-        ['meta', { name: 'og:site_name', content: 'MyCook' }],
-        ['meta', { name: 'og:image', content: '/banner.png' }],
-        ['meta', { name: 'og:image:width', content: '1200' }],
-        ['meta', { name: 'og:image:height', content: '630' }],
+        ['meta', { property: 'og:type', content: 'website' }],
+        ['meta', { property: 'og:locale', content: 'zh_CN' }],
+        ['meta', { property: 'og:title', content: 'MyCook - 在家做饭一站搞定' }],
+        ['meta', { property: 'og:description', content: '老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
+        ['meta', { property: 'og:site_name', content: 'MyCook' }],
+        ['meta', { property: 'og:url', content: 'https://cook.alexander.xin/' }],
+        ['meta', { property: 'og:image', content: 'https://cook.alexander.xin/banner.png' }],
+        ['meta', { property: 'og:image:width', content: '1200' }],
+        ['meta', { property: 'og:image:height', content: '630' }],
         ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
         ['meta', { name: 'twitter:title', content: 'MyCook - 在家做饭一站搞定' }],
         ['meta', { name: 'twitter:description', content: '老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
-        ['meta', { name: 'twitter:image', content: '/banner.png' }],
+        ['meta', { name: 'twitter:image', content: 'https://cook.alexander.xin/banner.png' }],
+        ['link', { rel: 'canonical', href: 'https://cook.alexander.xin/' }],
         ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
         // PWA manifest
         ['link', { rel: 'manifest', href: '/manifest.json' }],
@@ -103,9 +114,14 @@ export default defineConfig({
                         text: '本站仓库',
                         link: 'https://github.com/AlexanderJ-Carter/MyCook',
                     },
+                    {
+                        text: '作者主页',
+                        link: 'https://alexander.xin',
+                    },
                 ],
             },
             { text: '帮助', link: '/help' },
+            { text: 'Agent', link: '/ai-agents' },
             { text: '关于', link: '/about' },
         ],
 
@@ -157,7 +173,8 @@ export default defineConfig({
         },
 
         footer: {
-            message: '内容来源于 CookLikeHOC 与 HowToCook，由本站合并整理',
+            message:
+                '内容来源于 CookLikeHOC 与 HowToCook · 由 <a href="https://alexander.xin" target="_blank" rel="noopener">alexander.xin</a> 站群维护',
             copyright: `Copyright © ${new Date().getFullYear()} MyCook · 非官方站点`,
         },
 

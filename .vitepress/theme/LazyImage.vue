@@ -28,7 +28,6 @@ onMounted(() => {
         if (entry.isIntersecting) {
           imgRef.value.src = props.src
           observer.unobserve(entry.target)
-          isLoaded.value = true
         }
       })
     }, {
@@ -52,6 +51,10 @@ onUnmounted(() => {
   }
 })
 
+const handleLoad = () => {
+  isLoaded.value = true
+}
+
 const handleError = () => {
   hasError.value = true
 }
@@ -63,6 +66,7 @@ const handleError = () => {
     :alt="alt"
     :loading="loading"
     :class="{ 'img-loaded': isLoaded, 'img-error': hasError }"
+    @load="handleLoad"
     @error="handleError"
   />
 </template>

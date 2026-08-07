@@ -4,74 +4,57 @@ title: 关于本站
 
 # 关于 MyCook
 
-MyCook 是一个菜谱聚合网站，致力于为你提供便捷的一站式菜谱查阅体验。
+MyCook 是 [alexander.xin](https://alexander.xin) 站群中的菜谱子站：**把两套开源菜谱合成一张厨房桌面**，并补上搜索、周菜单、PWA 与 AI Agent 能力。
+
+**在线地址**：[cook.alexander.xin](https://cook.alexander.xin)
 
 ## 项目初衷
 
-作为一名喜欢自己做饭的程序员，经常需要在多个菜谱网站之间切换。于是就有了这个想法：为什么不把优秀的菜谱项目整合在一起呢？
-
-MyCook 应运而生。
+自己做饭时经常在多个站点之间切换——按做法找、按食材找、看图找灵感各有一套。MyCook 把它们收进一个入口，再加了「开冰箱」「一周吃什么」「发给 AI」等顺手功能。
 
 ## 内容来源
 
-本站内容来自两个优秀的开源项目：
+| 项目 | 说明 |
+|------|------|
+| [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) | 老乡鸡风格，按炒/炖/卤/汤分类 |
+| [HowToCook](https://github.com/Anduin2017/HowToCook) | 程序员做饭指南，按食材与难度 |
+| [HowToCook 图片版](https://github.com/king-jingxiang/HowToCook) | 本站 [`/howtocook-images/`](/howtocook-images/) |
+| [Cook 食用手册](https://github.com/YunYouJun/cook) | 开冰箱食材数据（CSV 轻量集成） |
 
-### CookLikeHOC
-
-> 《老乡鸡菜品溯源报告》整理
-
-- **作者**：[Gar-b-age](https://github.com/Gar-b-age)
-- **仓库**：[CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC)
-- **特点**：按烹饪方式分类（炒、炖、卤、汤等），步骤详尽，适合学习基础烹饪技巧
-
-### HowToCook
-
-> 程序员在家做饭方法指南
-
-- **作者**：[Anduin2017](https://github.com/Anduin2017) 及社区贡献者
-- **仓库**：[HowToCook](https://github.com/Anduin2017/HowToCook)
-- **许可证**：Unlicense（公共领域）
-- **特点**：按食材分类，程序员风格，简洁明了
-
-### HowToCook 图片版
-
-- **来源**：[king-jingxiang/HowToCook](https://github.com/king-jingxiang/HowToCook)
-- **特点**：Markdown 转 4K 菜谱图，适合收藏打印
+菜谱正文在 CI 中从维护者 fork 同步，**不在 MyCook 仓库内直接改**。
 
 ## 技术栈
 
-- **框架**：[VitePress](https://vitepress.dev/)
-- **部署**：GitHub Pages + GitHub Actions
-- **容器**：Docker（多架构支持）
-- **运行时**：Node.js 22
+| 层级 | 技术 |
+|------|------|
+| 站点 | [VitePress](https://vitepress.dev/) 1.x |
+| 发布 | GitHub Actions → Pages |
+| 镜像 | GHCR `ghcr.io/alexanderj-carter/mycook` |
+| Agent | MCP Server · OpenAPI · Agent Skills |
+| 运行时（镜像内） | nginx:alpine + 静态 dist |
 
 ## 功能亮点
 
 | 功能 | 说明 |
 |------|------|
-| 🔍 站内搜索 | 模糊匹配，快速定位 |
-| 🌙 深色模式 | 跟随系统，一键切换 |
-| 📱 响应式 | 全平台适配 |
-| ⏰ 自动同步 | 每日更新上游内容 |
-| 🐳 Docker | 一键容器化部署 |
+| 🔍 搜索 | `Ctrl+K` / `/`，577+ 菜谱 |
+| 🧊 开冰箱 | 食材反查 + Cook 外链 + 随机转盘 |
+| 📅 周菜单 | 7 天排餐，存本机浏览器 |
+| 📚 技巧速查 | 18 篇 HowToCook 备忘 |
+| ❤️ 工具栏 | 收藏 · 计时 · 分享 · 打印 · **发给 AI** |
+| 🤖 Agent | MCP · WebMcp · Markdown 镜像（Docker） |
+| ⏰ 同步 | 每日从上游 fork 自动更新 |
 
-## 开源许可
+## 开源与站群
 
-本项目（网站源代码）采用 [MIT 许可证](https://github.com/AlexanderJ-Carter/MyCook/blob/main/LICENSE)。
-
-菜谱内容版权归各原作者所有。
+- **源码**：[AlexanderJ-Carter/MyCook](https://github.com/AlexanderJ-Carter/MyCook)（MIT）
+- **主站**：[alexander.xin](https://alexander.xin)
+- **项目索引**：[alexander.xin/projects](https://alexander.xin/projects)
 
 ## 免责声明
 
-- 本站为个人整理维护项目，非官方站点
-- 菜谱内容仅供参考，烹饪时请注意安全
-- 如有版权问题，请联系删除
+本站为个人整理维护，非上述项目的官方网站。烹饪请注意用火用电安全。
 
-## 联系方式
+## 反馈
 
-- **GitHub**：[AlexanderJ-Carter/MyCook](https://github.com/AlexanderJ-Carter/MyCook)
-- **问题反馈**：[Issues](https://github.com/AlexanderJ-Carter/MyCook/issues)
-
----
-
-感谢使用 MyCook！如果你喜欢这个项目，欢迎在 GitHub 上点个 ⭐
+[GitHub Issues](https://github.com/AlexanderJ-Carter/MyCook/issues) · 喜欢请 ⭐

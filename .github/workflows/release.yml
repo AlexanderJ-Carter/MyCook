@@ -1,0 +1,52 @@
+# 推送版本 tag 时创建 GitHub Release，并汇总 Docker 镜像信息
+name: Release
+
+on:
+    push:
+        tags: ['v*']
+
+permissions:
+    contents: write
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Resolve version
+              id: ver
+              run: echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  generate_release_notes: true
+                  body: |
+                      ## 在线访问
+
+                      - 站点：[cook.alexander.xin](https://cook.alexander.xin)
+                      - 文档：[README](https://github.com/${{ github.repository }}#readme) · [MCP](https://github.com/${{ github.repository }}/blob/main/MCP.md)
+
+                      ## Docker（GHCR）
+
+                      ```bash
+                      # 轻量版（推荐）
+                      docker pull ghcr.io/${{ github.repository_owner }}/mycook:${{ steps.ver.outputs.tag }}
+                      docker pull ghcr.io/${{ github.repository_owner }}/mycook:latest
+
+                      # MCP sidecar（可选）
+                      docker pull ghcr.io/${{ github.repository_owner }}/mycook-mcp:${{ steps.ver.outputs.tag }}
+                      ```
+
+                      ## 自托管
+
+                      ```bash
+                      ./scripts/install.sh
+                      # 或
+                      docker run -d -p 8080:80 ghcr.io/${{ github.repository_owner }}/mycook:${{ steps.ver.outputs.tag }}
+                      ```
+
+                      推送 tag 后 **Sync & Build** 与 **Docker** 工作流会自动运行，无需额外操作。

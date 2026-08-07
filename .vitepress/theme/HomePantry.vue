@@ -1,6 +1,9 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted } from "vue";
 import { withBase } from "vitepress";
+import { useSiteData } from "./composables/useSiteData";
+
+const { stats, loadStats } = useSiteData();
 
 const paths = [
   {
@@ -23,10 +26,18 @@ const paths = [
   {
     eyebrow: "03 · 图片版",
     title: "按图索菜",
-    description: "更偏图文浏览的 HowToCook 图片版，适合随手翻、看着图找灵感。",
+    description: "HowToCook 图片版，适合随手翻、看着图找灵感。",
     accent: "ink",
     href: "/howtocook-images/",
     cta: "打开图片版",
+  },
+  {
+    eyebrow: "04 · 开冰箱",
+    title: "手边有什么",
+    description: "勾选食材反查菜谱，或转一转随机一道。",
+    accent: "pantry",
+    href: "#kitchen-play",
+    cta: "去玩",
   },
 ];
 
@@ -70,25 +81,22 @@ const shelf = [
 const workflow = [
   { title: "选入口", text: "按做法，还是按食材？先定找法。" },
   { title: "缩小范围", text: "搜索菜名，或点下面货架快捷入口。" },
+  { title: "规划一周", text: "「一周吃什么」排菜单，存在本机浏览器。" },
   { title: "直接开做", text: "落到单篇菜谱，不用管仓库结构。" },
 ];
-
-const stats = ref({
-  total: 569,
-  cooklikehoc: { dishes: 198 },
-  howtocook: { dishes: 371 },
-});
 
 const pathItems = computed(() =>
   paths.map((item) => ({
     ...item,
-    href: withBase(item.href),
+    href: item.href.startsWith("#") ? item.href : withBase(item.href),
     meta:
       item.accent === "chili"
-        ? `${stats.value.cooklikehoc.dishes} 道菜`
+        ? `${stats.value?.cooklikehoc?.dishes ?? "—"} 道菜`
         : item.accent === "jade"
-          ? `${stats.value.howtocook.dishes} 道菜`
-          : "站内浏览",
+          ? `${stats.value?.howtocook?.dishes ?? "—"} 道菜`
+          : item.accent === "pantry"
+            ? "食材反查"
+            : "站内浏览",
   })),
 );
 
@@ -99,11 +107,7 @@ const shelfItems = computed(() =>
   })),
 );
 
-onMounted(async () => {
-  const response = await fetch(withBase("/stats.json"));
-  if (!response.ok) return;
-  stats.value = await response.json();
-});
+onMounted(() => loadStats());
 </script>
 
 <template>

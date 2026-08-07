@@ -1,6 +1,9 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue';
+import { withBase } from 'vitepress';
+import { useSiteData } from './composables/useSiteData';
 
+const { loadPantry, loadRecipesIndex } = useSiteData();
 const controllers = [];
 
 function getModelContext() {
@@ -8,7 +11,7 @@ function getModelContext() {
 }
 
 async function searchRecipes(query, limit = 10) {
-    const response = await fetch('/recipes-index.json');
+    const response = await fetch(withBase('/recipes-index.json'));
     const data = await response.json();
     const keyword = String(query || '').trim().toLowerCase();
     const items = keyword
@@ -19,19 +22,19 @@ async function searchRecipes(query, limit = 10) {
         matched: items.length,
         items: items.slice(0, limit).map((item) => ({
             title: item.title,
-            link: `${window.location.origin}${item.link}`,
+            link: `${window.location.origin}${withBase(item.link)}`,
             source: item.source,
         })),
     };
 }
 
 async function getSiteStats() {
-    const response = await fetch('/stats.json');
+    const response = await fetch(withBase('/stats.json'));
     return response.json();
 }
 
 async function getRecipe(pathname) {
-    const response = await fetch('/recipes-index.json');
+    const response = await fetch(withBase('/recipes-index.json'));
     const data = await response.json();
     const normalized = String(pathname || '').replace(/\/$/, '');
     const item = data.items.find((entry) => entry.link === normalized || entry.link === `${normalized}/`);
@@ -41,9 +44,9 @@ async function getRecipe(pathname) {
     return {
         found: true,
         title: item.title,
-        link: `${window.location.origin}${item.link}`,
+        link: `${window.location.origin}${withBase(item.link)}`,
         source: item.source,
-        markdownUrl: `${window.location.origin}${item.link}`,
+        markdownUrl: `${window.location.origin}${withBase(item.link)}`,
     };
 }
 
@@ -96,8 +99,84 @@ onMounted(() => {
             description: '获取最近更新的菜谱列表',
             inputSchema: { type: 'object', properties: {} },
             async execute() {
-                const response = await fetch('/recent.json');
+                const response = await fetch(withBase('/recent.json'));
                 return response.json();
+            },
+        },
+        {
+            name: 'search_by_ingredients',
+            description: '根据手头食材反查可做的菜（食用手册数据）',
+            inputSchema: {
+                type: 'object',
+                required: ['ingredients'],
+                properties: {
+                    ingredients: {
+                        type: 'array',
+                        items: { type: 'string' },
+                        description: '食材名称列表',
+                    },
+                    limit: { type: 'integer', minimum: 1, maximum: 30, default: 12 },
+                },
+            },
+            async execute(input) {
+                const pantry = await loadPantry();
+                if (!pantry?.enabled) return { enabled: false, items: [] };
+                const need = new Set((input?.ingredients || []).map(String));
+                const items = pantry.recipes
+                    .filter((r) => [...need].every((s) => r.stuff.includes(s)))
+                    .slice(0, input?.limit ?? 12)
+                    .map((r) => ({ name: r.name, ingredients: r.stuff, bv: r.bv }));
+                return { enabled: true, matched: items.length, items };
+            },
+        },
+        {
+            name: 'random_recipe',
+            description: '随机一道站内菜谱',
+            async execute(input) {
+                const data = await loadRecipesIndex();
+                let pool = data?.items || [];
+                if (input?.source) pool = pool.filter((r) => r.source === input.source);
+                if (!pool.length) return { found: false };
+                const item = pool[Math.floor(Math.random() * pool.length)];
+                return {
+                    found: true,
+                    title: item.title,
+                    link: `${window.location.origin}${withBase(item.link)}`,
+                    source: item.source,
+                };
+            },
+        },
+        {
+            name: 'search_tips',
+            description: '搜索 HowToCook 厨房技巧文章',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    query: { type: 'string' },
+                    limit: { type: 'integer', minimum: 1, maximum: 30, default: 10 },
+                },
+            },
+            async execute(input) {
+                const response = await fetch(withBase('/tips-index.json'));
+                const data = await response.json();
+                const keyword = String(input?.query || '').trim().toLowerCase();
+                let items = data?.items || [];
+                if (keyword) {
+                    items = items.filter(
+                        (item) =>
+                            item.title.toLowerCase().includes(keyword) ||
+                            item.category.toLowerCase().includes(keyword),
+                    );
+                }
+                return {
+                    total: data?.total ?? 0,
+                    matched: items.length,
+                    items: items.slice(0, input?.limit ?? 10).map((item) => ({
+                        title: item.title,
+                        link: `${window.location.origin}${withBase(item.link)}`,
+                        category: item.category,
+                    })),
+                };
             },
         },
     ];
@@ -110,7 +189,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    for (const controller of controllers) controller.abort();
+    for (const controller of controllers) controllers.abort();
 });
 </script>
 

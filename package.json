@@ -3,7 +3,7 @@
   "version": "1.5.0",
   "private": true,
   "type": "module",
-  "description": "老乡鸡风格菜谱 + 程序员做饭指南，合并整理的静态网站",
+  "description": "老乡鸡风格菜谱 + 程序员做饭指南 — 静态站点、Docker 镜像与 MCP Agent 就绪",
   "author": "AlexanderJ-Carter",
   "license": "MIT",
   "repository": {
@@ -11,21 +11,35 @@
     "url": "https://github.com/AlexanderJ-Carter/MyCook.git"
   },
   "homepage": "https://cook.alexander.xin",
+  "bin": {
+    "mycook": "./bin/mycook.mjs"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
     "sync": "node scripts/sync-upstream.js",
+    "sync:integrations": "node scripts/sync-integrations.js",
     "build:images": "node scripts/build-howtocook-images.js",
-    "generate": "node scripts/generate-recent.js && node scripts/generate-stats.js && node scripts/generate-agent-discovery.js",
+    "generate": "node scripts/generate-all.js",
+    "generate:legacy": "node scripts/generate-recent.js && node scripts/generate-stats.js && node scripts/generate-agent-discovery.js",
     "generate:sitemap": "node scripts/generate-sitemap.js",
     "docs:dev": "npm run generate && vitepress dev .",
     "docs:build": "npm run build:images && npm run generate && vitepress build . && npm run generate:sitemap",
+    "docs:build:fast": "npm run generate && vitepress build . && npm run generate:sitemap && node scripts/write-image-manifest.js",
     "docs:preview": "vitepress preview .",
+    "mycook": "node bin/mycook.mjs",
+    "mcp": "node mcp/server.mjs",
+    "mcp:http": "node mcp/server.mjs http",
+    "validate": "node scripts/validate.mjs",
     "build": "npm run docs:build",
     "start": "npm run docs:dev",
-    "docker:build": "docker build -t mycook:latest .",
-    "docker:run": "docker run -d -p 8080:80 mycook:latest"
+    "docker:build": "docker build --build-arg SKIP_IMAGES=1 -t mycook:lite .",
+    "docker:build:full": "docker build --build-arg SKIP_IMAGES=0 -t mycook:full .",
+    "docker:run": "docker run -d -p 8080:80 --name mycook mycook:lite"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
   },
   "devDependencies": {
     "vitepress": "^1.6.4"

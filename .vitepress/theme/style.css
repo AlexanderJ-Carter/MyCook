@@ -1,5 +1,5 @@
 /* MyCook — 窑火杂志：瓷青纸面 + 朱红印色 + 墨色标题 */
-@import url('https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
+/* 字体通过 config.mjs head 预加载，避免 @import 阻塞渲染 */
 
 :root {
     --vp-font-family-base:
@@ -34,6 +34,9 @@
     --mycook-line: rgba(28, 25, 21, 0.1);
     --mycook-display: 'Noto Serif SC', 'Songti SC', serif;
     --mycook-radius: 14px;
+
+    --mycook-pantry: #c4860a;
+    --mycook-pantry-soft: rgba(196, 134, 10, 0.11);
 
     --transition-fast: 0.16s ease;
     --transition-normal: 0.28s cubic-bezier(0.22, 1, 0.36, 1);
@@ -385,7 +388,7 @@ a.daily-pick-go:hover,
 
 .home-paths {
     display: grid;
-    grid-template-columns: 1.15fr 1fr 0.95fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
 }
 
@@ -424,6 +427,10 @@ a.daily-pick-go:hover,
     background: var(--mycook-steel);
 }
 
+.home-path.is-pantry::before {
+    background: var(--mycook-pantry);
+}
+
 .home-path::after {
     content: '';
     position: absolute;
@@ -444,6 +451,10 @@ a.daily-pick-go:hover,
     background: radial-gradient(circle, rgba(95, 88, 78, 0.12), transparent 70%);
 }
 
+.home-path.is-pantry::after {
+    background: radial-gradient(circle, rgba(196, 134, 10, 0.14), transparent 70%);
+}
+
 .home-path:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
@@ -452,6 +463,10 @@ a.daily-pick-go:hover,
 
 .home-path.is-jade:hover {
     border-color: rgba(31, 111, 91, 0.28);
+}
+
+.home-path.is-pantry:hover {
+    border-color: rgba(196, 134, 10, 0.32);
 }
 
 .home-path-top {
@@ -724,6 +739,19 @@ a.daily-pick-go:hover,
     border-bottom-color: currentColor;
 }
 
+.vp-doc h2 + ul > li,
+.vp-doc h3 + ul > li {
+    position: relative;
+    padding-left: 0.15rem;
+}
+
+.layout-cooklikehoc .vp-doc h2 + ul,
+.layout-howtocook .vp-doc h2 + ul {
+    padding: 0.5rem 0 0.5rem 0.25rem;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--vp-c-bg-soft) 60%, transparent);
+}
+
 .layout-cooklikehoc .vp-doc ul > li,
 .layout-howtocook .vp-doc ul > li {
     padding: 0.22rem 0;
@@ -776,8 +804,23 @@ a.daily-pick-go:hover,
     font-family: var(--mycook-display);
     font-size: 1.25rem;
     font-weight: 700;
-    margin: 0 0 1rem;
+    margin: 0;
     color: var(--mycook-ink);
+}
+
+.stats-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.stats-sync {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--vp-c-text-3);
 }
 
 .stats-grid {
@@ -1075,4 +1118,43 @@ a.daily-pick-go:hover,
 .daily-pick-shuffle:focus-visible {
     outline: 2px solid var(--vp-c-brand-1);
     outline-offset: 2px;
+}
+
+/* ===== Accessibility ===== */
+:focus-visible {
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .VPHero::before,
+    .VPHero .name,
+    .VPHero .text,
+    .VPHero .tagline,
+    .VPHero .actions,
+    .daily-pick,
+    .VPContent {
+        animation: none !important;
+    }
+}
+
+@media (prefers-contrast: more) {
+    :root {
+        --mycook-line: rgba(28, 25, 21, 0.22);
+    }
+
+    .stat-card,
+    .home-path,
+    .home-shelf-link {
+        border-width: 2px;
+    }
 }

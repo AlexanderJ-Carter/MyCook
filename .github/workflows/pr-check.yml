@@ -1,0 +1,54 @@
+# PR 校验：依赖安装 + 构建脚本语法检查（不部署）
+name: PR Check
+
+on:
+    pull_request:
+        branches: [main]
+
+env:
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+permissions:
+    contents: read
+
+jobs:
+    validate:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: 'npm'
+
+            - run: npm ci --prefer-offline --no-audit
+
+            - name: Check script syntax
+              run: |
+                  node --check scripts/generate-all.js
+                  node --check scripts/scan-recipes.mjs
+                  node --check scripts/sync-upstream.js
+                  node --check scripts/generate-agent-discovery.js
+                  node --check scripts/generate-sitemap.js
+                  node --check scripts/build-howtocook-images.js
+                  node --check scripts/sync-integrations.js
+                  node --check scripts/mcp-tools.mjs
+                  node --check mcp/server.mjs
+                  node --check scripts/validate.mjs
+
+            - name: Validate generated data
+              if: hashFiles('cooklikehoc/**') != '' || hashFiles('howtocook/**') != ''
+              run: npm run generate && npm run validate
+
+            - name: Build when content present
+              if: hashFiles('cooklikehoc/**') != '' || hashFiles('howtocook/**') != ''
+              env:
+                  VITEPRESS_BASE: /
+              run: npm run docs:build:fast
+
+            - name: Job summary
+              if: always()
+              run: |
+                  echo "### PR Check" >> "$GITHUB_STEP_SUMMARY"
+                  echo "- Node 22 · script syntax · validate · build (when content present)" >> "$GITHUB_STEP_SUMMARY"

@@ -1,14 +1,14 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { withBase } from "vitepress";
+import { useSiteData } from "./composables/useSiteData";
 
+const { loadRecent } = useSiteData();
 const items = ref([]);
 
 onMounted(async () => {
-  const res = await fetch(withBase("/recent.json"));
-  if (!res.ok) return;
-  const data = await res.json();
-  items.value = data.items || [];
+  const data = await loadRecent();
+  items.value = data?.items || [];
 });
 </script>
 

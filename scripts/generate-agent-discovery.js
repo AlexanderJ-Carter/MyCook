@@ -234,33 +234,40 @@ function buildJwks() {
 }
 
 function buildMcpServerCard() {
+    const mcpUrl = (process.env.MCP_URL || `${SITE_URL}/mcp`).replace(/\/$/, '');
     return {
         serverInfo: {
             name: 'mycook',
             version: VERSION,
             title: 'MyCook Recipe Discovery',
-            description: '菜谱索引与搜索的只读发现端点',
+            description: '577+ 道菜谱搜索、Markdown 读取、食材反查与随机推荐',
         },
-        endpoint: `${SITE_URL}/mcp`,
+        endpoint: mcpUrl.endsWith('/mcp') ? mcpUrl : `${mcpUrl}/mcp`,
         transport: 'streamable-http',
+        stdio: {
+            command: 'node',
+            args: ['mcp/server.mjs'],
+            env: { MYCOOK_DATA: './public' },
+        },
         capabilities: {
             tools: true,
             resources: true,
-            prompts: false,
+            prompts: true,
         },
         tools: [
-            {
-                name: 'search_recipes',
-                description: '按关键词搜索菜谱',
-            },
-            {
-                name: 'get_recipe',
-                description: '按路径获取菜谱链接',
-            },
-            {
-                name: 'get_site_stats',
-                description: '获取站点菜谱统计',
-            },
+            { name: 'search_recipes', description: '按关键词搜索站内菜谱' },
+            { name: 'get_recipe', description: '按路径获取菜谱元数据' },
+            { name: 'get_recipe_markdown', description: '读取菜谱 Markdown 正文' },
+            { name: 'get_site_stats', description: '站点分类统计' },
+            { name: 'get_recent_updates', description: '最近更新列表' },
+            { name: 'search_by_ingredients', description: '按食材反查（食用手册）' },
+            { name: 'list_pantry_ingredients', description: '可选食材 chip 列表' },
+            { name: 'random_recipe', description: '随机一道站内菜谱' },
+            { name: 'search_tips', description: '搜索厨房技巧文章' },
+        ],
+        prompts: [
+            { name: 'what_to_cook', description: '今天吃什么选菜提示' },
+            { name: 'recipe_assistant', description: '单篇菜谱问答上下文' },
         ],
     };
 }
@@ -309,6 +316,13 @@ function buildSkillMd() {
 ## Markdown 内容协商
 
 请求任意页面时携带 \`Accept: text/markdown\` 可获取 Markdown 版本（首页、帮助、关于及菜谱页）。
+
+## MCP Server
+
+- Server Card: \`/.well-known/mcp/server-card.json\`
+- 本地 stdio: \`node mcp/server.mjs\`
+- HTTP: \`npm run mcp:http\` → \`:3001/mcp\`
+- 文档: https://github.com/AlexanderJ-Carter/MyCook/blob/main/MCP.md
 
 ## 认证
 

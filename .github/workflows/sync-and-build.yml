@@ -1,15 +1,20 @@
-# 从 fork 拉取 → 同步 → 构建 → 发布到 GitHub Pages
+# 从 fork 拉取 → 同步 → 构建 → 校验 → 发布到 GitHub Pages
 name: Sync & Build
 
 on:
     push:
-        branches: [main] # 推送到 main 时自动重建并发布
+        branches: [main]
     schedule:
-        - cron: '0 2 * * *' # 每天 UTC 2:00（北京 10:00）再同步一次
-    workflow_dispatch: {}
+        - cron: '0 2 * * *' # 每天 UTC 2:00（北京 10:00）
+    workflow_dispatch:
+        inputs:
+            skip_images:
+                description: '跳过图片版构建（加快手动调试）'
+                type: boolean
+                default: false
 
 env:
-    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # 使用 Node 24 运行 actions，消除 Node 20 弃用警告
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 permissions:
     contents: read
@@ -34,26 +39,24 @@ jobs:
 
             - name: Clone upstream repos with retry
               run: |
-                  # 克隆时重试 3 次，避免网络/限流导致失败
                   clone_with_retry() {
-                    local repo=$1
-                    local dest=$2
+                    local repo=$1 dest=$2 branch=${3:-main}
                     for i in 1 2 3; do
-                      if git clone --depth 1 "$repo" "$dest"; then
-                        echo "Successfully cloned $repo"
+                      if git clone --depth 1 --branch "$branch" "$repo" "$dest" 2>/dev/null; then
+                        echo "✓ cloned $repo"
                         return 0
                       fi
-                      echo "Attempt $i failed, retrying in 5s..."
+                      echo "attempt $i failed, retry in 5s..."
                       rm -rf "$dest"
                       sleep 5
                     done
-                    echo "Failed to clone $repo after 3 attempts"
                     return 1
                   }
-
-                  clone_with_retry https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC
-                  clone_with_retry https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook
-                  clone_with_retry https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages
+                  clone_with_retry https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC main
+                  clone_with_retry https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook master
+                  if [ "${{ github.event.inputs.skip_images }}" != "true" ]; then
+                    clone_with_retry https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages master || true
+                  fi
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -64,20 +67,45 @@ jobs:
             - name: Install dependencies
               run: npm ci --prefer-offline --no-audit
 
-            - name: Sync & Build
+            - name: Sync upstream content
               env:
                   COOKLIKEHOC_PATH: ${{ github.workspace }}/upstream/CookLikeHOC
                   HOWTOCOOK_PATH: ${{ github.workspace }}/upstream/HowToCook
                   HOWTOCOOK_IMAGES_PATH: ${{ github.workspace }}/upstream/HowToCookImages
-                  COOKLIKEHOC_BRANCH: main
-                  HOWTOCOOK_BRANCH: master
+                  SYNC_PULL: '0'
                   VITEPRESS_BASE: /
-              run: |
-                  node scripts/sync-upstream.js
-                  npm run build:images || true
-                  npm run docs:build
+              run: node scripts/sync-upstream.js
 
-            # 若报错 Get Pages site failed / Not Found：请到仓库 Settings → Pages → Build and deployment → Source 选择「GitHub Actions」
+            - name: Build site
+              env:
+                  COOKLIKEHOC_PATH: ${{ github.workspace }}/upstream/CookLikeHOC
+                  HOWTOCOOK_PATH: ${{ github.workspace }}/upstream/HowToCook
+                  HOWTOCOOK_IMAGES_PATH: ${{ github.workspace }}/upstream/HowToCookImages
+                  SYNC_PULL: '0'
+                  VITEPRESS_BASE: /
+                  SKIP_IMAGES: ${{ github.event.inputs.skip_images == 'true' && '1' || '0' }}
+              run: |
+                  if [ "$SKIP_IMAGES" = "1" ]; then
+                    npm run docs:build:fast
+                  else
+                    npm run docs:build
+                  fi
+
+            - name: Validate artifacts
+              env:
+                  MYCOOK_DATA: .vitepress/dist
+              run: npm run validate
+
+            - name: Verify build output
+              run: |
+                  test -f .vitepress/dist/index.html
+                  test -f .vitepress/dist/stats.json
+                  test -f .vitepress/dist/recipes-index.json
+                  test -f .vitepress/dist/tips-index.json
+                  test -f .vitepress/dist/sitemap.xml
+                  test -f .vitepress/dist/.well-known/mcp/server-card.json
+                  echo "dist OK: $(find .vitepress/dist -type f | wc -l) files"
+
             - name: Setup Pages
               uses: actions/configure-pages@v5
 
@@ -89,3 +117,10 @@ jobs:
             - name: Deploy to GitHub Pages
               id: deployment
               uses: actions/deploy-pages@v4
+
+            - name: Summary
+              run: |
+                  echo "### Pages deployed" >> "$GITHUB_STEP_SUMMARY"
+                  echo "- URL: ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
+                  echo "- Commit: \`${{ github.sha }}\`" >> "$GITHUB_STEP_SUMMARY"
+                  echo "- Recipes: $(node -e "console.log(require('./.vitepress/dist/stats.json').total)")" >> "$GITHUB_STEP_SUMMARY"

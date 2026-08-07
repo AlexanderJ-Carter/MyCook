@@ -1,8 +1,9 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { withBase } from "vitepress";
+import { useSiteData } from "./composables/useSiteData";
 
-const recipes = ref([]);
+const { loadRecipesIndex } = useSiteData();
 const picked = ref(null);
 
 const todayLabel = computed(() => {
@@ -31,11 +32,11 @@ function reshuffle() {
   );
 }
 
+const recipes = ref([]);
+
 onMounted(async () => {
-  const res = await fetch(withBase("/recipes-index.json"));
-  if (!res.ok) return;
-  const data = await res.json();
-  recipes.value = data.items || [];
+  const data = await loadRecipesIndex();
+  recipes.value = data?.items || [];
   picked.value = pickBySeed(recipes.value, daySeed());
 });
 </script>

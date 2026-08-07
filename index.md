@@ -18,7 +18,17 @@ hero:
 
 <DailyPick />
 
+<HomeBootstrap />
+
 <HomePantry />
+
+<DifficultyShelf />
+
+<KitchenPlay />
+
+<MealPlanner />
+
+<KitchenTips />
 
 <Stats />
 
@@ -35,5 +45,8 @@ hero:
   <ul class="home-credits-list">
     <li><a href="/howtocook-images/">HowToCook 图片版</a> — 原版 Markdown 转 4K 菜谱图，分类浏览、收藏、导出 PDF（源自 <a href="https://github.com/king-jingxiang/HowToCook" target="_blank" rel="noopener">king-jingxiang/HowToCook</a>）</li>
   </ul>
-  <p class="home-credits-note">本站为合并整理项目，基于本人 fork 同步发布，非上述项目官方站点。本仓库：<a href="https://github.com/AlexanderJ-Carter/MyCook" target="_blank" rel="noopener">AlexanderJ-Carter/MyCook</a></p>
+  <ul class="home-credits-list">
+    <li><a href="https://github.com/YunYouJun/cook" target="_blank" rel="noopener">Cook · 食用手册</a> — 开冰箱食材数据（YunYouJun，MIT，仅 CSV 集成）</li>
+  </ul>
+  <p class="home-credits-note">本站为 <a href="https://alexander.xin" target="_blank" rel="noopener">alexander.xin</a> 站群项目，基于 fork 同步发布，非上述项目官方站点。仓库：<a href="https://github.com/AlexanderJ-Carter/MyCook" target="_blank" rel="noopener">AlexanderJ-Carter/MyCook</a></p>
 </section>

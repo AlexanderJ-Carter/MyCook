@@ -1,199 +1,228 @@
 # MyCook
 
 <p align="center">
-  <strong>老乡鸡风格菜谱 + 程序员做饭指南，一站搞定</strong>
+  <strong>老乡鸡风格菜谱 × 程序员做饭指南 — 一站查阅、规划、交给 AI</strong>
 </p>
 
 <p align="center">
-  <a href="https://cook.alexander.xin">在线访问</a> •
-  <a href="#功能特性">功能特性</a> •
-  <a href="#快速部署">快速部署</a> •
-  <a href="#本地开发">本地开发</a>
+  <a href="https://cook.alexander.xin">🍳 在线访问</a> ·
+  <a href="https://alexander.xin/projects">作者主页</a> ·
+  <a href="#快速开始">快速开始</a> ·
+  <a href="#部署">部署</a> ·
+  <a href="./MCP.md">Agent / MCP</a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/actions/workflow/status/AlexanderJ-Carter/MyCook/sync-and-build.yml?branch=main&label=Build&style=flat-square" alt="Build Status">
-  <img src="https://img.shields.io/github/v/release/AlexanderJ-Carter/MyCook?style=flat-square&display_name=tag" alt="Release">
-  <img src="https://img.shields.io/github/license/AlexanderJ-Carter/MyCook?style=flat-square" alt="License">
-  <img src="https://img.shields.io/github/last-commit/AlexanderJ-Carter/MyCook?style=flat-square" alt="Last Commit">
-  <img src="https://img.shields.io/docker/pulls/ghcr.io/alexanderj-carter/mycook?style=flat-square" alt="Docker Pulls">
+  <a href="https://github.com/AlexanderJ-Carter/MyCook/actions/workflows/sync-and-build.yml"><img src="https://img.shields.io/github/actions/workflow/status/AlexanderJ-Carter/MyCook/sync-and-build.yml?branch=main&label=Pages&style=flat-square" alt="Pages"></a>
+  <a href="https://github.com/AlexanderJ-Carter/MyCook/actions/workflows/docker.yml"><img src="https://img.shields.io/github/actions/workflow/status/AlexanderJ-Carter/MyCook/docker.yml?branch=main&label=Docker&style=flat-square" alt="Docker"></a>
+  <a href="https://github.com/AlexanderJ-Carter/MyCook/actions/workflows/pr-check.yml"><img src="https://img.shields.io/github/actions/workflow/status/AlexanderJ-Carter/MyCook/pr-check.yml?branch=main&label=PR%20Check&style=flat-square" alt="PR Check"></a>
+  <a href="https://github.com/AlexanderJ-Carter/MyCook/releases"><img src="https://img.shields.io/github/v/release/AlexanderJ-Carter/MyCook?style=flat-square&display_name=tag" alt="Release"></a>
+  <a href="https://github.com/AlexanderJ-Carter/MyCook/blob/main/LICENSE"><img src="https://img.shields.io/github/license/AlexanderJ-Carter/MyCook?style=flat-square" alt="License"></a>
+  <img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node">
+  <a href="https://github.com/AlexanderJ-Carter/MyCook/pkgs/container/mycook"><img src="https://img.shields.io/badge/GHCR-mycook-2496ED?style=flat-square&logo=docker&logoColor=white" alt="GHCR"></a>
 </p>
 
 ---
 
-## 简介
+## 这是什么
 
-MyCook 是一个合并整理两个优秀菜谱项目的静态网站：
+[MyCook](https://cook.alexander.xin) 是 [alexander.xin](https://alexander.xin) 站群下的**静态菜谱站**：把两个成熟开源项目合并成一张「厨房桌面」，并补上搜索、PWA、周菜单、AI Agent 等现代能力。
 
-- **[CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC)** - 《老乡鸡菜品溯源报告》整理，按烹饪方式分类
-- **[HowToCook](https://github.com/Anduin2017/HowToCook)** - 程序员在家做饭方法指南，按食材分类
+| 来源 | 入口 | 特点 |
+|------|------|------|
+| [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) | 按**做法** | 炒、炖、卤、汤…步骤详尽 |
+| [HowToCook](https://github.com/Anduin2017/HowToCook) | 按**食材** | 荤素水产、难度星级、技巧库 |
+| [HowToCook 图片版](https://github.com/king-jingxiang/HowToCook) | `/howtocook-images/` | 4K 配图浏览（可选构建） |
+| [Cook 食用手册](https://github.com/YunYouJun/cook) | 开冰箱 | 食材 CSV 轻量集成（~90KB） |
 
-使用 VitePress 构建，支持站内搜索、响应式设计、深色模式，部署在 GitHub Pages。
+当前规模：**577+ 菜谱** · **18 篇技巧** · **599 条食材反查**（构建时同步）
 
-**访问地址**：[cook.alexander.xin](https://cook.alexander.xin)
+---
 
-## 功能特性
+## 功能一览
 
-- 📖 **双源菜谱** - 整合两个项目的丰富内容，按不同维度分类
-- 🔍 **站内搜索** - 快速查找菜谱与技巧
-- 🌙 **深色模式** - 自动跟随系统，也可手动切换
-- 📱 **响应式设计** - 完美适配桌面与移动设备
-- ⏰ **每日同步** - 自动从上游仓库拉取更新
-- 🐳 **Docker 支持** - 支持容器化部署
+| 类别 | 能力 |
+|------|------|
+| 找菜 | 站内搜索 `Ctrl+K` / `/` · 三种入口 · 快捷货架 |
+| 玩厨房 | **开冰箱**食材反查 · **转一转**随机 · **一周菜单**（localStorage） |
+| 学技巧 | **厨房技巧速查**（HowToCook tips 索引） |
+| 做菜 | 收藏 · 多计时器 · 打印 · B 站搜视频 · **复制给 AI** |
+| 体验 | 深色模式 · PWA 可安装 · 无障碍快捷键 `?` |
+| Agent | OpenAPI · Agent Skills · Markdown 镜像 · **MCP Server** · WebMcp |
+| 运维 | 每日上游同步 · GHCR 镜像 · 一键安装脚本 |
 
-## 项目结构
+<details>
+<summary>📂 项目结构</summary>
 
 ```
 MyCook/
-├── .github/workflows/       # Sync & Build（克隆 fork → 同步 → 构建 → 发布）
-├── .vitepress/
-│   ├── theme/               # 自定义主题（暖色、入口卡片、双源色条）
-│   └── navSidebar.mjs       # 导航与侧栏自动生成
-├── scripts/
-│   ├── sync-upstream.js     # 同步内容到 cooklikehoc/、howtocook/，并写 public/sync-info.json
-│   ├── build-howtocook-images.js  # 构建图片版到 public/howtocook-images/（站内子路径）
-│   ├── generate-recent.js   # 生成 public/recent.json（最近更新）
-│   └── generate-stats.js    # 生成 public/stats.json（菜谱统计）
-├── public/                  # 静态资源与构建时生成的 recent.json、stats.json、sync-info.json、howtocook-images/
-├── cooklikehoc/             # CookLikeHOC 内容（同步填充，.gitignore）
-├── howtocook/               # HowToCook 内容（同步填充，.gitignore）
-├── index.md                 # 首页
-├── Dockerfile               # 多阶段：克隆 fork → 同步 → 构建 → nginx
-└── docker-compose.yml       # 生产 + 开发 profile
+├── .github/workflows/     # CI：Pages / Docker / Release / PR
+├── .vitepress/theme/      # Vue 主题与首页组件
+├── mcp/server.mjs         # MCP Server（stdio + HTTP）
+├── scripts/               # 同步、生成、校验、安装
+├── Dockerfile             # nginx + 静态 dist（lite/full）
+├── Dockerfile.mcp         # MCP sidecar（可选）
+└── docker-compose.yml     # lite / full / dev / agent
 ```
 
-> `cooklikehoc/`、`howtocook/` 及 `public/recent.json`、`public/stats.json`、`public/sync-info.json`、`public/howtocook-images/` 为同步/构建时生成，已加入 `.gitignore`。
+菜谱正文目录 `cooklikehoc/`、`howtocook/` 由 CI 克隆上游生成，不入库。
+
+</details>
 
 ---
 
-## 快速部署
+## 快速开始
 
-### GitHub Pages（推荐）
+### 在线使用
 
-1. Fork 本仓库
-2. 进入 **Settings → Pages → Build and deployment**
-3. **Source** 选择 **GitHub Actions**（不要选 "Deploy from a branch"）
-4. 推送代码后会自动构建发布
+直接访问 **[cook.alexander.xin](https://cook.alexander.xin)** — 无需安装。
 
-### Docker 部署
-
-镜像**内置克隆与同步**：构建时会从 GitHub 克隆 `AlexanderJ-Carter/CookLikeHOC` 与 `AlexanderJ-Carter/HowToCook`，无需本地预置内容。
+### 本地开发
 
 ```bash
-# 直接构建（推荐）
-docker build -t mycook:latest .
-docker run -d -p 80:80 mycook:latest
+git clone https://github.com/AlexanderJ-Carter/MyCook.git
+cd MyCook && npm install
+
+# 需上级目录有 CookLikeHOC / HowToCook，或设环境变量指向路径
+npm run sync
+npm run docs:dev          # http://localhost:5173
 ```
 
-或使用已发布镜像：
+### 校验与构建
+
+```bash
+npm run generate          # stats / index / tips / agent 发现
+npm run validate          # 冒烟测试 JSON + MCP 工具
+npm run docs:build:fast   # 快速构建（跳过图片版）
+npm run docs:build        # 完整构建（含图片版）
+```
+
+---
+
+## 部署
+
+### GitHub Pages（推荐 Fork 部署）
+
+1. Fork 本仓库
+2. **Settings → Pages → Source** 选 **GitHub Actions**
+3. 推送 `main` → 自动 **Sync & Build** 发布
+
+### Docker（自托管 / Agent）
+
+```bash
+# 最快：拉取官方轻量镜像
+./scripts/install.sh
+# Windows: .\scripts\install.ps1
+
+# 或 CLI
+npm run mycook -- docker:pull
+npm run mycook -- docker:lite     # 本地构建 lite
+npm run mycook -- docker:full     # 含图片版
+```
+
+| 镜像 | 标签 | 说明 |
+|------|------|------|
+| 站点 lite | `:latest` `:lite` | ~600MB 静态站，日常推荐 |
+| 站点 full | `:full` | + 图片版子站（Actions 手动构建） |
+| MCP | `mycook-mcp:latest` | Streamable HTTP，`:3001/mcp` |
 
 ```bash
 docker pull ghcr.io/alexanderj-carter/mycook:latest
-docker run -d -p 80:80 ghcr.io/alexanderj-carter/mycook:latest
+docker run -d -p 8080:80 --name mycook ghcr.io/alexanderj-carter/mycook:latest
+
+# 可选 MCP sidecar
+docker compose --profile agent up -d --build
 ```
 
-访问 http://localhost 。如需指定其它仓库或分支，可使用 build-arg：`docker build --build-arg COOKLIKEHOC_BRANCH=main --build-arg HOWTOCOOK_BRANCH=master -t mycook .`
+详见 [DOCKER.md](./DOCKER.md) · 镜像清单：`/image-manifest.json`
 
 ---
 
-## 本地开发
+## CI / 发布流程
 
-### 环境要求
+| 工作流 | 触发 | 作用 |
+|--------|------|------|
+| [Sync & Build](.github/workflows/sync-and-build.yml) | push main · 每日 cron · 手动 | 同步上游 → 构建 → `validate` → Pages |
+| [Docker](.github/workflows/docker.yml) | push main/tag · 手动 | 推送 `mycook` + `mycook-mcp` 到 GHCR |
+| [Release](.github/workflows/release.yml) | push tag `v*` | 创建 GitHub Release + 拉取说明 |
+| [PR Check](.github/workflows/pr-check.yml) | PR → main | 语法检查 · generate · validate · 构建 |
 
-- Node.js >= 18
-- npm
-
-### 快速开始
+**发版步骤**（维护者）：
 
 ```bash
-# 克隆仓库
-git clone https://github.com/AlexanderJ-Carter/MyCook.git
-cd MyCook
-
-# 安装依赖
-npm install
-
-# 同步上游内容（需要 CookLikeHOC 和 HowToCook 在上级目录）
-COOKLIKEHOC_PATH=../CookLikeHOC HOWTOCOOK_PATH=../HowToCook npm run sync
-
-# 启动开发服务器
-npm run docs:dev
-
-# 构建静态文件
-npm run docs:build
-
-# 预览构建结果
-npm run docs:preview
+# 1. 更新 package.json 版本与 CHANGELOG
+# 2. 提交并打 tag
+git tag v1.5.0 && git push origin v1.5.0
+# → 自动：Release + Docker 版本标签 + Pages 已在 main 上持续部署
 ```
+
+---
+
+## Agent / MCP
+
+面向 Cursor、Claude Desktop 等 AI 工具：
+
+```bash
+npm run generate
+npm run mcp          # stdio（Cursor 本地配置）
+npm run mcp:http     # http://127.0.0.1:3001/mcp
+```
+
+| 能力 | GitHub Pages | Docker |
+|------|:------------:|:------:|
+| JSON / OpenAPI / Skills | ✅ | ✅ |
+| `Accept: text/markdown` | ❌ | ✅ |
+| MCP HTTP sidecar | ❌ | ✅ |
+
+文档：[MCP.md](./MCP.md) · [INTEGRATIONS.md](./INTEGRATIONS.md) · 站点 [/ai-agents](https://cook.alexander.xin/ai-agents)
+
+---
+
+## 环境变量
+
+| 变量 | 说明 |
+|------|------|
+| `COOKLIKEHOC_PATH` / `HOWTOCOOK_PATH` | 上游仓库本地路径 |
+| `SKIP_IMAGES=1` | 跳过图片版 |
+| `SKIP_INTEGRATIONS=1` | 跳过食用手册 CSV 同步 |
+| `MYCOOK_DATA` | MCP 数据目录（默认 `./public`） |
+| `MCP_PORT` | MCP HTTP 端口（默认 3001） |
+| `SYNC_PULL=0` | 同步时不 pull 上游 |
 
 ---
 
 ## 同步机制
 
-- **CI**：每次 push 到 `main` 或每日定时（UTC 2:00，北京 10:00），会克隆 `AlexanderJ-Carter/CookLikeHOC`、`AlexanderJ-Carter/HowToCook`、`king-jingxiang/HowToCook`（图片版）到 `upstream/`，执行 `sync-upstream.js`、`build:images`（输出 `public/howtocook-images/`），生成 `recent.json`、`stats.json`、`sync-info.json`，再构建并部署到 GitHub Pages。
-- **本地**：将 CookLikeHOC、HowToCook 放在上级目录或设置 `COOKLIKEHOC_PATH`、`HOWTOCOOK_PATH`，执行 `npm run sync` 后 `npm run docs:build`。
-- **手动触发**：**Actions → Sync & Build → Run workflow** 可立即同步并发布。
-
-| 场景        | 操作                                                                                      |
-| ----------- | ----------------------------------------------------------------------------------------- |
-| 更新菜谱    | 在 CookLikeHOC 或 HowToCook fork 中修改并推送，再在 MyCook 触发 Sync & Build 或等每日定时 |
-| 改主题/首页 | 直接改 MyCook 内文件，推送到 main 后自动重建                                              |
+- **自动**：push `main` 或每天 10:00（北京）从 fork 拉取最新菜谱
+- **手动**：Actions → **Sync & Build** → Run workflow
+- **改菜谱**：到 [CookLikeHOC](https://github.com/AlexanderJ-Carter/CookLikeHOC) / [HowToCook](https://github.com/AlexanderJ-Carter/HowToCook) fork 推送，等下次同步
+- **改站点功能**：直接改 MyCook 本仓库
 
 ---
 
 ## 故障排查
 
-- **Get Pages site failed / Not Found**：到仓库 **Settings → Pages → Build and deployment**，将 **Source** 选为 **GitHub Actions**（不要选 “Deploy from a branch”），保存后再重新跑一次 Actions。
-- **/howtocook-images/ 404 或显示「构建未就绪」**：图片版在 CI 中可能构建失败。打开 **Actions → 最近一次 Sync & Build → Install & Sync & Build** 日志，搜索 `build-howtocook-images` 查看报错；修复后重新跑 workflow。图片版仓库仅有 `pnpm-lock.yaml`，构建脚本会优先用 `corepack pnpm install --frozen-lockfile && pnpm run build`，若 pnpm 不可用会自动回退 `npm install && npm run build`。
-- **Settings → Pages** 确认 Source 为 **GitHub Actions**
-- DNS: `cook.alexander.xin` 的 CNAME 记录指向 `alexanderj-carter.github.io`
-- **Actions** 里确认最近一次 **Sync & Build** 成功
+| 现象 | 处理 |
+|------|------|
+| `Get Pages site failed` | Settings → Pages → Source 选 **GitHub Actions** |
+| 图片版 404 | 查看 `build-howtocook-images` 日志；或 `SKIP_IMAGES=1` |
+| 开冰箱无数据 | 构建需联网同步 CSV；本地 `npm run sync:integrations` |
+| 自定义域名 | CNAME → `alexanderj-carter.github.io` |
 
 ---
 
 ## 致谢
 
-本项目内容来源于以下开源项目，向原作者致以诚挚感谢：
-
-- **[HowToCook](https://github.com/Anduin2017/HowToCook)** by [Anduin2017](https://github.com/Anduin2017) - 程序员在家做饭方法指南
-- **[CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC)** by [Gar-b-age](https://github.com/Gar-b-age) - 像老乡鸡那样做饭
-
-本仓库非上述项目官方站点，为个人整理维护。
-
-### 衍生（站内子路径）
-
-- **HowToCook 图片版** — 集成在本站子路径 `/howtocook-images/`（与 cooklikehoc、howtocook 一样不跳转外站），源自 [king-jingxiang/HowToCook](https://github.com/king-jingxiang/HowToCook)。构建时克隆该仓库并执行 `build:images` 输出到 `public/howtocook-images/`。本地可设 `SKIP_IMAGES=1` 跳过图片版构建，或 `HOWTOCOOK_IMAGES_PATH=../HowToCookImages` 使用本地目录。
+- [HowToCook](https://github.com/Anduin2017/HowToCook) — Anduin2017 及社区
+- [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) — Gar-b-age
+- [HowToCook 图片版](https://github.com/king-jingxiang/HowToCook) — king-jingxiang
+- [Cook · 食用手册](https://github.com/YunYouJun/cook) — YunYouJun（MIT，仅 CSV 集成）
 
 ## 许可证
 
-本项目采用 [MIT License](./LICENSE) 开源。
+MIT License · 菜谱内容版权归各原作者所有
 
-内容版权归原作者所有。
+## 更多
 
-## 更新日志
-
-### v1.2.0
-
-- 新增阅读进度条和回到顶部按钮
-- 新增自定义 404 页面
-- 新增帮助和关于页面
-- 优化暗色模式配色
-- 完善 Open Graph 和 SEO 结构化数据
-- CI/CD 流水线优化（并发控制、多架构 Docker 镜像）
-- 字体加载优化（DNS 预连接）
-
-查看 [Releases](https://github.com/AlexanderJ-Carter/MyCook/releases) 了解更多历史版本。
-
-## 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
-3. 提交更改 (`git commit -m 'feat: add amazing feature'`)
-4. 推送到分支 (`git push origin feature/amazing-feature`)
-5. 提交 Pull Request
-
-## Star History
-
-如果这个项目对你有帮助，欢迎在 GitHub 上点个 ⭐ 支持一下！
+- [CHANGELOG.md](./CHANGELOG.md) · [GitHub Releases](https://github.com/AlexanderJ-Carter/MyCook/releases)
+- [CONTRIBUTING.md](./CONTRIBUTING.md) · [AGENTS.md](./AGENTS.md)（维护者）

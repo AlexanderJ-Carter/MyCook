@@ -1,119 +1,66 @@
 # 贡献指南
 
-感谢你对 MyCook 项目的兴趣！
+感谢关注 MyCook！
 
-## 项目简介
+## 项目是什么
 
-MyCook 是一个合并整理 [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) 和 [HowToCook](https://github.com/Anduin2017/HowToCook) 的菜谱网站，使用 VitePress 构建，部署在 GitHub Pages。
+静态菜谱站 + Docker 镜像 + 可选 MCP Agent。内容来自 [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) 与 [HowToCook](https://github.com/Anduin2017/HowToCook) 的 fork 同步，站点功能在本仓库开发。
 
-## 如何贡献
+## 贡献方式
 
 ### 报告问题
 
-如果你发现网站显示异常或有改进建议：
+1. 搜索 [现有 Issues](https://github.com/AlexanderJ-Carter/MyCook/issues)
+2. 新建 Issue：现象、复现步骤、浏览器/环境、期望结果
 
-1. 查看 [现有 Issues](https://github.com/AlexanderJ-Carter/MyCook/issues) 确认问题未被报告
-2. 创建新 Issue，描述问题、复现步骤和预期结果
+### 改站点功能（本仓库）
 
-### 提交改进
+| 区域 | 路径 |
+|------|------|
+| 主题与组件 | `.vitepress/theme/` |
+| 首页 | `index.md` |
+| 构建脚本 | `scripts/` |
+| MCP | `mcp/`、`scripts/mcp-tools.mjs` |
+| CI | `.github/workflows/` |
 
-#### 网站相关修改
+### 改菜谱正文（上游 fork）
 
-直接在 MyCook 仓库修改：
+- [AlexanderJ-Carter/HowToCook](https://github.com/AlexanderJ-Carter/HowToCook)
+- [AlexanderJ-Carter/CookLikeHOC](https://github.com/AlexanderJ-Carter/CookLikeHOC)
 
-- 主题样式：`.vitepress/theme/style.css`
-- 首页配置：`index.md`
-- 构建脚本：`scripts/`
-- 工作流配置：`.github/workflows/`
-
-#### 菜谱内容修改
-
-菜谱内容来源于上游仓库，请在对应仓库提交修改：
-
-- **HowToCook 内容**：在 [你的 HowToCook fork](https://github.com/AlexanderJ-Carter/HowToCook) 修改
-- **CookLikeHOC 内容**：在 [你的 CookLikeHOC fork](https://github.com/AlexanderJ-Carter/CookLikeHOC) 修改
-
-修改后，MyCook 会在下次同步时自动更新。
+推送后等待 MyCook **Sync & Build** 自动同步（或手动触发 Actions）。
 
 ## 本地开发
 
-### 环境要求
+```bash
+git clone https://github.com/AlexanderJ-Carter/MyCook.git
+cd MyCook && npm install
+npm run sync              # 需上游仓库路径
+npm run docs:dev
+```
 
-- Node.js >= 18
-- npm
-
-### 快速开始
+### 提交前检查
 
 ```bash
-# 克隆仓库
-git clone https://github.com/AlexanderJ-Carter/MyCook.git
-cd MyCook
-
-# 安装依赖
-npm install
-
-# 同步上游内容（需要 CookLikeHOC 和 HowToCook 在上级目录）
-npm run sync
-
-# 启动开发服务器
-npm run docs:dev
-
-# 构建生产版本
-npm run docs:build
+npm run generate
+npm run validate          # JSON + MCP 冒烟测试
+npm run docs:build:fast   # 快速构建验证
 ```
 
-### 目录结构
+PR 会触发 **PR Check** 工作流（语法检查 + 有内容时完整 validate/build）。
 
-```
-MyCook/
-├── .vitepress/          # VitePress 配置
-│   ├── theme/           # 主题自定义
-│   └── navSidebar.mjs   # 导航和侧边栏配置
-├── cooklikehoc/         # CookLikeHOC 同步内容
-├── howtocook/           # HowToCook 同步内容
-├── scripts/             # 构建脚本
-├── public/              # 静态资源
-├── index.md             # 首页配置
-└── package.json
-```
+## Pull Request
 
-### 自定义主题
+1. 从 `main` 拉分支
+2. 聚焦单一改动，说明动机
+3. 标题格式：`feat:` / `fix:` / `docs:` / `ci:` + 简述
 
-主题文件位于 `.vitepress/theme/`：
+## 发版（维护者）
 
-- `style.css` - 全局样式
-- `Layout.vue` - 布局组件
-- `RecentUpdates.vue` - 最近更新组件
-
-## Pull Request 规范
-
-1. 从 `main` 分支创建功能分支
-2. 确保本地测试通过
-3. PR 标题清晰描述改动内容
-4. 关联相关 Issue（如有）
-
-### Commit 信息格式
-
-```
-类型: 简短描述
-
-# 示例
-feat: 添加深色模式支持
-fix: 修复移动端导航显示问题
-docs: 更新 README 部署说明
-style: 优化首页卡片样式
-```
-
-类型说明：
-- `feat`：新功能
-- `fix`：修复问题
-- `docs`：文档更新
-- `style`：样式调整
-- `refactor`：代码重构
-- `chore`：构建/工具相关
+1. 更新 `package.json` 版本与 `CHANGELOG.md`
+2. `git tag vX.Y.Z && git push origin vX.Y.Z`
+3. 自动触发：**Release** · **Docker** 版本标签 · **Pages**（main 已持续部署）
 
 ## 许可证
 
-本项目采用 MIT 许可证。贡献的代码将按照相同许可证发布。
-
-内容来源请参阅 [LICENSE](./LICENSE) 中的致谢声明。
+贡献代码以 MIT 发布。菜谱内容版权归各上游作者所有。

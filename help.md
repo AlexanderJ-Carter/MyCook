@@ -105,6 +105,27 @@
 - 分类数量
 - 各来源菜谱数量
 
+## 🧊 开冰箱 · 转一转
+
+首页下方的「Play Kitchen」区块（也可从入口卡片 **04 · 开冰箱** 跳转）：
+
+- **开冰箱**：勾选手头食材，从 [Cook 食用手册](https://github.com/YunYouJun/cook) 数据反查可做的菜（含 B 站视频链接），并尝试匹配站内菜谱标题
+- **转一转**：在 577+ 道站内菜谱里随机抽一道，可按「做法库 / 食材指南」筛选
+
+数据在构建时从上游 CSV 同步为约 90KB 的 `pantry.json`，页面组件异步加载。详见 [INTEGRATIONS.md](./INTEGRATIONS.md)。
+
+## 📅 一周菜单
+
+首页 **「一周吃什么」**：为周一～周日选菜，存在本机浏览器；可搜索、随机填满、清空。
+
+## 📚 厨房技巧
+
+首页 **「厨房技巧速查」** 汇总 HowToCook 技巧（焯水、油温、微波炉等）。
+
+## 🤖 发给 AI
+
+菜谱页工具栏 **AI** 按钮：复制「提示词 + 正文」到任意聊天模型。开发者见 [/ai-agents](/ai-agents)。
+
 ## 🔔 通知权限
 
 烹饪计时器支持浏览器通知：
@@ -124,11 +145,68 @@
 
 ## 💡 使用技巧
 
-1. **快捷键搜索**：养成使用 `Ctrl+K` 快速搜索的习惯
-2. **收藏常用菜谱**：将经常做的菜加入收藏，方便快速访问
-3. **多设备同步**：使用浏览器的同步功能，可以在不同设备间同步收藏
-4. **打印备菜**：打印菜谱后贴在冰箱上，方便备菜时查看
-5. **计时器组合**：使用多个计时器管理复杂的烹饪流程
+1. **快捷键搜索**：`Ctrl+K`（Mac: `Cmd+K`）或 `/` 打开搜索；按 `?` 查看全部快捷键
+2. **收藏常用菜谱**：收藏保存在本机浏览器，清除站点数据会丢失
+3. **随机一道**：工具栏「随机」、首页「转一转」或「今日推荐」
+4. **规划一周**：首页「一周吃什么」排菜单
+5. **手边有什么**：首页「开冰箱」勾选食材
+6. **发给 AI**：菜谱页工具栏 AI 按钮复制正文
+7. **复制 / 分享**：工具栏一键操作
+8. **打印备菜**：打印时隐藏导航，只保留正文
+
+## 🐳 一键部署
+
+### Docker（推荐）
+
+```bash
+# Linux / macOS / Git Bash
+./scripts/install.sh                  # 拉取轻量镜像并启动（默认）
+./scripts/install.sh docker-build     # 本地构建轻量版
+./scripts/install.sh docker-full      # 完整版（含图片版，体积大）
+
+# Windows PowerShell
+.\scripts\install.ps1
+.\scripts\install.ps1 -Mode docker-full
+```
+
+或使用 CLI：
+
+```bash
+npm run mycook -- docker:pull    # 拉取 GHCR 轻量镜像
+npm run mycook -- docker:lite    # 本地构建轻量版
+npm run mycook -- docker:full    # 完整版
+npm run mycook -- docker:stop    # 停止
+```
+
+启动后访问 http://localhost:8080 ，查看镜像内容构成：
+
+```bash
+curl http://localhost:8080/image-manifest.json
+```
+
+### 镜像说明
+
+| 变体 | 标签 | 约体积 | 包含 |
+|------|------|--------|------|
+| **lite**（默认） | `:latest` `:lite` | nginx ~25MB + 站点 ~580MB | 双源菜谱、搜索、PWA、Agent JSON |
+| **full** | `:full` | + ~230MB | 额外含 `/howtocook-images/` |
+| **mcp** | `mycook-mcp:latest` | 独立 sidecar | Streamable HTTP MCP，`:3001/mcp` |
+
+运行时镜像**只有 nginx + 静态文件**，不含 Node.js。体积主要来自菜谱配图与 Markdown 页面。
+
+### Node 本地开发
+
+```bash
+npm install
+npm run sync          # 需上级目录有上游仓库
+npm run mycook -- dev
+```
+
+## 🔗 相关站点
+
+- [alexander.xin](https://alexander.xin) — 作者主站
+- [alexander.xin/projects](https://alexander.xin/projects) — 全部项目
+- [GitHub 仓库](https://github.com/AlexanderJ-Carter/MyCook) — 源码与 Issue
 
 ---
 

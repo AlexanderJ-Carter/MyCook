@@ -30,8 +30,11 @@ MyCook 是一个合并整理两个菜谱项目的静态网站：
 
 | 文件                         | 用途                                                |
 | ---------------------------- | --------------------------------------------------- |
-| `scripts/sync-upstream.js`   | 从上游仓库同步内容到 `cooklikehoc/` 和 `howtocook/` |
-| `scripts/generate-recent.js` | 扫描文件生成最近更新列表                            |
+| `scripts/generate-all.js`    | 一次扫描生成 recent / stats / index，再跑 agent-discovery |
+| `scripts/scan-recipes.mjs`   | 共享菜谱文件扫描逻辑 |
+| `scripts/mcp-tools.mjs`      | MCP / Agent 共享只读工具 |
+| `mcp/server.mjs`             | MCP Server（stdio + HTTP） |
+| `scripts/build-howtocook-images.js` | 构建图片版到 `public/howtocook-images/` |
 
 ### CI/CD
 
@@ -76,6 +79,10 @@ npm run docs:build
 
 # 预览
 npm run docs:preview
+
+# MCP（需先 npm run generate）
+npm run mcp          # stdio
+npm run mcp:http     # HTTP :3001
 ```
 
 ## 内容来源
@@ -138,6 +145,14 @@ CI 在构建时会克隆这两个仓库并同步内容。
 2. **修改菜谱内容请到上游仓库**，本仓库只做同步
 3. **构建前需要先同步内容**，否则导航会为空
 4. **recent.json 在构建时生成**，存放在 `public/`
+5. **Windows 勿创建 `agents.md`**，会与 `AGENTS.md` 冲突；用户面向页面用 `ai-agents.md`
+
+## Agent / MCP
+
+- 发现文件：`scripts/generate-agent-discovery.js` → `public/.well-known/*`
+- MCP 工具逻辑：`scripts/mcp-tools.mjs`（与 `mcp/server.mjs` 共享）
+- 浏览器 WebMcp：`.vitepress/theme/WebMcp.vue`
+- 文档：[MCP.md](./MCP.md) · 站点 [/ai-agents](/ai-agents)
 
 ## 上游许可证
 

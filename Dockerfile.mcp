@@ -1,0 +1,49 @@
+# MyCook MCP sidecar — 构建静态 dist 并暴露 Streamable HTTP MCP
+FROM node:22-alpine AS builder
+
+RUN apk add --no-cache git
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --prefer-offline --no-audit
+
+COPY . .
+RUN mkdir -p upstream cooklikehoc howtocook public
+
+ARG COOKLIKEHOC_REPO=https://github.com/AlexanderJ-Carter/CookLikeHOC.git
+ARG HOWTOCOOK_REPO=https://github.com/AlexanderJ-Carter/HowToCook.git
+
+RUN git clone --depth 1 --branch main "${COOKLIKEHOC_REPO}" /app/upstream/CookLikeHOC \
+    && git clone --depth 1 --branch master "${HOWTOCOOK_REPO}" /app/upstream/HowToCook
+
+ENV COOKLIKEHOC_PATH=/app/upstream/CookLikeHOC
+ENV HOWTOCOOK_PATH=/app/upstream/HowToCook
+ENV SYNC_PULL=0
+ENV SKIP_IMAGES=1
+ENV VITEPRESS_BASE=/
+
+RUN node scripts/sync-upstream.js \
+    && npm run docs:build:fast
+
+FROM node:22-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --omit=dev --prefer-offline --no-audit
+
+COPY scripts/mcp-tools.mjs scripts/mcp-tools.mjs
+COPY mcp/server.mjs mcp/server.mjs
+COPY --from=builder /app/.vitepress/dist /data
+
+ENV MYCOOK_DATA=/data
+ENV MCP_PORT=3001
+ENV SITE_URL=http://localhost:8080
+
+EXPOSE 3001
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3001/health || exit 1
+
+CMD ["node", "mcp/server.mjs", "http"]

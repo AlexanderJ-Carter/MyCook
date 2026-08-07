@@ -1,10 +1,13 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, withBase } from "vitepress";
+import { useSiteData } from "./composables/useSiteData";
 
 const route = useRoute();
+const { loadRecipesIndex } = useSiteData();
 const favorites = ref([]);
 const panel = ref(null); // 'favorites' | 'timer' | null
+const toast = ref("");
 const timers = ref([]);
 const timerName = ref("");
 const timerMinutes = ref(5);
@@ -22,9 +25,14 @@ const isFavorite = computed(() =>
 );
 
 const loadFavorites = () => {
-  const stored = localStorage.getItem("mycook-favorites");
-  if (!stored) return;
-  favorites.value = JSON.parse(stored);
+  try {
+    const stored = localStorage.getItem("mycook-favorites");
+    if (!stored) return;
+    const parsed = JSON.parse(stored);
+    if (Array.isArray(parsed)) favorites.value = parsed;
+  } catch {
+    localStorage.removeItem("mycook-favorites");
+  }
 };
 
 const saveFavorites = () => {
@@ -62,6 +70,70 @@ const printRecipe = () => {
   window.print();
 };
 
+const showToast = (msg) => {
+  toast.value = msg;
+  setTimeout(() => {
+    toast.value = "";
+  }, 2000);
+};
+
+const copyLink = async () => {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    showToast("链接已复制");
+  } catch {
+    showToast("复制失败");
+  }
+};
+
+const shareRecipe = async () => {
+  const title = document.querySelector("h1")?.textContent?.trim() || "MyCook 菜谱";
+  if (navigator.share) {
+    try {
+      await navigator.share({ title, url: window.location.href });
+      return;
+    } catch (err) {
+      if (err?.name === "AbortError") return;
+    }
+  }
+  await copyLink();
+};
+
+const goRandom = async () => {
+  const data = await loadRecipesIndex();
+  const items = data?.items || [];
+  if (!items.length) return;
+  const item = items[Math.floor(Math.random() * items.length)];
+  window.location.href = withBase(item.link);
+};
+
+const openVideo = () => {
+  const title = document.querySelector("h1")?.textContent?.trim() || "菜谱";
+  const url = `https://search.bilibili.com/all?keyword=${encodeURIComponent(`${title} 做法`)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+
+const copyForAi = async () => {
+  const title = document.querySelector("h1")?.textContent?.trim() || "菜谱";
+  const body =
+    document.querySelector(".vp-doc")?.innerText?.trim() ||
+    document.querySelector(".content-container")?.innerText?.trim() ||
+    "";
+  const prompt = `你是 MyCook 厨房助手。以下是「${title}」的菜谱正文。请根据用户问题回答：备菜顺序、食材替换、火候、计时、份量换算等。若正文未提及，请明确说明并给出合理建议。
+
+---
+${body}
+---
+
+来源：${window.location.href}`;
+  try {
+    await navigator.clipboard.writeText(prompt);
+    showToast("已复制给 AI");
+  } catch {
+    showToast("复制失败");
+  }
+};
+
 const togglePanel = (name) => {
   panel.value = panel.value === name ? null : name;
 };
@@ -69,6 +141,9 @@ const togglePanel = (name) => {
 const addTimer = () => {
   const name = timerName.value.trim();
   if (!name) return;
+  if ("Notification" in window && Notification.permission === "default") {
+    Notification.requestPermission();
+  }
   const totalSeconds = Math.max(1, Number(timerMinutes.value) || 1) * 60;
   timers.value.push({
     id: Date.now(),
@@ -125,6 +200,21 @@ const tick = () => {
   }
 };
 
+const hasActiveTimers = computed(() =>
+  timers.value.some(
+    (t) => t.isRunning && !t.isPaused && t.remainingSeconds > 0,
+  ),
+);
+
+watch(hasActiveTimers, (active) => {
+  if (active && !intervalId) {
+    intervalId = setInterval(tick, 1000);
+  } else if (!active && intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+});
+
 watch(
   () => route.path,
   () => {
@@ -134,7 +224,6 @@ watch(
 
 onMounted(() => {
   loadFavorites();
-  intervalId = setInterval(tick, 1000);
 });
 
 onUnmounted(() => {
@@ -164,6 +253,46 @@ onUnmounted(() => {
           />
         </svg>
         <span class="rt-label">{{ isFavorite ? "已藏" : "收藏" }}</span>
+      </button>
+
+      <button type="button" class="rt-btn" title="复制链接" @click="copyLink">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
+        <span class="rt-label">链接</span>
+      </button>
+
+      <button type="button" class="rt-btn" title="分享" @click="shareRecipe">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="18" cy="5" r="3" />
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="19" r="3" />
+          <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98" />
+        </svg>
+        <span class="rt-label">分享</span>
+      </button>
+
+      <button type="button" class="rt-btn" title="随机一道菜" @click="goRandom">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
+        </svg>
+        <span class="rt-label">随机</span>
+      </button>
+
+      <button type="button" class="rt-btn" title="B 站搜做法视频" @click="openVideo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="5 3 19 12 5 21 5 3" />
+        </svg>
+        <span class="rt-label">视频</span>
+      </button>
+
+      <button type="button" class="rt-btn rt-btn-ai" title="复制正文给 AI 助手" @click="copyForAi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 3v2M12 19v2M5 12H3M21 12h-2M7 7l-1.5-1.5M18.5 18.5L17 17M7 17l-1.5 1.5M18.5 5.5L17 7" />
+          <circle cx="12" cy="12" r="4" />
+        </svg>
+        <span class="rt-label">AI</span>
       </button>
 
       <button type="button" class="rt-btn" title="打印" @click="printRecipe">
@@ -312,6 +441,10 @@ onUnmounted(() => {
         </div>
       </div>
     </Transition>
+
+    <Transition name="rt-toast">
+      <p v-if="toast" class="rt-toast" role="status">{{ toast }}</p>
+    </Transition>
   </div>
 </template>
 
@@ -362,6 +495,12 @@ onUnmounted(() => {
 
 .rt-btn.active {
   color: var(--vp-c-brand-1);
+}
+
+.rt-btn-ai:hover,
+.rt-btn-ai.open {
+  color: #7c5cbf;
+  border-color: rgba(124, 92, 191, 0.35);
 }
 
 .rt-btn svg {
@@ -550,10 +689,47 @@ onUnmounted(() => {
   transform: translateY(8px);
 }
 
+.rt-toast {
+  position: fixed;
+  bottom: 9rem;
+  right: 1.5rem;
+  margin: 0;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  background: var(--mycook-ink);
+  color: var(--mycook-paper);
+  font-size: 0.82rem;
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+}
+
+.rt-toast-enter-active,
+.rt-toast-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.rt-toast-enter-from,
+.rt-toast-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
 @media (max-width: 768px) {
   .recipe-toolbar {
     right: 1rem;
     bottom: 4.75rem;
+    max-width: calc(100vw - 2rem);
+  }
+
+  .recipe-toolbar-bar {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .recipe-toolbar-bar::-webkit-scrollbar {
+    display: none;
   }
 
   .rt-label {

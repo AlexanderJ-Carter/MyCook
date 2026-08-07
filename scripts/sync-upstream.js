@@ -12,6 +12,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -63,11 +64,22 @@ function copyRecurse(src, dest, excludeSet) {
   }
 }
 
+function pullLatest(dir) {
+  const gitDir = path.join(dir, '.git');
+  if (!fs.existsSync(gitDir)) return;
+  console.log('[sync] 拉取最新:', dir);
+  const r = spawnSync('git', ['pull', '--ff-only'], { cwd: dir, stdio: 'inherit' });
+  if (r.status !== 0) {
+    console.warn('[sync] git pull 失败，继续使用本地版本:', dir);
+  }
+}
+
 function syncCookLikeHOC() {
   if (!fs.existsSync(COOKLIKEHOC_SRC)) {
     console.warn('[sync] CookLikeHOC 路径不存在，跳过:', COOKLIKEHOC_SRC);
     return;
   }
+  if (process.env.SYNC_PULL !== '0') pullLatest(COOKLIKEHOC_SRC);
   ensureDir(COOKLIKEHOC_DEST);
   copyRecurse(COOKLIKEHOC_SRC, COOKLIKEHOC_DEST, COOKLIKEHOC_EXCLUDE);
   // README 中引用 /banner.png，复制到 public 以便构建时解析
@@ -85,6 +97,7 @@ function syncHowToCook() {
     console.warn('[sync] HowToCook 路径不存在，跳过:', HOWTOCOOK_SRC);
     return;
   }
+  if (process.env.SYNC_PULL !== '0') pullLatest(HOWTOCOOK_SRC);
   ensureDir(HOWTOCOOK_DEST);
   for (const dir of HOWTOCOOK_COPY_DIRS) {
     const s = path.join(HOWTOCOOK_SRC, dir);

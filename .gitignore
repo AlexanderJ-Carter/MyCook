@@ -9,6 +9,8 @@ node_modules/
 public/recent.json
 public/stats.json
 public/recipes-index.json
+public/tips-index.json
+public/pantry.json
 public/sync-info.json
 public/banner.png
 public/howtocook-images/

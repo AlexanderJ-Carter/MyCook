@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "mycook": {
+      "command": "node",
+      "args": ["mcp/server.mjs"],
+      "cwd": "/path/to/MyCook",
+      "env": {
+        "MYCOOK_DATA": "/path/to/MyCook/public",
+        "SITE_URL": "https://cook.alexander.xin"
+      }
+    }
+  }
+}
