@@ -1,6 +1,6 @@
 // Service Worker for MyCook PWA
-const CACHE_NAME = 'mycook-cache-v2';
-const STATIC_CACHE = 'mycook-static-v2';
+const CACHE_NAME = 'mycook-cache-v5';
+const STATIC_CACHE = 'mycook-static-v5';
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, '');
 const withBase = (value) => `${BASE_PATH}${value}`;
 
@@ -11,7 +11,11 @@ const STATIC_ASSETS = [
   withBase('/logo.svg'),
   withBase('/favicon.svg'),
   withBase('/stats.json'),
-  withBase('/recent.json')
+  withBase('/recent.json'),
+  withBase('/recipes-index.json'),
+  withBase('/sync-info.json'),
+  withBase('/pantry.json'),
+  withBase('/tips-index.json')
 ];
 
 // 安装事件

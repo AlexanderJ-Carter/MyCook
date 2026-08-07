@@ -67,6 +67,6 @@ Docker 部署比 GitHub Pages 多：
 
 ## CI 构建
 
-- push `main` → 自动推送 `mycook:latest` + `mycook-mcp:latest`
-- push tag `v*` → 额外打 semver 标签 + GitHub Release
+- push tag `v*` → 推送 `mycook` / `mycook-mcp`（含 `latest` 与 semver 标签）+ **Release**
+- push `main` → 仅 **Sync & Build**（Pages），不重复打 Docker 包
 - Actions → **Docker Build & Push** → 手动选 `full` 或 MCP

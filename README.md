@@ -142,18 +142,18 @@ docker compose --profile agent up -d --build
 
 | 工作流 | 触发 | 作用 |
 |--------|------|------|
-| [Sync & Build](.github/workflows/sync-and-build.yml) | push main · 每日 cron · 手动 | 同步上游 → 构建 → `validate` → Pages |
-| [Docker](.github/workflows/docker.yml) | push main/tag · 手动 | 推送 `mycook` + `mycook-mcp` 到 GHCR |
-| [Release](.github/workflows/release.yml) | push tag `v*` | 创建 GitHub Release + 拉取说明 |
-| [PR Check](.github/workflows/pr-check.yml) | PR → main | 语法检查 · generate · validate · 构建 |
+| [Sync & Build](.github/workflows/sync-and-build.yml) | push `main` · cron · 手动 | 同步 → 构建 → Pages |
+| [Docker](.github/workflows/docker.yml) | push tag `v*` · 手动 | 构建并推送 GHCR 镜像 |
+| [Release](.github/workflows/release.yml) | push tag `v*` | 创建 GitHub Release |
+| [PR Check](.github/workflows/pr-check.yml) | PR → `main` | 语法检查 · validate · 构建 |
 
 **发版步骤**（维护者）：
 
 ```bash
-# 1. 更新 package.json 版本与 CHANGELOG
-# 2. 提交并打 tag
-git tag v1.5.0 && git push origin v1.5.0
-# → 自动：Release + Docker 版本标签 + Pages 已在 main 上持续部署
+# 1. 更新 package.json 版本与 CHANGELOG.md
+# 2. 提交 push main（自动部署 Pages）
+# 3. 打 tag 触发 Release + Docker 镜像
+git tag v1.5.1 && git push origin v1.5.1
 ```
 
 ---

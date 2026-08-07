@@ -59,7 +59,8 @@ PR 会触发 **PR Check** 工作流（语法检查 + 有内容时完整 validate
 
 1. 更新 `package.json` 版本与 `CHANGELOG.md`
 2. `git tag vX.Y.Z && git push origin vX.Y.Z`
-3. 自动触发：**Release** · **Docker** 版本标签 · **Pages**（main 已持续部署）
+3. 推送 `main` 后等待 **Sync & Build** 完成
+4. `git tag vX.Y.Z && git push origin vX.Y.Z` 触发 **Release** 与 **Docker**
 
 ## 许可证
 
