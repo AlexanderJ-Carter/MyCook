@@ -2,12 +2,12 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { FULL_SITE_URL, MCP_PUBLIC_URL, SITE_URL, SITES } from './sites.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const WELL_KNOWN = path.join(PUBLIC_DIR, '.well-known');
-const SITE_URL = (process.env.SITE_URL || 'https://cook.alexander.xin').replace(/\/$/, '');
 const VERSION = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version;
 
 function ensureDir(dir) {
@@ -234,7 +234,7 @@ function buildJwks() {
 }
 
 function buildMcpServerCard() {
-    const mcpUrl = (process.env.MCP_URL || `${SITE_URL}/mcp`).replace(/\/$/, '');
+    const mcpUrl = (process.env.MCP_URL || `${MCP_PUBLIC_URL}/mcp`).replace(/\/$/, '');
     return {
         serverInfo: {
             name: 'mycook',
@@ -244,6 +244,13 @@ function buildMcpServerCard() {
         },
         endpoint: mcpUrl.endsWith('/mcp') ? mcpUrl : `${mcpUrl}/mcp`,
         transport: 'streamable-http',
+        authentication: {
+            required: true,
+            schemes: ['bearer'],
+            issuer: SITES.identity,
+            audience: mcpUrl.endsWith('/mcp') ? mcpUrl : `${mcpUrl}/mcp`,
+            documentation: `${SITE_URL}/ai-agents`,
+        },
         stdio: {
             command: 'node',
             args: ['mcp/server.mjs'],
@@ -320,61 +327,68 @@ function buildSkillMd() {
 ## MCP Server
 
 - Server Card: \`/.well-known/mcp/server-card.json\`
-- 本地 stdio: \`node mcp/server.mjs\`（配置见 \`mcp/mcp-config.example.json\`）
-- HTTP: \`npm run mcp:http\` → \`:3001/mcp\`（配置见 \`mcp/mcp-http.example.json\`）
-- 客户端：Cursor、Claude Desktop、Copilot、Windsurf、Cline 等任意 MCP 宿主
-- 文档: https://github.com/AlexanderJ-Carter/MyCook/blob/main/MCP.md
+- 远程 HTTP（鉴权）: \`${MCP_PUBLIC_URL}/mcp\`
+- 本地 stdio: \`node mcp/server.mjs\`（\`mcp/mcp-config.example.json\`）
+- 本地 HTTP 调试: \`AUTH_REQUIRED=0 npm run mcp:http\`
+- 文档: ${SITE_URL}/ai-agents · https://github.com/AlexanderJ-Carter/MyCook/blob/main/MCP.md
 
 ## 认证
 
-本站 API 为只读公开资源，无需 OAuth 令牌。详见 \`/auth.md\`。
+- 公开站 JSON / Markdown：**无需令牌**（见 \`/auth.md\`）
+- 远程 MCP：Bearer（Pocket ID JWT 或 API Key）
 `;
 }
 
 function buildAuthMd() {
     return `# auth.md
 
-MyCook 面向 AI 代理的注册与访问说明。
+MyCook 面向 AI 代理的访问说明。
 
-## 受众
+## 入口
 
-- 自动化代理
-- MCP / WebMCP 客户端
-- 只读菜谱检索工具
+| 用途 | URL |
+|------|-----|
+| Pages 主站（公开） | \`${SITE_URL}\` |
+| 完整站（含图片） | \`${FULL_SITE_URL}\` |
+| 远程 MCP（鉴权） | \`${MCP_PUBLIC_URL}/mcp\` |
+| 身份提供方 | \`${SITES.identity}\` |
 
-## 资源标识
+## 公开资源（无需认证）
 
-\`${SITE_URL}\`
-
-## 认证方式
-
-本站公开 JSON 与 Markdown 资源**无需认证**。代理可直接访问：
+代理可直接访问主站 / 完整站：
 
 - \`GET /recipes-index.json\`
 - \`GET /stats.json\`
 - \`GET /recent.json\`
-- 任意 HTML 页面 + \`Accept: text/markdown\`
+- \`GET /pantry.json\`
+- 任意 HTML + \`Accept: text/markdown\`（完整站 / Docker）
 
-## 匿名代理
+支持匿名身份（\`identity_types_supported: ["anonymous"]\`）。
 
-支持匿名身份（\`identity_types_supported: ["anonymous"]\`）。无需注册即可读取公开内容。
+## 远程 MCP（需要认证）
 
-如需登记代理身份（可选），可向 \`POST ${SITE_URL}/auth/register\` 提交 JSON：
+\`POST/GET ${MCP_PUBLIC_URL}/mcp\` 必须携带：
 
-\`\`\`json
-{
-  "client_name": "your-agent",
-  "identity_type": "anonymous"
-}
+\`\`\`http
+Authorization: Bearer <token>
 \`\`\`
+
+| 令牌类型 | 说明 |
+|----------|------|
+| Pocket ID JWT | \`aud\` = \`${MCP_PUBLIC_URL}/mcp\`，建议 scope \`mycook:read\`；issuer \`${SITES.identity}\` |
+| 静态 API Key | 运维在服务器 \`MCP_API_KEYS\` 中配置的备用 Bearer |
+
+探测（无需 token）：\`GET ${MCP_PUBLIC_URL}/health\`  
+资源元数据：\`${MCP_PUBLIC_URL}/.well-known/oauth-protected-resource\`
+
+配置示例见仓库 \`mcp/mcp-http.example.json\`，使用指南见 \`/ai-agents\`。
 
 ## 相关发现文档
 
-- OAuth 授权服务器: \`/.well-known/oauth-authorization-server\`
-- 受保护资源元数据: \`/.well-known/oauth-protected-resource\`
 - API 目录: \`/.well-known/api-catalog\`
 - Agent Skills: \`/.well-known/agent-skills/index.json\`
 - MCP Server Card: \`/.well-known/mcp/server-card.json\`
+- 站点 OAuth 元数据（公开 API 匿名策略）: \`/.well-known/oauth-protected-resource\`
 `;
 }
 
@@ -391,7 +405,7 @@ function buildHomeMarkdown() {
 
 - [按做法开始](${SITE_URL}/cooklikehoc/炒菜/README)
 - [按食材开始](${SITE_URL}/howtocook/dishes/vegetable_dish/西红柿炒鸡蛋)
-- [HowToCook 图片版](${SITE_URL}/howtocook-images/)
+- [HowToCook 图片版](${FULL_SITE_URL}/howtocook-images/)
 
 ## 代理发现
 

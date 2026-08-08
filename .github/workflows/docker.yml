@@ -66,7 +66,9 @@ jobs:
                   platforms: linux/amd64
 
     build-full:
-        if: github.event_name == 'workflow_dispatch' && (inputs.variant == 'full' || inputs.variant == 'both')
+        if: |
+            startsWith(github.ref, 'refs/tags/v') ||
+            (github.event_name == 'workflow_dispatch' && (inputs.variant == 'full' || inputs.variant == 'both'))
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -79,13 +81,23 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
+            - name: Docker meta (full)
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/mycook
+                  tags: |
+                      type=raw,value=full
+                      type=semver,pattern={{version}}-full,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+                      type=semver,pattern=v{{version}}-full,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+
             - uses: docker/build-push-action@v6
               with:
                   context: .
                   push: true
                   build-args: SKIP_IMAGES=0
-                  tags: |
-                      ${{ env.REGISTRY }}/${{ github.repository_owner }}/mycook:full
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
                   cache-from: type=gha,scope=mycook-full
                   cache-to: type=gha,mode=max,scope=mycook-full
                   platforms: linux/amd64

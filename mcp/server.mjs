@@ -25,7 +25,14 @@ import {
     searchTips,
 } from '../scripts/mcp-tools.mjs';
 
-const VERSION = '1.6.0';
+import {
+    authenticateRequest,
+    authSummary,
+    buildProtectedResourceMetadata,
+    isAuthRequired,
+} from './auth.mjs';
+
+const VERSION = '1.6.1';
 const MCP_PORT = Number(process.env.MCP_PORT || 3001);
 
 function textResult(data) {
@@ -249,7 +256,37 @@ async function runHttp() {
     const app = createMcpExpressApp();
     const transports = {};
 
+    app.get('/health', (_req, res) => {
+        res.json({
+            ok: true,
+            service: 'mycook-mcp',
+            version: VERSION,
+            site: SITE_URL,
+            auth: authSummary(),
+        });
+    });
+
+    app.get('/.well-known/oauth-protected-resource', (_req, res) => {
+        res.type('application/json').json(buildProtectedResourceMetadata());
+    });
+
+    app.get('/.well-known/oauth-authorization-server', async (_req, res) => {
+        try {
+            const issuer = authSummary().issuer;
+            const upstream = await fetch(`${issuer}/.well-known/openid-configuration`);
+            const body = await upstream.json();
+            res.type('application/json').status(upstream.status).json(body);
+        } catch (err) {
+            res.status(502).json({ error: 'Failed to fetch authorization server metadata', detail: String(err) });
+        }
+    });
+
+    async function guard(req, res) {
+        return authenticateRequest(req, res);
+    }
+
     app.post('/mcp', async (req, res) => {
+        if (!(await guard(req, res))) return;
         const sessionId = req.headers['mcp-session-id'];
         try {
             let transport;
@@ -292,6 +329,7 @@ async function runHttp() {
     });
 
     app.get('/mcp', async (req, res) => {
+        if (!(await guard(req, res))) return;
         const sessionId = req.headers['mcp-session-id'];
         if (!sessionId || !transports[sessionId]) {
             res.status(400).send('Invalid or missing session ID');
@@ -300,13 +338,13 @@ async function runHttp() {
         await transports[sessionId].handleRequest(req, res);
     });
 
-    app.get('/health', (_req, res) => {
-        res.json({ ok: true, service: 'mycook-mcp', site: SITE_URL });
-    });
-
-    app.listen(MCP_PORT, () => {
-        console.log(`MyCook MCP HTTP → http://127.0.0.1:${MCP_PORT}/mcp`);
+    app.listen(MCP_PORT, '0.0.0.0', () => {
+        console.log(`MyCook MCP HTTP → http://0.0.0.0:${MCP_PORT}/mcp`);
         console.log(`Data root: ${process.env.MYCOOK_DATA || '(default public/)'}`);
+        console.log(`Auth:`, authSummary());
+        if (isAuthRequired() && !authSummary().audience) {
+            console.warn('[mycook-mcp] AUTH_REQUIRED but MCP_PUBLIC_URL/OIDC_AUDIENCE unset');
+        }
     });
 }
 

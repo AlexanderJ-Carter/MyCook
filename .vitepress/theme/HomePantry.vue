@@ -4,6 +4,7 @@ import { withBase } from "vitepress";
 import { shelfItems, shelfNotes } from "./i18n/messages.js";
 import { useSiteData } from "./composables/useSiteData";
 import { useI18n } from "./composables/useI18n";
+import { imagesUrl } from "./sites.js";
 
 const { stats, loadStats } = useSiteData();
 const { t, locale } = useI18n();
@@ -16,7 +17,7 @@ const pathItems = computed(() =>
     const hrefs = {
       cooklikehoc: "/cooklikehoc/炒菜/README",
       howtocook: "/howtocook/dishes/vegetable_dish/西红柿炒鸡蛋",
-      images: "/howtocook-images/",
+      images: imagesUrl("/"),
       pantry: "#kitchen-play",
     };
     const accents = {
@@ -36,10 +37,11 @@ const pathItems = computed(() =>
       });
     }
     const href = hrefs[key];
+    const isAbsolute = /^https?:\/\//i.test(href);
     return {
       ...p,
       accent: accents[key],
-      href: href.startsWith("#") ? href : withBase(href),
+      href: href.startsWith("#") || isAbsolute ? href : withBase(href),
       meta,
     };
   }),

@@ -1,0 +1,46 @@
+# MyCook on SSH cloud — 完整站（含 howtocook-images）+ 鉴权 MCP
+# 仅 pull GHCR，勿在本机构建。
+#
+#   cp .env.example .env   # 填 MCP_API_KEYS 等
+#   docker compose pull && docker compose up -d
+#   ./update.sh            # 或 cron
+
+services:
+  mycook:
+    image: ghcr.io/alexanderj-carter/mycook:full
+    pull_policy: always
+    container_name: mycook
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8090:80"
+    mem_limit: 64m
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:80/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 15s
+
+  mycook-mcp:
+    image: ghcr.io/alexanderj-carter/mycook-mcp:latest
+    pull_policy: always
+    container_name: mycook-mcp
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3001"
+    mem_limit: 128m
+    env_file:
+      - .env
+    environment:
+      # 对外链接默认指向 Pages 主站；图片与 MCP 用完整站 / 独立域名
+      SITE_URL: ${SITE_URL:-https://cook.alexander.xin}
+      MCP_PUBLIC_URL: ${MCP_PUBLIC_URL:-https://cook-mcp.alexander.xin}
+      OIDC_ISSUER: ${OIDC_ISSUER:-https://id.alexander.xin}
+      OIDC_AUDIENCE: ${OIDC_AUDIENCE:-https://cook-mcp.alexander.xin/mcp}
+      AUTH_REQUIRED: ${AUTH_REQUIRED:-1}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3001/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 15s

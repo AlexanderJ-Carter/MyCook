@@ -11,9 +11,9 @@
 | 镜像 | 标签 | 体积（约） | 说明 |
 |------|------|-----------|------|
 | `ghcr.io/alexanderj-carter/mycook` | `latest` `lite` | ~600MB | 默认，双源菜谱 + PWA + Agent JSON |
-| 同上 | `v1.6.0` 等 semver | 同上 | push tag 时自动打版本标签 |
-| 同上 | `full` | ~830MB | 含 `/howtocook-images/`（Actions 手动构建） |
-| `ghcr.io/alexanderj-carter/mycook-mcp` | `latest` | ~200MB+ | MCP Streamable HTTP sidecar |
+| 同上 | `v1.6.1` 等 semver | 同上 | push tag 时自动打版本标签 |
+| 同上 | `full` / `1.6.1-full` | ~830MB | 含 `/howtocook-images/`（tag 与手动均可构建） |
+| `ghcr.io/alexanderj-carter/mycook-mcp` | `latest` | ~200MB+ | MCP Streamable HTTP sidecar（可开 Pocket ID 鉴权） |
 
 ## 服务器资源需求（自托管参考）
 
@@ -86,6 +86,16 @@ Docker 部署比 GitHub Pages 多：
 
 ## CI 构建
 
-- push tag `v*` → 推送 `mycook` / `mycook-mcp`（含 `latest` 与 semver 标签）+ **Release**
+- push tag `v*` → 推送 **lite**（`latest` / semver）+ **full**（`full` / `*-full`）+ **mycook-mcp** + Release
 - push `main` → 仅 **Sync & Build**（Pages），不重复打 Docker 包
-- Actions → **Docker Build & Push** → 手动选 `full` 或 MCP
+- 生产机请用 [`deploy/cloud`](./deploy/cloud)：**只 pull，不在 1.6G 机器上 build**
+
+## lite 与 full
+
+两者都是「上游仓库内容 + 本站壳」；差异只有构建参数 `SKIP_IMAGES`：
+
+| | lite | full |
+|--|------|------|
+| 菜谱 Markdown / 索引 / PWA | 有 | 有 |
+| `/howtocook-images/` | 无（可外挂或走 Pages） | 有 |
+| 运行时内存 | ~30MB nginx | 同左（多的是磁盘） |

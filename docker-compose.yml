@@ -1,7 +1,8 @@
 # MyCook Docker Compose
 #
-# 轻量版（默认）:  docker compose up -d --build
-# 完整版（图片）:    docker compose --profile full up -d --build
+# 默认 lite（构建时跳过 howtocook-images，省 CI/体积）
+# 完整版（含图片）: docker compose --profile full up -d --build
+# 生产 cloud:       见 deploy/cloud（pull :full，不在此机构建）
 # 开发:             docker compose --profile dev up
 
 services:
@@ -65,4 +66,8 @@ services:
       - "${MCP_PORT:-3001}:3001"
     environment:
       SITE_URL: ${SITE_URL:-http://localhost:8080}
+      AUTH_REQUIRED: ${AUTH_REQUIRED:-0}
+      MCP_PUBLIC_URL: ${MCP_PUBLIC_URL:-}
+      OIDC_ISSUER: ${OIDC_ISSUER:-}
+      MCP_API_KEYS: ${MCP_API_KEYS:-}
     restart: unless-stopped

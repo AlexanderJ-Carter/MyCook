@@ -1,7 +1,10 @@
 {
   "mcpServers": {
     "mycook-remote": {
-      "url": "http://127.0.0.1:3001/mcp"
+      "url": "https://cook-mcp.alexander.xin/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_POCKET_ID_ACCESS_TOKEN_OR_API_KEY"
+      }
     }
   }
 }

@@ -13,7 +13,7 @@ hero:
       link: /howtocook/dishes/vegetable_dish/西红柿炒鸡蛋
     - theme: alt
       text: 图片版
-      link: /howtocook-images/
+      link: https://mycook.alexander.xin/howtocook-images/
     - theme: alt
       text: 开冰箱
       link: "#kitchen-play"

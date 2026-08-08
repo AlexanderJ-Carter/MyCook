@@ -7,7 +7,13 @@ description: About MyCook — sources, features, and credits
 
 **MyCook** makes home cooking easier: two beloved open-source Chinese recipe collections on one kitchen dashboard, plus search, weekly planning, and fridge matching.
 
-**Live site:** [cook.alexander.xin](https://cook.alexander.xin)
+**Where to go**
+
+| URL | Role |
+|-----|------|
+| [cook.alexander.xin](https://cook.alexander.xin) | GitHub Pages (CDN, everyday browsing) |
+| [mycook.alexander.xin](https://mycook.alexander.xin) | Self-hosted full site (includes image cookbook) |
+| [cook-mcp.alexander.xin](https://cook-mcp.alexander.xin/mcp) | Remote MCP (Pocket ID / API key) |
 
 ## Why it exists
 
@@ -19,7 +25,7 @@ Cooking at home often means juggling several sites — one for methods, one for 
 |---------|------------------|
 | [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) | Home-style dishes, Lao Xiang Ji way — by stir-fry, braise, soup… |
 | [HowToCook](https://github.com/Anduin2017/HowToCook) | A programmer's cooking guide, precise to the gram |
-| [HowToCook Images](https://github.com/king-jingxiang/HowToCook) | 4K step-by-step photos at [`/howtocook-images/`](/howtocook-images/) |
+| [HowToCook Images](https://github.com/king-jingxiang/HowToCook) | 4K step photos on the full host [mycook…/howtocook-images/](https://mycook.alexander.xin/howtocook-images/) |
 | [Cook Pantry](https://github.com/YunYouJun/cook) | Inspiration for “what’s in my fridge” matching |
 
 Recipes sync automatically from upstream every day, so you're always seeing the latest.

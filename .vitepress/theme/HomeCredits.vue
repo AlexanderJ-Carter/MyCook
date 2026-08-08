@@ -1,6 +1,6 @@
 <script setup>
-import { withBase } from 'vitepress';
 import { useI18n } from './composables/useI18n.js';
+import { imagesUrl } from './sites.js';
 
 const { t } = useI18n();
 </script>
@@ -26,7 +26,7 @@ const { t } = useI18n();
     <p class="home-credits-desc">{{ t('home.credits.derived') }}</p>
     <ul class="home-credits-list">
       <li>
-        <a :href="withBase('/howtocook-images/')">{{ t('home.credits.imagesName') }}</a>
+        <a :href="imagesUrl('/')">{{ t('home.credits.imagesName') }}</a>
         —
         {{ t('home.credits.cookImages') }}
       </li>

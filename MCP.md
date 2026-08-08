@@ -2,6 +2,16 @@
 
 MyCook 面向 **任意 AI Agent** 提供三层能力（不限于 Cursor）。MCP 是可选 sidecar，默认 GitHub Pages 部署零 Node 运行时。
 
+## 域名分工
+
+| 域名 | 托管 | 用途 |
+|------|------|------|
+| `cook.alexander.xin` | GitHub Pages | 主站 CDN，公开 JSON / Skills |
+| `mycook.alexander.xin` | SSH cloud（`:full`） | 完整站 + 图片版 |
+| `cook-mcp.alexander.xin` | SSH cloud MCP | 远程工具调用（Bearer） |
+
+生产 compose 见 [`deploy/cloud`](./deploy/cloud)。站点使用说明见 [/ai-agents](https://cook.alexander.xin/ai-agents)。
+
 ## 架构
 
 ```
@@ -55,17 +65,17 @@ npm run mcp:http
 # → http://127.0.0.1:3001/mcp
 ```
 
-任意支持 **MCP over HTTP** 的客户端使用 [mcp/mcp-http.example.json](./mcp/mcp-http.example.json)：
+任意支持 **MCP over HTTP** 的客户端使用 [mcp/mcp-http.example.json](./mcp/mcp-http.example.json)。
 
-```json
-{
-  "mcpServers": {
-    "mycook-remote": {
-      "url": "http://127.0.0.1:3001/mcp"
-    }
-  }
-}
-```
+生产（如 `https://cook-mcp.alexander.xin`）默认 **鉴权开启**：
+
+| 方式 | 说明 |
+|------|------|
+| Pocket ID JWT | `Authorization: Bearer <access_token>`；`aud` = `{MCP_PUBLIC_URL}/mcp`；scope `mycook:read` |
+| 静态 API Key | 环境变量 `MCP_API_KEYS`（逗号分隔），同样走 Bearer |
+| 关闭鉴权 | 仅本地：`AUTH_REQUIRED=0` |
+
+元数据：`/.well-known/oauth-protected-resource`、`GET /health`（含 `auth` 摘要，不要求 token）。
 
 适合：Claude Desktop 远程、团队共用 sidecar、自建 Agent 网关。
 

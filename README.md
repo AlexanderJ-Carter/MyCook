@@ -153,7 +153,7 @@ docker compose --profile agent up -d --build
 # 1. 更新 package.json 版本与 CHANGELOG.md
 # 2. 提交 push main（自动部署 Pages）
 # 3. 打 tag 触发 Release + Docker 镜像
-git tag v1.6.0 && git push origin v1.6.0
+git tag v1.6.1 && git push origin v1.6.1
 ```
 
 ---

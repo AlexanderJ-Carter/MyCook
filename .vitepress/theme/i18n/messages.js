@@ -69,9 +69,9 @@ export const messages = {
                     images: {
                         eyebrow: '03 · 看图',
                         title: '看着图找灵感',
-                        description: 'HowToCook 高清图片版，随手翻、好上手。',
+                        description: 'HowToCook 高清图片版在完整站 mycook（含步骤图），随手翻、好上手。',
                         cta: '打开图片版',
-                        meta: '站内浏览',
+                        meta: 'mycook 完整站',
                     },
                     pantry: {
                         eyebrow: '04 · 开冰箱',
@@ -293,9 +293,9 @@ export const messages = {
                     images: {
                         eyebrow: '03 · Visual',
                         title: 'Browse by pictures',
-                        description: 'HowToCook image edition — scroll for inspiration.',
+                        description: 'HowToCook image edition lives on the full host mycook (with step photos).',
                         cta: 'Open images',
-                        meta: 'On-site',
+                        meta: 'mycook full host',
                     },
                     pantry: {
                         eyebrow: '04 · Fridge',
@@ -518,10 +518,12 @@ export const localeRoutes = {
     '/help': '/en/help',
     '/about': '/en/about',
     '/ai-agents': '/en/ai-agents',
+    '/mcp-guide': '/en/mcp-guide',
     '/en': '/',
     '/en/help': '/help',
     '/en/about': '/about',
     '/en/ai-agents': '/ai-agents',
+    '/en/mcp-guide': '/mcp-guide',
 };
 
 export function counterpartPath(path) {

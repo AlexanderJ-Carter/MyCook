@@ -1,6 +1,6 @@
 {
   "name": "my-cook",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "type": "module",
   "description": "老乡鸡风格菜谱 + 程序员做饭指南 — 静态站点、Docker 镜像与 MCP Agent 就绪",
@@ -38,7 +38,8 @@
     "docker:run": "docker run -d -p 8080:80 --name mycook mycook:lite"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0"
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "jose": "^6.2.8"
   },
   "devDependencies": {
     "vitepress": "^1.6.4"

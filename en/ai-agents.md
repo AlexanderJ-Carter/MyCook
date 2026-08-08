@@ -1,60 +1,84 @@
 ---
 title: AI Agents & MCP
-description: MyCook discovery endpoints, MCP server, and integration guide for any AI client
+description: Discovery endpoints, remote MCP auth, and how to use MyCook from any agent
 ---
 
 # AI Agents & MCP
 
-MyCook is a kitchen knowledge base for **humans and AI agents alike** — not tied to Cursor or any single product.
+MyCook is a kitchen knowledge base for people and for **AI agents**. Any host works — ChatGPT, Claude, Gemini, Copilot, Cursor, or a custom agent.
 
-## Three ways to integrate (lowest effort first)
+## Three public hosts
+
+| Host | Domain | Use |
+|------|--------|-----|
+| **Pages** | [cook.alexander.xin](https://cook.alexander.xin) | Public JSON / OpenAPI / Skills — **no login** |
+| **Full site** | [mycook.alexander.xin](https://mycook.alexander.xin) | Same + HowToCook images + Markdown negotiation |
+| **Remote MCP** | [cook-mcp.alexander.xin](https://cook-mcp.alexander.xin/mcp) | Tool calls — **Bearer required** (Pocket ID JWT or API key) |
+
+Browse & script JSON → `cook`. Need step photos → `mycook`. Agent tools → `cook-mcp`.
+
+## Three ways to use it
 
 ### 1. Copy for AI (zero setup)
 
-On any recipe page, tap **AI** in the toolbar to copy a prompt + full recipe text. Paste into ChatGPT, Claude, Gemini, or any chat model — **no API key required**.
+Recipe toolbar **AI** copies prompt + body into any chat model. No API key, no MCP.
 
-### 2. Public HTTP / Skills (read-only)
+### 2. Public HTTP APIs / Skills
 
-| Asset | URL |
-|-------|-----|
-| Recipe index | `/recipes-index.json` |
-| Stats | `/stats.json` |
-| Pantry | `/pantry.json` |
+| Capability | Notes |
+|------------|--------|
+| JSON indexes | `/recipes-index.json`, `/stats.json`, `/pantry.json`, `/recent.json` |
 | OpenAPI | [/openapi.json](https://cook.alexander.xin/openapi.json) |
 | Agent Skills | [/.well-known/agent-skills/](https://cook.alexander.xin/.well-known/agent-skills/index.json) |
-| Access policy | [/auth.md](/auth.md) |
+| Markdown | On the full host / Docker: `Accept: text/markdown` |
+| Policy | [/auth.md](/auth.md) |
 
-Works with custom scripts, LangChain, Cloudflare Agents, Codex CLI, etc.
+### 3. MCP Server
 
-### 3. MCP Server (optional tools)
+#### A. Remote HTTP (self-hosted)
 
-[MCP](https://modelcontextprotocol.io/) exposes 8 read-only tools + 2 prompts. Same server works across clients:
+Endpoint: `https://cook-mcp.alexander.xin/mcp`
 
-```bash
-git clone https://github.com/AlexanderJ-Carter/MyCook.git
-cd MyCook && npm install && npm run generate
-npm run mcp        # stdio
-npm run mcp:http   # http://127.0.0.1:3001/mcp
+1. Get access via [Pocket ID](https://id.alexander.xin) (API resource = that URL, scope `mycook:read`) or a static API key.
+2. Client config ([example](https://github.com/AlexanderJ-Carter/MyCook/blob/main/mcp/mcp-http.example.json)):
+
+```json
+{
+  "mcpServers": {
+    "mycook-remote": {
+      "url": "https://cook-mcp.alexander.xin/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_TOKEN"
+      }
+    }
+  }
+}
 ```
 
-Merge [`mcp/mcp-config.example.json`](https://github.com/AlexanderJ-Carter/MyCook/blob/main/mcp/mcp-config.example.json) into your client config.
+3. Probe: `GET /health` (no token). Metadata: `/.well-known/oauth-protected-resource`.
 
-| Client | Where to configure |
-|--------|-------------------|
-| Cursor | Settings → MCP |
-| Claude Desktop | `claude_desktop_config.json` |
-| VS Code Copilot | `.vscode/mcp.json` |
-| Windsurf / Cline / Continue | MCP section in extension settings |
-| Any HTTP client | `"url": "http://host:3001/mcp"` |
+#### B. Local stdio
 
-Full details: [MCP.md](https://github.com/AlexanderJ-Carter/MyCook/blob/main/MCP.md)
+```bash
+npm install && npm run generate && npm run mcp
+```
+
+Merge [mcp-config.example.json](https://github.com/AlexanderJ-Carter/MyCook/blob/main/mcp/mcp-config.example.json). Stdio does **not** use Pocket ID.
+
+#### C. Local HTTP (dev)
+
+```bash
+AUTH_REQUIRED=0 npm run mcp:http
+```
+
+## Clients
+
+Cursor · Claude Desktop · VS Code Copilot · Windsurf · Cline · Continue — same `mcpServers` JSON shape; only the file path differs.
+
+See [MCP.md](https://github.com/AlexanderJ-Carter/MyCook/blob/main/MCP.md) for the full tool list.
 
 ## Tools
 
 `search_recipes` · `get_recipe` · `get_recipe_markdown` · `get_site_stats` · `get_recent_updates` · `search_by_ingredients` · `list_pantry_ingredients` · `random_recipe` · `search_tips`
 
 Prompts: `what_to_cook` · `recipe_assistant`
-
-## WebMcp
-
-Browsers with [WebMCP](https://github.com/webmachinelearning/webmcp) register the same tools automatically when you visit the site.

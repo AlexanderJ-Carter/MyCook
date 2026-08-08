@@ -202,6 +202,18 @@ npm run sync          # 需上级目录有上游仓库
 npm run mycook -- dev
 ```
 
+## 🤖 远程 MCP（给 AI 用）
+
+正式环境：
+
+| 地址 | 说明 |
+|------|------|
+| [cook.alexander.xin](https://cook.alexander.xin) | Pages 主站 |
+| [mycook.alexander.xin](https://mycook.alexander.xin) | 完整站（图片版） |
+| [cook-mcp.alexander.xin](https://cook-mcp.alexander.xin) | MCP（需 Bearer） |
+
+完整步骤、客户端 JSON、排错见 **[MCP 使用指南](/mcp-guide)**。
+
 ## 🔗 相关站点
 
 - [alexander.xin](https://alexander.xin) — 作者主站

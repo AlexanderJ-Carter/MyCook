@@ -1,5 +1,29 @@
 # Changelog
 
+## v1.6.1 — 2026-08-08
+
+### 部署
+
+- **完整镜像默认随 tag 构建**：push `v*` 同时推送 `mycook:full`（含 howtocook-images）与 lite / MCP
+- **`deploy/cloud`**：服务器拉 GHCR full 站 + MCP，nginx 示例、定时 `update.sh`（只保留当前镜像）
+- **MCP HTTP 鉴权**：Pocket ID JWT（OIDC）或 `MCP_API_KEYS`；暴露 OAuth protected-resource metadata
+
+### 域名
+
+| 域名 | 角色 |
+|------|------|
+| `cook.alexander.xin` | GitHub Pages 主站 |
+| `mycook.alexander.xin` | 自托管完整站（图片版） |
+| `cook-mcp.alexander.xin` | 远程 MCP（鉴权） |
+
+站内「图片版」入口与 `/ai-agents`、`/auth.md` 已按上述分工更新。
+
+### 说明
+
+- lite / full 只差是否打包上游菜谱图片目录，运行时都是 nginx 静态站，不是「精简业务」
+
+---
+
 ## v1.6.0 — 2026-08-08
 
 ### 体验

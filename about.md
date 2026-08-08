@@ -6,7 +6,13 @@ title: 关于本站
 
 MyCook 是一个把做饭变简单的菜谱站：两套广受好评的开源菜谱，合成一张顺手的厨房桌面，再加上搜索、周菜单、开冰箱这些贴心小功能。
 
-**在线地址**：[cook.alexander.xin](https://cook.alexander.xin)
+**在线入口**
+
+| 地址 | 说明 |
+|------|------|
+| [cook.alexander.xin](https://cook.alexander.xin) | GitHub Pages 主站（CDN，日常浏览） |
+| [mycook.alexander.xin](https://mycook.alexander.xin) | 自托管完整站（含 HowToCook 图片版） |
+| [cook-mcp.alexander.xin](https://cook-mcp.alexander.xin/mcp) | 远程 MCP（需 Pocket ID / API Key） |
 
 ## 项目初衷
 
@@ -18,7 +24,7 @@ MyCook 是一个把做饭变简单的菜谱站：两套广受好评的开源菜�
 |------|------|
 | [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) | 老乡鸡同款家常味，按炒 / 炖 / 卤 / 汤分类 |
 | [HowToCook](https://github.com/Anduin2017/HowToCook) | 程序员写的做饭指南，精准到克和秒 |
-| [HowToCook 图片版](https://github.com/king-jingxiang/HowToCook) | 每道菜配 4K 步骤图，就在本站 [`/howtocook-images/`](/howtocook-images/) |
+| [HowToCook 图片版](https://github.com/king-jingxiang/HowToCook) | 每道菜配 4K 步骤图，见完整站 [mycook…/howtocook-images/](https://mycook.alexander.xin/howtocook-images/) |
 | [Cook 食用手册](https://github.com/YunYouJun/cook) | 「开冰箱」的食材搭配灵感 |
 
 菜谱每天自动从上游项目同步，保证你看到的都是最新版本。

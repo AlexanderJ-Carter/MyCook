@@ -29,7 +29,7 @@ function moreNav(lang) {
             },
             {
                 text: en ? 'HowToCook Images' : 'HowToCook 图片版',
-                link: '/howtocook-images/',
+                link: 'https://mycook.alexander.xin/howtocook-images/',
             },
             {
                 text: en ? 'Source repo' : '本站仓库',
@@ -89,6 +89,7 @@ export default defineConfig({
                     ...nav,
                     moreNav('en'),
                     { text: 'Help', link: '/en/help' },
+                    { text: 'MCP', link: '/en/mcp-guide' },
                     { text: 'Agent', link: '/en/ai-agents' },
                     { text: 'About', link: '/en/about' },
                 ],
@@ -192,6 +193,7 @@ export default defineConfig({
             ...nav,
             moreNav('zh'),
             { text: '帮助', link: '/help' },
+            { text: 'MCP', link: '/mcp-guide' },
             { text: 'Agent', link: '/ai-agents' },
             { text: '关于', link: '/about' },
         ],
