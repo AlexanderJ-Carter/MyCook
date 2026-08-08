@@ -42,18 +42,21 @@ jobs:
                   clone_with_retry() {
                     local repo=$1 dest=$2 branch=${3:-main}
                     for i in 1 2 3; do
-                      if git clone --depth 1 --branch "$branch" "$repo" "$dest" 2>/dev/null; then
+                      echo "→ clone $repo ($branch) attempt $i"
+                      rm -rf "$dest"
+                      if git clone --depth 1 --branch "$branch" "$repo" "$dest"; then
                         echo "✓ cloned $repo"
                         return 0
                       fi
-                      echo "attempt $i failed, retry in 5s..."
-                      rm -rf "$dest"
-                      sleep 5
+                      echo "attempt $i failed, retry in 8s..."
+                      sleep 8
                     done
                     return 1
                   }
-                  clone_with_retry https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC main
-                  clone_with_retry https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook master
+                  clone_with_retry https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC main \
+                    || clone_with_retry https://github.com/Gar-b-age/CookLikeHOC.git upstream/CookLikeHOC main
+                  clone_with_retry https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook master \
+                    || clone_with_retry https://github.com/Anduin2017/HowToCook.git upstream/HowToCook master
                   if [ "${{ github.event.inputs.skip_images }}" != "true" ]; then
                     clone_with_retry https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages master || true
                   fi
