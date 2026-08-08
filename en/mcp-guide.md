@@ -7,6 +7,14 @@ description: Connect Cursor / Claude / Copilot to the MyCook remote MCP with Poc
 
 Use MyCook as a kitchen toolbox for agents: search, read recipes, match ingredients. This page is only about **connecting to the remote server**.
 
+## Fastest: one line to your AI assistant
+
+```text
+Follow https://cook.alexander.xin/mcp-setup and wire up MyCook MCP; then call search_recipes with query "tomato".
+```
+
+Or open [one-line setup](/en/mcp-setup) for the Cursor install button.
+
 ## Three hosts
 
 | Goal | URL |

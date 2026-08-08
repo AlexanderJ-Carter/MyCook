@@ -7,6 +7,14 @@ description: 如何用 Cursor / Claude / Copilot 连接 MyCook 远程 MCP，以�
 
 把 MyCook 当成 Agent 的「厨房工具箱」：搜菜、读正文、按食材反查。本页只讲**怎么连上远程服务**。
 
+## 最快：发给 AI 助手一句话
+
+```text
+请按 https://cook.alexander.xin/mcp-setup 帮我接入 MyCook MCP；配好后用 search_recipes 搜「番茄」自检。
+```
+
+或打开 [一句话接入](/mcp-setup) 复制完整提示词 / Cursor 一键安装按钮。
+
 ## 一分钟分清三个地址
 
 | 你要做什么 | 打开 |
@@ -83,16 +91,18 @@ curl -sS https://cook-mcp.alexander.xin/health
 
 ## 能调哪些工具
 
+共 **9** 个只读 tools + 2 prompts：
+
 | 工具 | 用途 |
 |------|------|
 | `search_recipes` | 关键词搜菜 |
 | `get_recipe` / `get_recipe_markdown` | 元数据 / 全文 |
-| `search_by_ingredients` | 开冰箱式反查 |
+| `search_by_ingredients` / `list_pantry_ingredients` | 开冰箱式反查 |
 | `random_recipe` | 随机一道 |
 | `search_tips` | 厨房技巧 |
 | `get_site_stats` / `get_recent_updates` | 统计与最近更新 |
 
-Prompts：`what_to_cook`、`recipe_assistant`。
+Prompts：`what_to_cook`、`recipe_assistant`。编排说明见 Skill：[mycook-kitchen](https://cook.alexander.xin/.well-known/agent-skills/mycook-kitchen/SKILL.md)。
 
 ## 常见问题
 

@@ -17,13 +17,20 @@ MyCook 不只是给人看的菜谱站，也是给 **AI Agent** 读的厨房知�
 
 日常给人看、脚本拉 JSON → 用 `cook`。要步骤图或 Docker 侧能力 → 用 `mycook`。要 Agent 调 tools → 用 `cook-mcp`。
 
-**手把手连远程 MCP（含 Pocket ID / API Key）：** 见独立页 [MCP 使用指南](/mcp-guide)。
+**手把手连远程 MCP（含 Pocket ID / API Key）：** 见 [MCP 使用指南](/mcp-guide)。  
+**一句话交给 AI 配好：** 见 [一句话接入](/mcp-setup)。
 
 ## 三种用法（按门槛从低到高）
 
 ### 1. 复制给 AI（零配置）
 
 任意菜谱页工具栏 **「AI」**：一键复制「提示词 + 正文」，粘贴到任意聊天模型即可，**无需 API Key、无需 MCP**。
+
+接入远程 MCP 时，把这一句发给助手即可：
+
+```text
+请按 https://cook.alexander.xin/mcp-setup 帮我接入 MyCook MCP；配好后用 search_recipes 搜「番茄」自检。
+```
 
 ### 2. 公开 API / Skills（HTTP 只读）
 
@@ -37,7 +44,7 @@ MyCook 不只是给人看的菜谱站，也是给 **AI Agent** 读的厨房知�
 
 ### 3. MCP Server（工具调用）
 
-[MCP](https://modelcontextprotocol.io/) 提供 **8 个只读 tools + 2 prompts**。
+[MCP](https://modelcontextprotocol.io/) 提供 **9 个只读 tools + 2 prompts**。
 
 #### A. 远程 HTTP（推荐自托管）
 

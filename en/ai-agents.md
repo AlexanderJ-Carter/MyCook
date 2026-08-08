@@ -17,11 +17,19 @@ MyCook is a kitchen knowledge base for people and for **AI agents**. Any host wo
 
 Browse & script JSON → `cook`. Need step photos → `mycook`. Agent tools → `cook-mcp`.
 
+**One-line MCP setup for your assistant:** [mcp-setup](/en/mcp-setup).
+
 ## Three ways to use it
 
 ### 1. Copy for AI (zero setup)
 
 Recipe toolbar **AI** copies prompt + body into any chat model. No API key, no MCP.
+
+To install remote MCP, paste:
+
+```text
+Follow https://cook.alexander.xin/mcp-setup and wire up MyCook MCP; then call search_recipes with query "tomato".
+```
 
 ### 2. Public HTTP APIs / Skills
 

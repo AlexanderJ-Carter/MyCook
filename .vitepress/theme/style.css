@@ -242,10 +242,19 @@ html.js-ready .reveal:not(.is-in) {
     cursor: pointer;
 }
 
-.not-found-actions a.primary {
+.not-found-actions a.primary,
+.vp-doc a.primary {
     background: var(--vp-c-brand-1);
     border-color: var(--vp-c-brand-1);
     color: #fff;
+}
+
+.vp-doc a.primary {
+    display: inline-block;
+    padding: 0.7rem 1.35rem;
+    border-radius: 999px;
+    text-decoration: none;
+    margin: 0.5rem 0 1rem;
 }
 
 .not-found-actions a.primary:hover {
