@@ -198,6 +198,14 @@ export default defineConfig({
             { text: '关于', link: '/about' },
         ],
 
+        notFound: {
+            code: '404',
+            title: '找不到这个页面',
+            quote: '地址可能写错了，或这道菜还没同步上来。回首页继续找菜就好。',
+            linkLabel: '回首页',
+            linkText: '回首页',
+        },
+
         returnToTopLabel: '回到顶部',
         sidebarMenuLabel: '菜单',
         skipToContentLabel: '跳到正文',

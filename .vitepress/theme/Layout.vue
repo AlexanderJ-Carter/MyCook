@@ -14,6 +14,7 @@ import WebMcp from "./WebMcp.vue";
 import SkipLink from "./SkipLink.vue";
 import InstallPrompt from "./InstallPrompt.vue";
 import LangSwitch from "./LangSwitch.vue";
+import NotFound from "./NotFound.vue";
 
 const route = useRoute();
 
@@ -106,6 +107,9 @@ const showSourceChip = computed(() => {
       </template>
       <template v-if="showSourceChip" #doc-before>
         <SourceChip />
+      </template>
+      <template #not-found>
+        <NotFound />
       </template>
     </DefaultTheme.Layout>
     <BackToTop />
