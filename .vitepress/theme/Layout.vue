@@ -35,6 +35,9 @@ function setupReveal() {
     return;
   }
 
+  // 仅在 JS 就绪后才启用隐藏态，避免脚本失败时整页透明
+  document.documentElement.classList.add("js-ready");
+
   revealObserver = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {

@@ -110,8 +110,8 @@ body::after {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
 }
 
-/* 滚动渐显（Layout.vue 挂载时注入；默认可见，仅在 .reveal 且未 .is-in 时淡入） */
-.reveal:not(.is-in) {
+/* 滚动渐显：仅 html.js-ready 后隐藏，避免脚本未跑时整页空白 */
+html.js-ready .reveal:not(.is-in) {
     opacity: 0;
     transform: translateY(16px);
     transition:
@@ -126,7 +126,7 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .reveal:not(.is-in) {
+    html.js-ready .reveal:not(.is-in) {
         opacity: 1;
         transform: none;
         transition: none;

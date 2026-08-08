@@ -266,6 +266,30 @@ export default defineConfig({
         ],
     },
 
+    // Cloudflare Rocket Loader 会把 type="module" 改写成哈希前缀，导致 VitePress 无法水合。
+    // data-cfasync="false" 让 Rocket Loader 跳过这些脚本（橙色云域名必需）。
+    // VitePress 的 404.html 默认 #app 为空，脚本失败时用户只见空白——注入静态兜底。
+    transformHtml(code, _id, ctx) {
+        let html = code.replace(
+            /<script(?![^>]*\bdata-cfasync=)/gi,
+            '<script data-cfasync="false"',
+        );
+        const is404 =
+            ctx?.pageData?.relativePath === '404.md' ||
+            ctx?.pageData?.relativePath === 'en/404.md';
+        if (is404 && html.includes('<div id="app"></div>')) {
+            const en = ctx.pageData.relativePath.startsWith('en/');
+            const fallback = en
+                ? `<div class="not-found" data-ssr-fallback="1"><p class="not-found-kicker">MyCook</p><h1 class="not-found-title">Page not found</h1><p class="not-found-desc">This link may be wrong or the recipe is not synced yet.</p><div class="not-found-actions"><a class="primary" href="/en/">Home</a><a href="/en/help">Help</a></div></div>`
+                : `<div class="not-found" data-ssr-fallback="1"><p class="not-found-kicker">MyCook</p><h1 class="not-found-title">找不到这个页面</h1><p class="not-found-desc">地址可能写错了，或这道菜还没同步上来。从下面入口继续即可。</p><div class="not-found-suggestions"><a href="/">首页</a><a href="/cooklikehoc/炒菜/README">按做法找</a><a href="/mcp-guide">MCP 指南</a><a href="/help">帮助</a></div><div class="not-found-actions"><a class="primary" href="/">回首页</a></div></div>`;
+            html = html.replace(
+                '<div id="app"></div>',
+                `<div id="app">${fallback}</div>`,
+            );
+        }
+        return html;
+    },
+
     vite: {
         server: {
             host: true,
