@@ -1,8 +1,14 @@
 // Service Worker for MyCook PWA
-const CACHE_NAME = 'mycook-cache-v5';
-const STATIC_CACHE = 'mycook-static-v5';
+const CACHE_NAME = 'mycook-cache-v6';
+const STATIC_CACHE = 'mycook-static-v6';
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, '');
 const withBase = (value) => `${BASE_PATH}${value}`;
+
+// 导航响应只有确认是 HTML 时才允许入缓存，
+// 避免把 markdown 镜像 / JSON / 错误页缓存到页面 URL 上导致"源码乱码"屏
+function isHtmlResponse(response) {
+  return response.ok && (response.headers.get('content-type') || '').includes('text/html');
+}
 
 // 需要缓存的静态资源
 const STATIC_ASSETS = [
@@ -51,6 +57,10 @@ self.addEventListener('activate', (event) => {
 // 请求拦截 - 网络优先，缓存回退策略
 self.addEventListener('fetch', (event) => {
   const { request } = event;
+
+  // 只处理 GET，放行 POST 等非幂等请求
+  if (request.method !== 'GET') return;
+
   const url = new URL(request.url);
 
   // 只处理同源请求
@@ -63,11 +73,12 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          // 缓存响应
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone);
-          });
+          if (isHtmlResponse(response)) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseClone);
+            });
+          }
           return response;
         })
         .catch(() => {
@@ -88,6 +99,7 @@ self.addEventListener('fetch', (event) => {
           if (cachedResponse) {
             // 返回缓存，同时后台更新
             fetch(request).then((response) => {
+              if (!response.ok) return;
               caches.open(CACHE_NAME).then((cache) => {
                 cache.put(request, response);
               });
@@ -97,10 +109,12 @@ self.addEventListener('fetch', (event) => {
 
           // 没有缓存，从网络获取
           return fetch(request).then((response) => {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseClone);
-            });
+            if (response.ok) {
+              const responseClone = response.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, responseClone);
+              });
+            }
             return response;
           });
         })
@@ -112,11 +126,12 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(request)
       .then((response) => {
-        // 缓存响应
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(request, responseClone);
-        });
+        if (response.ok) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseClone);
+          });
+        }
         return response;
       })
       .catch(() => {

@@ -1,6 +1,6 @@
 # MyCook MCP 与 AI Agent
 
-MyCook 面向 AI Agent 提供三层能力，**静态站点不因此变胖**——MCP 是可选 sidecar，默认 Pages 部署零 Node 运行时。
+MyCook 面向 **任意 AI Agent** 提供三层能力（不限于 Cursor）。MCP 是可选 sidecar，默认 GitHub Pages 部署零 Node 运行时。
 
 ## 架构
 
@@ -21,7 +21,7 @@ MyCook 面向 AI Agent 提供三层能力，**静态站点不因此变胖**—�
 └─────────────────────────────────────────────────────────┘
 ```
 
-## 方式一：Cursor / Claude Desktop（stdio，推荐本地）
+## 方式一：本地 stdio（IDE / 桌面客户端）
 
 先构建数据：
 
@@ -29,15 +29,25 @@ MyCook 面向 AI Agent 提供三层能力，**静态站点不因此变胖**—�
 npm run generate
 ```
 
-将 [mcp/cursor-mcp.example.json](./mcp/cursor-mcp.example.json) 合并进 Cursor MCP 配置，把 `cwd` 和 `MYCOOK_DATA` 改成你的仓库路径。
+将 [mcp/mcp-config.example.json](./mcp/mcp-config.example.json) 里的 `mycook` 段合并进你的 MCP 配置，把 `cwd` 和 `MYCOOK_DATA` 改成仓库路径。
 
-或在项目根：
+或在项目根直接调试：
 
 ```bash
 npm run mcp
 ```
 
-## 方式二：HTTP Streamable MCP（远程 Agent）
+### 各客户端配置位置
+
+| 客户端 | 说明 |
+|--------|------|
+| **Cursor** | Settings → MCP |
+| **Claude Desktop** | `claude_desktop_config.json`（见 [ai-agents.md](./ai-agents.md) 路径表） |
+| **VS Code Copilot** | `.vscode/mcp.json` |
+| **Windsurf / Cline / Continue** | 各扩展 MCP 设置，JSON 结构相同 |
+| **其他** | 凡支持 MCP stdio 的客户端，填入 `command` + `args` + `env` 即可 |
+
+## 方式二：HTTP Streamable MCP（远程 / 多客户端共享）
 
 ```bash
 npm run generate
@@ -45,7 +55,7 @@ npm run mcp:http
 # → http://127.0.0.1:3001/mcp
 ```
 
-Cursor 远程 MCP 配置示例：
+任意支持 **MCP over HTTP** 的客户端使用 [mcp/mcp-http.example.json](./mcp/mcp-http.example.json)：
 
 ```json
 {
@@ -57,6 +67,8 @@ Cursor 远程 MCP 配置示例：
 }
 ```
 
+适合：Claude Desktop 远程、团队共用 sidecar、自建 Agent 网关。
+
 ## 方式三：Docker Compose（agent profile）
 
 与静态站同数据卷，单独端口暴露 MCP：
@@ -65,6 +77,14 @@ Cursor 远程 MCP 配置示例：
 docker compose --profile agent up -d --build
 # 站点 → :8080    MCP → :3001/mcp
 ```
+
+## 不用 MCP 时
+
+- **菜谱页「AI」按钮**：复制提示词 + 正文到任意聊天模型
+- **OpenAPI / JSON**：[/openapi.json](https://cook.alexander.xin/openapi.json)、`/recipes-index.json`
+- **Agent Skills**：`/.well-known/agent-skills/index.json`
+
+详见站点 [/ai-agents](https://cook.alexander.xin/ai-agents)。
 
 ## MCP Tools
 
@@ -78,6 +98,7 @@ docker compose --profile agent up -d --build
 | `search_by_ingredients` | 食材反查（食用手册数据） |
 | `list_pantry_ingredients` | 可选食材 chip |
 | `random_recipe` | 随机一道 |
+| `search_tips` | 搜索厨房技巧 |
 
 ## Prompts
 
@@ -86,7 +107,7 @@ docker compose --profile agent up -d --build
 | `what_to_cook` | 「今天吃什么」检索 + 推荐 |
 | `recipe_assistant` | 单篇菜谱问答上下文 |
 
-## 发现端点（无需 MCP 也能用）
+## 发现端点
 
 | 路径 | 说明 |
 |------|------|
@@ -109,7 +130,7 @@ Docker 部署时携带 `Accept: text/markdown` 可获取菜谱 Markdown 镜像�
 
 ## 前端 AI 辅助（无 API Key）
 
-菜谱页工具栏 **「发给 AI」**：复制「系统提示 + 正文」到剪贴板，粘贴到任意聊天模型即可。
+菜谱页工具栏 **「AI」**：复制「系统提示 + 正文」到剪贴板，粘贴到 ChatGPT / Claude / Gemini / 本地模型等均可。
 
 浏览器支持 [WebMCP](https://github.com/webmachinelearning/webmcp) 时，页面自动注册同名工具（`WebMcp.vue`）。
 
@@ -117,7 +138,8 @@ Docker 部署时携带 `Accept: text/markdown` 可获取菜谱 Markdown 镜像�
 
 - **只读**：不提供写菜谱、无用户数据上传
 - **无 LLM 内置**：不在服务端调用 OpenAI，Agent 自带模型
+- **客户端无关**：MCP / OpenAPI / 剪贴板，不绑定单一产品
 - **数据同源**：MCP 读 `public/` 与静态站一致
 - **可选部署**：Pages 纯静态；需要 Agent 时再启 MCP sidecar
 
-详见 [INTEGRATIONS.md](./INTEGRATIONS.md) · [AGENTS.md](./AGENTS.md)
+详见 [INTEGRATIONS.md](./INTEGRATIONS.md) · [AGENTS.md](./AGENTS.md) · [ai-agents.md](./ai-agents.md)

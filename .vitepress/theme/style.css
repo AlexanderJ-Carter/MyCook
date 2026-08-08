@@ -1,6 +1,11 @@
 /* MyCook — 窑火杂志：瓷青纸面 + 朱红印色 + 墨色标题 */
 /* 字体通过 config.mjs head 预加载，避免 @import 阻塞渲染 */
 
+/* 自有 SkipLink 已覆盖无障碍跳转，隐藏 VitePress 默认英文 Skip to content */
+.VPSkipLink {
+    display: none !important;
+}
+
 :root {
     --vp-font-family-base:
         'Noto Sans SC', ui-sans-serif, system-ui, -apple-system, 'PingFang SC',
@@ -17,6 +22,7 @@
     --vp-c-bg-alt: #ebe8e1;
     --vp-c-bg-soft: #eeebe5;
     --vp-c-bg-elv: #faf8f4;
+    --vp-nav-bg-color: color-mix(in srgb, var(--vp-c-bg) 86%, transparent);
 
     --vp-custom-block-tip-border: #b83a28;
     --vp-custom-block-tip-bg: rgba(184, 58, 40, 0.07);
@@ -48,6 +54,11 @@
 }
 
 .dark {
+    --vp-c-bg: #171410;
+    --vp-c-bg-alt: #13110c;
+    --vp-c-bg-soft: #201c15;
+    --vp-c-bg-elv: #26221a;
+    --vp-c-divider: rgba(255, 244, 230, 0.12);
     --vp-c-brand-1: #e86a56;
     --vp-c-brand-2: #d4523e;
     --vp-c-brand-3: #b83a28;
@@ -58,12 +69,61 @@
     --mycook-steel: #b7b0a4;
     --mycook-paper: #1e1c19;
     --mycook-line: rgba(255, 244, 230, 0.1);
+    --mycook-pantry: #e8a830;
+    --mycook-pantry-soft: rgba(232, 168, 48, 0.14);
     --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.25);
     --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.32);
     --shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.4);
 }
 
 /* ===== Global page atmosphere ===== */
+::selection {
+    background: rgba(184, 58, 40, 0.24);
+}
+
+.dark ::selection {
+    background: rgba(232, 106, 86, 0.34);
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--vp-nav-height, 64px) + 1rem);
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* 宣纸颗粒：极淡的噪点覆膜，近看有纸感，不干扰阅读 */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.035 0'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+}
+
+.dark body::after {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+}
+
+/* 滚动渐显（Layout.vue 挂载时注入） */
+.reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+        opacity 0.65s ease,
+        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-in {
+    opacity: 1;
+    transform: none;
+}
+
 .VPHome {
     position: relative;
     overflow: clip;
@@ -161,6 +221,8 @@
 }
 
 .VPHero .text {
+    position: relative;
+    display: inline-block;
     font-family: var(--mycook-display);
     font-weight: 600;
     font-size: clamp(1.4rem, 3.2vw, 1.95rem);
@@ -168,6 +230,18 @@
     color: var(--mycook-steel);
     margin-top: 1rem;
     animation: rise-in 0.75s 0.08s var(--transition-slow) both;
+}
+
+/* 笔墨晕染：主标语下的一抹朱砂 */
+.VPHero .text::after {
+    content: '';
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    bottom: -0.5rem;
+    height: 0.42rem;
+    background: radial-gradient(ellipse at center, rgba(184, 58, 40, 0.32), transparent 72%);
+    border-radius: 50%;
 }
 
 .VPHero .tagline {
@@ -206,18 +280,24 @@
 }
 
 .VPHero .actions .VPButton.brand {
+    padding: 0.85rem 1.7rem;
+    font-size: 1.02rem;
     background: linear-gradient(160deg, #d24a35, var(--vp-c-brand-1) 55%, var(--vp-c-brand-2));
-    box-shadow: 0 10px 28px rgba(184, 58, 40, 0.28);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 10px 28px rgba(184, 58, 40, 0.28);
 }
 
 .VPHero .actions .VPButton.brand:hover {
     background: linear-gradient(160deg, #c44530, var(--vp-c-brand-2));
-    box-shadow: 0 14px 34px rgba(184, 58, 40, 0.34);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 14px 34px rgba(184, 58, 40, 0.34);
 }
 
 .VPHero .actions .VPButton.alt {
-    background: rgba(250, 248, 244, 0.72);
-    border-color: rgba(28, 25, 21, 0.12);
+    background: color-mix(in srgb, var(--mycook-paper) 72%, transparent);
+    border-color: var(--mycook-line);
     backdrop-filter: blur(8px);
 }
 
@@ -241,7 +321,7 @@
 /* ===== Daily Pick ===== */
 .daily-pick {
     position: relative;
-    max-width: 920px;
+    max-width: 1080px;
     margin: 0.25rem auto 2.75rem;
     padding: 1.85rem 4.5rem 1.85rem 2.15rem;
     overflow: hidden;
@@ -253,6 +333,30 @@
         var(--mycook-paper);
     box-shadow: var(--shadow-md);
     animation: rise-in 0.6s 0.28s both;
+}
+
+/* 中式画框角：四隅描金，像一张装裱过的菜单 */
+.daily-pick::after {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    pointer-events: none;
+    opacity: 0.55;
+    --corner: rgba(184, 58, 40, 0.5);
+    background:
+        linear-gradient(var(--corner), var(--corner)) top left / 18px 1.5px,
+        linear-gradient(var(--corner), var(--corner)) top left / 1.5px 18px,
+        linear-gradient(var(--corner), var(--corner)) top right / 18px 1.5px,
+        linear-gradient(var(--corner), var(--corner)) top right / 1.5px 18px,
+        linear-gradient(var(--corner), var(--corner)) bottom left / 18px 1.5px,
+        linear-gradient(var(--corner), var(--corner)) bottom left / 1.5px 18px,
+        linear-gradient(var(--corner), var(--corner)) bottom right / 18px 1.5px,
+        linear-gradient(var(--corner), var(--corner)) bottom right / 1.5px 18px;
+    background-repeat: no-repeat;
+}
+
+.dark .daily-pick::after {
+    --corner: rgba(232, 106, 86, 0.55);
 }
 
 .daily-pick-seal {
@@ -271,15 +375,6 @@
     background: radial-gradient(circle at 30% 30%, #e2553d, #9e2f1d);
     box-shadow: 0 8px 20px rgba(158, 47, 29, 0.28);
     transform: rotate(8deg);
-}
-
-.daily-pick-kicker {
-    margin: 0 0 0.55rem;
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--vp-c-brand-1);
-    font-weight: 600;
 }
 
 .daily-pick h2 {
@@ -328,7 +423,9 @@ a.daily-pick-go,
     background: var(--vp-c-brand-1);
     color: #fff !important;
     text-decoration: none !important;
-    box-shadow: 0 8px 20px rgba(184, 58, 40, 0.22);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 8px 20px rgba(184, 58, 40, 0.22);
 }
 
 a.daily-pick-go:hover,
@@ -350,6 +447,126 @@ a.daily-pick-go:hover,
     color: var(--vp-c-brand-1);
 }
 
+/* ===== Home section kicker (shared) ===== */
+.home-section-kicker,
+.home-explore-kicker,
+.daily-pick-kicker {
+    margin: 0 0 0.35rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--vp-c-text-3);
+    font-weight: 600;
+}
+
+.home-section-kicker::before,
+.home-explore-kicker::before,
+.daily-pick-kicker::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    margin-right: 0.5rem;
+    vertical-align: 0.14em;
+    background: var(--vp-c-brand-1);
+    transform: rotate(45deg);
+    opacity: 0.75;
+}
+
+.daily-pick-kicker {
+    color: var(--vp-c-brand-1);
+    letter-spacing: 0.18em;
+}
+
+/* ===== Home Play Nav & Zone ===== */
+#kitchen-play,
+#meal-planner,
+#kitchen-tips,
+#stats {
+    scroll-margin-top: calc(var(--vp-nav-height, 64px) + 1.25rem);
+}
+
+.home-play-nav {
+    position: sticky;
+    top: calc(var(--vp-nav-height, 64px) + 0.35rem);
+    z-index: 10;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.45rem;
+    overflow-x: auto;
+    max-width: 1080px;
+    margin: 0 auto 1rem;
+    padding: 0.55rem 1.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.home-play-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.home-play-nav-link {
+    flex-shrink: 0;
+    padding: 0.42rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    color: var(--vp-c-text-2) !important;
+    border: 1px solid var(--mycook-line);
+    background: color-mix(in srgb, var(--mycook-paper) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition:
+        color var(--transition-fast),
+        border-color var(--transition-fast),
+        background var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.home-play-nav-link:hover,
+.home-play-nav-link.active {
+    color: var(--vp-c-brand-1) !important;
+    border-color: rgba(184, 58, 40, 0.28);
+    background: var(--vp-c-brand-soft);
+    transform: translateY(-1px);
+}
+
+.home-play-zone {
+    max-width: 1080px;
+    margin: 0 auto 2.75rem;
+    padding: 0.15rem 1.35rem;
+    border-radius: calc(var(--mycook-radius) + 8px);
+    border: 1px solid var(--mycook-line);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--mycook-paper) 96%, transparent), color-mix(in srgb, var(--vp-c-bg) 70%, transparent)),
+        var(--mycook-paper);
+    box-shadow: var(--shadow-md);
+}
+
+.VPHome .home-play-zone .kitchen-play,
+.VPHome .home-play-zone .meal-planner,
+.VPHome .home-play-zone .kitchen-tips {
+    max-width: none;
+    margin: 0;
+    padding: 1.55rem 0.15rem;
+    border: none !important;
+    border-radius: 0;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+.VPHome .home-play-zone .kitchen-play,
+.VPHome .home-play-zone .meal-planner {
+    border-bottom: 1px solid var(--mycook-line) !important;
+}
+
+.VPHome .home-play-zone .kitchen-play-head h2,
+.VPHome .home-play-zone .meal-planner-head h2,
+.VPHome .home-play-zone .kitchen-tips-head h2 {
+    font-size: clamp(1.2rem, 2.5vw, 1.45rem);
+}
+
 /* ===== Home Explore ===== */
 .home-explore {
     max-width: 1080px;
@@ -361,14 +578,6 @@ a.daily-pick-go:hover,
     text-align: center;
     max-width: 34rem;
     margin: 0 auto 2rem;
-}
-
-.home-explore-kicker {
-    margin: 0 0 0.55rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--vp-c-text-3);
 }
 
 .home-explore-intro h2 {
@@ -489,7 +698,7 @@ a.daily-pick-go:hover,
     font-size: 0.72rem;
     padding: 0.2rem 0.5rem;
     border-radius: 999px;
-    background: rgba(28, 25, 21, 0.04);
+    background: color-mix(in srgb, var(--mycook-ink) 5%, transparent);
     color: var(--vp-c-text-3);
 }
 
@@ -522,6 +731,10 @@ a.daily-pick-go:hover,
     color: var(--mycook-jade) !important;
 }
 
+.home-path.is-pantry .home-path-go {
+    color: var(--mycook-pantry) !important;
+}
+
 .home-path.is-ink .home-path-go {
     color: var(--mycook-steel) !important;
 }
@@ -535,7 +748,7 @@ a.daily-pick-go:hover,
     margin-top: 2.5rem;
     padding: 1.35rem;
     border-radius: var(--mycook-radius);
-    background: rgba(250, 248, 244, 0.7);
+    background: color-mix(in srgb, var(--mycook-paper) 72%, transparent);
     border: 1px solid var(--mycook-line);
     backdrop-filter: blur(8px);
 }
@@ -567,6 +780,7 @@ a.daily-pick-go:hover,
 }
 
 .home-shelf-link {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -581,6 +795,25 @@ a.daily-pick-go:hover,
         transform var(--transition-fast),
         border-color var(--transition-fast),
         box-shadow var(--transition-fast);
+}
+
+.home-shelf-link::after {
+    content: '→';
+    position: absolute;
+    right: 0.75rem;
+    top: 0.7rem;
+    font-size: 0.8rem;
+    color: var(--vp-c-brand-1);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition:
+        opacity var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.home-shelf-link:hover::after {
+    opacity: 1;
+    transform: none;
 }
 
 .home-shelf-link:hover {
@@ -617,9 +850,21 @@ a.daily-pick-go:hover,
     padding: 0;
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 1rem;
     counter-reset: flow;
+}
+
+@media (min-width: 640px) {
+    .home-flow ol {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .home-flow ol {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
 
 .home-flow li {
@@ -657,6 +902,23 @@ a.daily-pick-go:hover,
 }
 
 /* ===== Doc ===== */
+.VPDoc .content .vp-doc h1 {
+    position: relative;
+    padding-bottom: 0.35em;
+}
+
+.VPDoc .content .vp-doc h1::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 2.2em;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--vp-c-brand-1), var(--mycook-jade));
+    opacity: 0.7;
+}
+
 .VPDoc .content .vp-doc h1,
 .VPDoc .content .vp-doc h2 {
     font-family: var(--mycook-display);
@@ -665,7 +927,7 @@ a.daily-pick-go:hover,
 
 .VPDoc .content .vp-doc h2 {
     padding-top: 1.2em;
-    border-top: 1px solid var(--vp-c-divider);
+    border-top: 1px solid var(--mycook-line);
     margin-top: 1.8em;
 }
 
@@ -686,6 +948,46 @@ a.daily-pick-go:hover,
     -webkit-backdrop-filter: blur(16px);
 }
 
+/* ===== Sidebar ===== */
+.VPSidebar .link {
+    border-radius: 8px;
+    transition: background var(--transition-fast);
+}
+
+.VPSidebar .link:hover {
+    background: var(--vp-c-bg-soft);
+}
+
+.VPSidebar .link:hover .text {
+    color: var(--vp-c-brand-1);
+}
+
+.VPSidebarItem.is-active > .item .link {
+    background: var(--vp-c-brand-soft);
+}
+
+.VPSidebarItem.is-active > .item .link .text {
+    color: var(--vp-c-brand-1);
+    font-weight: 600;
+}
+
+/* ===== Footer ===== */
+.VPFooter {
+    border-top: 1px solid var(--mycook-line);
+    background: color-mix(in srgb, var(--mycook-paper) 60%, transparent);
+}
+
+.VPFooter .container::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    margin: 0 auto 0.85rem;
+    background: var(--vp-c-brand-1);
+    transform: rotate(45deg);
+    opacity: 0.55;
+}
+
 .vp-doc img {
     border-radius: 10px;
     box-shadow: var(--shadow-sm);
@@ -694,16 +996,64 @@ a.daily-pick-go:hover,
 }
 
 .vp-doc table {
+    width: 100%;
+    border: 1px solid var(--mycook-line);
     border-radius: 10px;
-    overflow: hidden;
+    font-size: 0.92rem;
 }
 
 .vp-doc th {
     background: var(--vp-c-bg-soft);
+    font-family: var(--mycook-display);
+    font-weight: 700;
+}
+
+.vp-doc tr:nth-child(even) td {
+    background: color-mix(in srgb, var(--vp-c-bg-soft) 45%, transparent);
+}
+
+.vp-doc h3 {
+    font-family: var(--mycook-display);
+    font-weight: 700;
+}
+
+.vp-doc blockquote {
+    border-left: 3px solid var(--vp-c-brand-1);
+    background: var(--vp-c-bg-soft);
+    border-radius: 0 10px 10px 0;
+    padding: 0.75rem 1.1rem;
+    color: var(--vp-c-text-2);
+}
+
+.vp-doc blockquote > p {
+    margin: 0;
+}
+
+.vp-doc :not(pre) > code {
+    background: var(--vp-c-brand-soft);
+    color: var(--vp-c-brand-2);
+    border-radius: 6px;
+    padding: 0.12em 0.4em;
+    font-size: 0.88em;
+}
+
+.dark .vp-doc :not(pre) > code {
+    color: var(--vp-c-brand-1);
+}
+
+.vp-doc hr {
+    border: none;
+    border-top: 1px solid var(--mycook-line);
+    margin: 2.2rem auto;
 }
 
 .vp-doc [class*='language-'] {
     border-radius: 10px;
+}
+
+.vp-doc .custom-block {
+    border-radius: 12px;
+    border: 1px solid var(--mycook-line);
 }
 
 .vp-doc ul {
@@ -715,7 +1065,7 @@ a.daily-pick-go:hover,
 }
 
 .vp-doc strong {
-    color: var(--vp-c-brand-1);
+    color: var(--mycook-ink);
     font-weight: 600;
 }
 
@@ -795,7 +1145,7 @@ a.daily-pick-go:hover,
 
 /* ===== Stats ===== */
 .stats-section {
-    margin: 2.25rem auto;
+    margin: 2.75rem auto;
     max-width: 1080px;
     padding: 0 1.25rem;
 }
@@ -811,10 +1161,15 @@ a.daily-pick-go:hover,
 .stats-head {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
+    align-items: flex-end;
     justify-content: space-between;
     gap: 0.35rem 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.15rem;
+}
+
+.stats-head .home-section-kicker {
+    color: var(--vp-c-brand-1);
+    opacity: 0.85;
 }
 
 .stats-sync {
@@ -830,18 +1185,40 @@ a.daily-pick-go:hover,
 }
 
 .stat-card {
+    position: relative;
+    overflow: hidden;
     text-align: left;
     padding: 1.25rem 1.3rem;
     border-radius: var(--mycook-radius);
     background: var(--mycook-paper);
     border: 1px solid var(--mycook-line);
     box-shadow: var(--shadow-sm);
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 1.3rem;
+    right: 1.3rem;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--vp-c-brand-1), transparent);
+    opacity: 0.4;
+}
+
+.stat-card.howtocook::before {
+    background: linear-gradient(90deg, var(--mycook-jade), transparent);
 }
 
 .stat-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+    border-color: rgba(184, 58, 40, 0.16);
 }
 
 .stat-number {
@@ -917,12 +1294,17 @@ a.daily-pick-go:hover,
     color: var(--vp-c-text-2);
     text-decoration: none;
     font-size: 0.9rem;
-    padding: 0.55rem 0.1rem;
-    transition: color var(--transition-fast);
+    padding: 0.55rem 0.65rem;
+    margin: 0 -0.55rem;
+    border-radius: 8px;
+    transition:
+        color var(--transition-fast),
+        background var(--transition-fast);
 }
 
 .recent-updates-list a:hover {
     color: var(--vp-c-brand-1);
+    background: var(--vp-c-brand-soft);
 }
 
 .recent-title {
@@ -937,7 +1319,7 @@ a.daily-pick-go:hover,
     letter-spacing: 0.06em;
     padding: 0.15rem 0.45rem;
     border-radius: 999px;
-    background: rgba(28, 25, 21, 0.04);
+    background: color-mix(in srgb, var(--mycook-ink) 5%, transparent);
     color: var(--vp-c-text-3);
 }
 
@@ -953,12 +1335,26 @@ a.daily-pick-go:hover,
 
 /* ===== Credits ===== */
 .home-credits {
-    margin: 2.5rem auto 3rem;
-    padding: 1.75rem 1.5rem;
+    position: relative;
+    margin: 2.5rem auto 3.5rem;
+    padding: 1.85rem 1.5rem;
     max-width: 1080px;
-    border-radius: var(--mycook-radius);
-    background: var(--mycook-paper);
+    border-radius: calc(var(--mycook-radius) + 2px);
+    background:
+        linear-gradient(135deg, rgba(184, 58, 40, 0.04), transparent 42%),
+        linear-gradient(225deg, rgba(31, 111, 91, 0.05), transparent 46%),
+        var(--mycook-paper);
     border: 1px solid var(--mycook-line);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.home-credits::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--vp-c-brand-1), var(--mycook-jade));
 }
 
 .home-credits-title {
@@ -1038,6 +1434,8 @@ a.daily-pick-go:hover,
     .home-explore,
     .home-credits,
     .daily-pick,
+    .home-play-nav,
+    .home-play-zone,
     .back-to-top,
     .reading-progress,
     .recipe-toolbar,
@@ -1048,11 +1446,6 @@ a.daily-pick-go:hover,
 
 /* ===== Responsive ===== */
 @media (max-width: 960px) {
-    .home-paths,
-    .home-flow ol {
-        grid-template-columns: 1fr;
-    }
-
     .home-shelf-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -1098,6 +1491,18 @@ a.daily-pick-go:hover,
         margin-right: 1.25rem;
     }
 
+    .home-play-zone {
+        margin-left: 1rem;
+        margin-right: 1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .home-play-nav {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
     .VPNavBar {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
@@ -1110,8 +1515,15 @@ a.daily-pick-go:hover,
     }
 }
 
+@media (max-width: 480px) {
+    .home-paths {
+        grid-template-columns: 1fr;
+    }
+}
+
 .home-path:focus-visible,
 .home-shelf-link:focus-visible,
+.home-play-nav-link:focus-visible,
 .recent-updates-list a:focus-visible,
 .home-credits-list a:focus-visible,
 .daily-pick-go:focus-visible,
@@ -1144,6 +1556,12 @@ a.daily-pick-go:hover,
     .daily-pick,
     .VPContent {
         animation: none !important;
+    }
+
+    .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
     }
 }
 

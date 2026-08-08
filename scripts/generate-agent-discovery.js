@@ -320,8 +320,9 @@ function buildSkillMd() {
 ## MCP Server
 
 - Server Card: \`/.well-known/mcp/server-card.json\`
-- 本地 stdio: \`node mcp/server.mjs\`
-- HTTP: \`npm run mcp:http\` → \`:3001/mcp\`
+- 本地 stdio: \`node mcp/server.mjs\`（配置见 \`mcp/mcp-config.example.json\`）
+- HTTP: \`npm run mcp:http\` → \`:3001/mcp\`（配置见 \`mcp/mcp-http.example.json\`）
+- 客户端：Cursor、Claude Desktop、Copilot、Windsurf、Cline 等任意 MCP 宿主
 - 文档: https://github.com/AlexanderJ-Carter/MyCook/blob/main/MCP.md
 
 ## 认证

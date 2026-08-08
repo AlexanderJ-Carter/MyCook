@@ -30,7 +30,7 @@ Docker:
   docker:stop       停止容器
 
 Agent / MCP:
-  mcp               启动 MCP stdio 服务（Cursor 本地）
+  mcp               启动 MCP stdio 服务（本地 IDE / 桌面客户端）
   mcp:http          启动 MCP HTTP 服务 → :3001/mcp
 
 其它:

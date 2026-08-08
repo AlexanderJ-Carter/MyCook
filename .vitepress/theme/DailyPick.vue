@@ -2,13 +2,19 @@
 import { computed, onMounted, ref } from "vue";
 import { withBase } from "vitepress";
 import { useSiteData } from "./composables/useSiteData";
+import { useI18n } from "./composables/useI18n";
 
 const { loadRecipesIndex } = useSiteData();
+const { t, dateLocale } = useI18n();
 const picked = ref(null);
+const recipes = ref([]);
 
 const todayLabel = computed(() => {
   const now = new Date();
-  return `${now.getMonth() + 1}月${now.getDate()}日`;
+  return now.toLocaleDateString(dateLocale(), {
+    month: "short",
+    day: "numeric",
+  });
 });
 
 function daySeed() {
@@ -32,8 +38,6 @@ function reshuffle() {
   );
 }
 
-const recipes = ref([]);
-
 onMounted(async () => {
   const data = await loadRecipesIndex();
   recipes.value = data?.items || [];
@@ -42,22 +46,22 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section v-if="picked" class="daily-pick" aria-label="今日推荐">
-    <div class="daily-pick-seal" aria-hidden="true">荐</div>
+  <section v-if="picked" class="daily-pick" :aria-label="t('home.dailyPick.aria')">
+    <div class="daily-pick-seal" aria-hidden="true">{{ t('home.dailyPick.seal') }}</div>
     <div class="daily-pick-body">
-      <p class="daily-pick-kicker">今日开灶 · {{ todayLabel }}</p>
+      <p class="daily-pick-kicker">{{ t('home.dailyPick.kicker') }} · {{ todayLabel }}</p>
       <h2>{{ picked.title }}</h2>
       <p class="daily-pick-desc">
         {{
           picked.source === "cooklikehoc"
-            ? "从做法库抽到的一道菜，今天就按这个做。"
-            : "从食材指南抽到的一道菜，今天就按这个做。"
+            ? t('home.dailyPick.descCooklikehoc')
+            : t('home.dailyPick.descHowtocook')
         }}
       </p>
       <div class="daily-pick-actions">
-        <a class="daily-pick-go" :href="withBase(picked.link)">去做这道</a>
+        <a class="daily-pick-go" :href="withBase(picked.link)">{{ t('home.dailyPick.go') }}</a>
         <button type="button" class="daily-pick-shuffle" @click="reshuffle">
-          换一道
+          {{ t('home.dailyPick.shuffle') }}
         </button>
       </div>
     </div>

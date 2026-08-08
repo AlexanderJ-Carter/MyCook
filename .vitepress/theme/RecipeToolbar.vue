@@ -2,9 +2,11 @@
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, withBase } from "vitepress";
 import { useSiteData } from "./composables/useSiteData";
+import { useI18n } from "./composables/useI18n";
 
 const route = useRoute();
 const { loadRecipesIndex } = useSiteData();
+const { t, dateLocale } = useI18n();
 const favorites = ref([]);
 const panel = ref(null); // 'favorites' | 'timer' | null
 const toast = ref("");
@@ -14,10 +16,9 @@ const timerMinutes = ref(5);
 let intervalId = null;
 
 const isDocPage = computed(() => {
-  const path = route.path;
-  return (
-    path !== "/" && !path.startsWith("/help") && !path.startsWith("/about")
-  );
+  const path = route.path.replace(/\/$/, "") || "/";
+  const skip = ["/", "/en", "/help", "/en/help", "/about", "/en/about", "/ai-agents", "/en/ai-agents"];
+  return !skip.includes(path);
 });
 
 const isFavorite = computed(() =>
@@ -60,7 +61,7 @@ const removeFavorite = (path) => {
 };
 
 const formatDate = (iso) =>
-  new Date(iso).toLocaleDateString("zh-CN", {
+  new Date(iso).toLocaleDateString(dateLocale(), {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -80,14 +81,14 @@ const showToast = (msg) => {
 const copyLink = async () => {
   try {
     await navigator.clipboard.writeText(window.location.href);
-    showToast("链接已复制");
+    showToast(t("toolbar.copyLinkOk"));
   } catch {
-    showToast("复制失败");
+    showToast(t("toolbar.copyFail"));
   }
 };
 
 const shareRecipe = async () => {
-  const title = document.querySelector("h1")?.textContent?.trim() || "MyCook 菜谱";
+  const title = document.querySelector("h1")?.textContent?.trim() || "MyCook";
   if (navigator.share) {
     try {
       await navigator.share({ title, url: window.location.href });
@@ -108,29 +109,27 @@ const goRandom = async () => {
 };
 
 const openVideo = () => {
-  const title = document.querySelector("h1")?.textContent?.trim() || "菜谱";
-  const url = `https://search.bilibili.com/all?keyword=${encodeURIComponent(`${title} 做法`)}`;
+  const title = document.querySelector("h1")?.textContent?.trim() || t("toolbar.defaultTitle");
+  const url = `https://search.bilibili.com/all?keyword=${encodeURIComponent(`${title} ${t("toolbar.videoKeyword")}`)}`;
   window.open(url, "_blank", "noopener,noreferrer");
 };
 
 const copyForAi = async () => {
-  const title = document.querySelector("h1")?.textContent?.trim() || "菜谱";
+  const title = document.querySelector("h1")?.textContent?.trim() || t("toolbar.defaultTitle");
   const body =
     document.querySelector(".vp-doc")?.innerText?.trim() ||
     document.querySelector(".content-container")?.innerText?.trim() ||
     "";
-  const prompt = `你是 MyCook 厨房助手。以下是「${title}」的菜谱正文。请根据用户问题回答：备菜顺序、食材替换、火候、计时、份量换算等。若正文未提及，请明确说明并给出合理建议。
-
----
-${body}
----
-
-来源：${window.location.href}`;
+  const prompt = t("toolbar.aiPrompt", {
+    title,
+    body,
+    url: window.location.href,
+  });
   try {
     await navigator.clipboard.writeText(prompt);
-    showToast("已复制给 AI");
+    showToast(t("toolbar.copyAiOk"));
   } catch {
-    showToast("复制失败");
+    showToast(t("toolbar.copyFail"));
   }
 };
 
@@ -194,7 +193,7 @@ const tick = () => {
     if (timer.remainingSeconds === 0) {
       timer.isRunning = false;
       if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("计时结束", { body: timer.name });
+        new Notification(t("toolbar.timerDone"), { body: timer.name });
       }
     }
   }
@@ -232,13 +231,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div v-if="isDocPage" class="recipe-toolbar" aria-label="菜谱工具">
+  <div v-if="isDocPage" class="recipe-toolbar" :aria-label="t('toolbar.aria')">
     <div class="recipe-toolbar-bar">
       <button
         type="button"
         class="rt-btn"
         :class="{ active: isFavorite }"
-        :title="isFavorite ? '取消收藏' : '收藏'"
+        :title="isFavorite ? t('toolbar.unfavorite') : t('toolbar.favorite')"
         :aria-pressed="isFavorite"
         @click="toggleFavorite"
       >
@@ -252,50 +251,50 @@ onUnmounted(() => {
             d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
           />
         </svg>
-        <span class="rt-label">{{ isFavorite ? "已藏" : "收藏" }}</span>
+        <span class="rt-label">{{ isFavorite ? t('toolbar.favorited') : t('toolbar.favorite') }}</span>
       </button>
 
-      <button type="button" class="rt-btn" title="复制链接" @click="copyLink">
+      <button type="button" class="rt-btn" :title="t('toolbar.link')" @click="copyLink">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="9" y="9" width="13" height="13" rx="2" />
           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
         </svg>
-        <span class="rt-label">链接</span>
+        <span class="rt-label">{{ t('toolbar.link') }}</span>
       </button>
 
-      <button type="button" class="rt-btn" title="分享" @click="shareRecipe">
+      <button type="button" class="rt-btn" :title="t('toolbar.share')" @click="shareRecipe">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="18" cy="5" r="3" />
           <circle cx="6" cy="12" r="3" />
           <circle cx="18" cy="19" r="3" />
           <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98" />
         </svg>
-        <span class="rt-label">分享</span>
+        <span class="rt-label">{{ t('toolbar.share') }}</span>
       </button>
 
-      <button type="button" class="rt-btn" title="随机一道菜" @click="goRandom">
+      <button type="button" class="rt-btn" :title="t('toolbar.random')" @click="goRandom">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
         </svg>
-        <span class="rt-label">随机</span>
+        <span class="rt-label">{{ t('toolbar.random') }}</span>
       </button>
 
-      <button type="button" class="rt-btn" title="B 站搜做法视频" @click="openVideo">
+      <button type="button" class="rt-btn" :title="t('toolbar.video')" @click="openVideo">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="5 3 19 12 5 21 5 3" />
         </svg>
-        <span class="rt-label">视频</span>
+        <span class="rt-label">{{ t('toolbar.video') }}</span>
       </button>
 
-      <button type="button" class="rt-btn rt-btn-ai" title="复制正文给 AI 助手" @click="copyForAi">
+      <button type="button" class="rt-btn rt-btn-ai" :title="t('toolbar.ai')" @click="copyForAi">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 3v2M12 19v2M5 12H3M21 12h-2M7 7l-1.5-1.5M18.5 18.5L17 17M7 17l-1.5 1.5M18.5 5.5L17 7" />
           <circle cx="12" cy="12" r="4" />
         </svg>
-        <span class="rt-label">AI</span>
+        <span class="rt-label">{{ t('toolbar.ai') }}</span>
       </button>
 
-      <button type="button" class="rt-btn" title="打印" @click="printRecipe">
+      <button type="button" class="rt-btn" :title="t('toolbar.print')" @click="printRecipe">
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -307,14 +306,14 @@ onUnmounted(() => {
           />
           <rect x="6" y="14" width="12" height="8" />
         </svg>
-        <span class="rt-label">打印</span>
+        <span class="rt-label">{{ t('toolbar.print') }}</span>
       </button>
 
       <button
         type="button"
         class="rt-btn"
         :class="{ open: panel === 'timer' }"
-        title="计时器"
+        :title="t('toolbar.timer')"
         :aria-expanded="panel === 'timer'"
         @click="togglePanel('timer')"
       >
@@ -327,7 +326,7 @@ onUnmounted(() => {
           <circle cx="12" cy="13" r="8" />
           <path d="M12 9v4l2 2M9 2h6" />
         </svg>
-        <span class="rt-label">计时</span>
+        <span class="rt-label">{{ t('toolbar.timer') }}</span>
       </button>
 
       <button
@@ -335,7 +334,7 @@ onUnmounted(() => {
         type="button"
         class="rt-btn"
         :class="{ open: panel === 'favorites' }"
-        title="我的收藏"
+        :title="t('toolbar.favorites')"
         :aria-expanded="panel === 'favorites'"
         @click="togglePanel('favorites')"
       >
@@ -499,8 +498,8 @@ onUnmounted(() => {
 
 .rt-btn-ai:hover,
 .rt-btn-ai.open {
-  color: #7c5cbf;
-  border-color: rgba(124, 92, 191, 0.35);
+  color: var(--mycook-jade);
+  border-color: color-mix(in srgb, var(--mycook-jade) 35%, transparent);
 }
 
 .rt-btn svg {
@@ -596,6 +595,7 @@ onUnmounted(() => {
   min-width: 110px;
   padding: 0.4rem 0.55rem;
   border: 1px solid var(--mycook-line);
+  border-radius: 8px;
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
   font-size: 0.85rem;
@@ -605,6 +605,7 @@ onUnmounted(() => {
   width: 56px;
   padding: 0.4rem 0.45rem;
   border: 1px solid var(--mycook-line);
+  border-radius: 8px;
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
   font-size: 0.85rem;
@@ -613,6 +614,7 @@ onUnmounted(() => {
 .rt-add {
   padding: 0.4rem 0.7rem;
   border: none;
+  border-radius: 8px;
   background: var(--vp-c-brand-1);
   color: #fff;
   font-size: 0.85rem;
@@ -664,6 +666,7 @@ onUnmounted(() => {
 .rt-timer-actions button {
   padding: 0.3rem 0.65rem;
   border: 1px solid var(--mycook-line);
+  border-radius: 8px;
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
   font-size: 0.8rem;

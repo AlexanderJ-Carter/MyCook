@@ -4,56 +4,41 @@ title: 关于本站
 
 # 关于 MyCook
 
-MyCook 是 [alexander.xin](https://alexander.xin) 站群中的菜谱子站：**把两套开源菜谱合成一张厨房桌面**，并补上搜索、周菜单、PWA 与 AI Agent 能力。
+MyCook 是一个把做饭变简单的菜谱站：两套广受好评的开源菜谱，合成一张顺手的厨房桌面，再加上搜索、周菜单、开冰箱这些贴心小功能。
 
 **在线地址**：[cook.alexander.xin](https://cook.alexander.xin)
 
 ## 项目初衷
 
-自己做饭时经常在多个站点之间切换——按做法找、按食材找、看图找灵感各有一套。MyCook 把它们收进一个入口，再加了「开冰箱」「一周吃什么」「发给 AI」等顺手功能。
+自己做饭时经常在多个站点之间切换——按做法找、按食材找、看图找灵感各有一套。MyCook 把它们收进一个入口，让你少翻页、多下厨。
 
 ## 内容来源
 
-| 项目 | 说明 |
+| 项目 | 你能在这里找到什么 |
 |------|------|
-| [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) | 老乡鸡风格，按炒/炖/卤/汤分类 |
-| [HowToCook](https://github.com/Anduin2017/HowToCook) | 程序员做饭指南，按食材与难度 |
-| [HowToCook 图片版](https://github.com/king-jingxiang/HowToCook) | 本站 [`/howtocook-images/`](/howtocook-images/) |
-| [Cook 食用手册](https://github.com/YunYouJun/cook) | 开冰箱食材数据（CSV 轻量集成） |
+| [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) | 老乡鸡同款家常味，按炒 / 炖 / 卤 / 汤分类 |
+| [HowToCook](https://github.com/Anduin2017/HowToCook) | 程序员写的做饭指南，精准到克和秒 |
+| [HowToCook 图片版](https://github.com/king-jingxiang/HowToCook) | 每道菜配 4K 步骤图，就在本站 [`/howtocook-images/`](/howtocook-images/) |
+| [Cook 食用手册](https://github.com/YunYouJun/cook) | 「开冰箱」的食材搭配灵感 |
 
-菜谱正文在 CI 中从维护者 fork 同步，**不在 MyCook 仓库内直接改**。
-
-## 技术栈
-
-| 层级 | 技术 |
-|------|------|
-| 站点 | [VitePress](https://vitepress.dev/) 1.x |
-| 发布 | GitHub Actions → Pages |
-| 镜像 | GHCR `ghcr.io/alexanderj-carter/mycook` |
-| Agent | MCP Server · OpenAPI · Agent Skills |
-| 运行时（镜像内） | nginx:alpine + 静态 dist |
+菜谱每天自动从上游项目同步，保证你看到的都是最新版本。
 
 ## 功能亮点
 
 | 功能 | 说明 |
 |------|------|
-| 🔍 搜索 | `Ctrl+K` / `/`，577+ 菜谱 |
-| 🧊 开冰箱 | 食材反查 + Cook 外链 + 随机转盘 |
-| 📅 周菜单 | 7 天排餐，存本机浏览器 |
-| 📚 技巧速查 | 18 篇 HowToCook 备忘 |
+| 🔍 搜索 | `Ctrl+K` / `/`，577+ 菜谱随打随出 |
+| 🧊 开冰箱 | 勾选食材，反查能做什么菜 |
+| 📅 周菜单 | 一周排餐，只存在你自己的浏览器里 |
+| 📚 技巧速查 | 焯水、油温、微波炉，备菜前先翻一翻 |
 | ❤️ 工具栏 | 收藏 · 计时 · 分享 · 打印 · **发给 AI** |
-| 🤖 Agent | MCP · WebMcp · Markdown 镜像（Docker） |
-| ⏰ 同步 | 每日从上游 fork 自动更新 |
+| 🤖 发给 AI | 一键复制菜谱去问 ChatGPT / Claude，无需任何配置 |
 
-## 开源与站群
+## 版权说明
 
-- **源码**：[AlexanderJ-Carter/MyCook](https://github.com/AlexanderJ-Carter/MyCook)（MIT）
-- **主站**：[alexander.xin](https://alexander.xin)
-- **项目索引**：[alexander.xin/projects](https://alexander.xin/projects)
+MyCook 是 [alexander.xin](https://alexander.xin) 个人维护的整理站点，与各内容项目的官方没有隶属关系。**菜谱版权归原作者与贡献者所有**，本站源码以 [MIT](https://github.com/AlexanderJ-Carter/MyCook) 开放。
 
-## 免责声明
-
-本站为个人整理维护，非上述项目的官方网站。烹饪请注意用火用电安全。
+下厨请注意用火用电安全。祝你每餐都吃得开心。
 
 ## 反馈
 

@@ -9,6 +9,49 @@ const publicRoot = path.resolve(__dirname, '../public');
 
 const { nav, sidebar } = generateNavAndSidebar(process.cwd());
 
+function moreNav(lang) {
+    const en = lang === 'en';
+    return {
+        text: en ? 'More' : '更多',
+        items: [
+            {
+                text: en ? 'Upstream' : '源项目',
+                items: [
+                    {
+                        text: 'CookLikeHOC',
+                        link: 'https://github.com/Gar-b-age/CookLikeHOC',
+                    },
+                    {
+                        text: 'HowToCook',
+                        link: 'https://github.com/Anduin2017/HowToCook',
+                    },
+                ],
+            },
+            {
+                text: en ? 'HowToCook Images' : 'HowToCook 图片版',
+                link: '/howtocook-images/',
+            },
+            {
+                text: en ? 'Source repo' : '本站仓库',
+                link: 'https://github.com/AlexanderJ-Carter/MyCook',
+            },
+            {
+                text: en ? 'Author' : '作者主页',
+                link: 'https://alexander.xin',
+            },
+        ],
+    };
+}
+
+function rewriteHowToCookImages(req) {
+    const url = req.url?.split('?')[0] || '';
+    if (url === '/howtocook-images/' || url === '/howtocook-images') {
+        req.url = '/howtocook-images/index.html';
+    } else if (url.startsWith('/howtocook-images/') && !url.includes('.')) {
+        req.url = '/howtocook-images/index.html';
+    }
+}
+
 export default defineConfig({
     lang: 'zh-CN',
     title: 'MyCook',
@@ -32,6 +75,69 @@ export default defineConfig({
         'public/**/*.md',
     ],
 
+    // 注意：不设 label，避免 VitePress 内置语言下拉把菜谱页映射到不存在的 /en/ 路径（404）。
+    // 语言切换由主题内的 LangSwitch 组件按 localeRoutes 显式映射处理。
+    locales: {
+        root: { lang: 'zh-CN' },
+        en: {
+            lang: 'en-US',
+            description:
+                'CookLikeHOC-style recipes + HowToCook guide — home cooking in one place',
+            themeConfig: {
+                nav: [
+                    { text: 'Home', link: '/en/' },
+                    ...nav,
+                    moreNav('en'),
+                    { text: 'Help', link: '/en/help' },
+                    { text: 'Agent', link: '/en/ai-agents' },
+                    { text: 'About', link: '/en/about' },
+                ],
+                returnToTopLabel: 'Return to top',
+                sidebarMenuLabel: 'Menu',
+                skipToContentLabel: 'Skip to content',
+                darkModeSwitchLabel: 'Appearance',
+                lightModeSwitchTitle: 'Switch to light theme',
+                darkModeSwitchTitle: 'Switch to dark theme',
+                outline: { level: [2, 3], label: 'On this page' },
+                docFooter: { prev: 'Previous', next: 'Next' },
+                lastUpdated: {
+                    text: 'Last updated',
+                    formatOptions: { dateStyle: 'short', timeStyle: 'short' },
+                },
+                editLink: {
+                    pattern:
+                        'https://github.com/AlexanderJ-Carter/MyCook/edit/main/:path',
+                    text: 'Edit this page on GitHub',
+                },
+                footer: {
+                    message:
+                        'Recipes from the open-source projects CookLikeHOC and HowToCook · maintained by <a href="https://alexander.xin" target="_blank" rel="noopener">alexander.xin</a>',
+                    copyright: `Copyright © ${new Date().getFullYear()} MyCook · Eat well, live well`,
+                },
+                search: {
+                    provider: 'local',
+                    options: {
+                        translations: {
+                            button: {
+                                buttonText: 'Search recipes',
+                                buttonAriaLabel: 'Search recipes',
+                            },
+                            modal: {
+                                noResultsText: 'No results found',
+                                resetButtonTitle: 'Clear search',
+                                footer: {
+                                    selectText: 'Select',
+                                    navigateText: 'Navigate',
+                                    closeText: 'Close',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+
     head: [
         // DNS 预连接优化
         ['link', { rel: 'dns-prefetch', href: 'https://fonts.loli.net' }],
@@ -52,14 +158,6 @@ export default defineConfig({
         ['meta', { name: 'theme-color', content: '#1e1c19', media: '(prefers-color-scheme: dark)' }],
         // 移动端优化
         ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' }],
-        [
-            'meta',
-            {
-                name: 'description',
-                content:
-                    'MyCook - 老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅',
-            },
-        ],
         ['meta', { property: 'og:type', content: 'website' }],
         ['meta', { property: 'og:locale', content: 'zh_CN' }],
         ['meta', { property: 'og:title', content: 'MyCook - 在家做饭一站搞定' }],
@@ -73,6 +171,8 @@ export default defineConfig({
         ['meta', { name: 'twitter:title', content: 'MyCook - 在家做饭一站搞定' }],
         ['meta', { name: 'twitter:description', content: '老乡鸡风格菜谱与程序员做饭指南合并整理，双源一站查阅' }],
         ['meta', { name: 'twitter:image', content: 'https://cook.alexander.xin/banner.png' }],
+        ['link', { rel: 'alternate', hreflang: 'en', href: 'https://cook.alexander.xin/en/' }],
+        ['link', { rel: 'alternate', hreflang: 'zh-CN', href: 'https://cook.alexander.xin/' }],
         ['link', { rel: 'canonical', href: 'https://cook.alexander.xin/' }],
         ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
         // PWA manifest
@@ -90,40 +190,18 @@ export default defineConfig({
         nav: [
             { text: '首页', link: '/' },
             ...nav,
-            {
-                text: '更多',
-                items: [
-                    {
-                        text: '源项目',
-                        items: [
-                            {
-                                text: 'CookLikeHOC',
-                                link: 'https://github.com/Gar-b-age/CookLikeHOC',
-                            },
-                            {
-                                text: 'HowToCook',
-                                link: 'https://github.com/Anduin2017/HowToCook',
-                            },
-                        ],
-                    },
-                    {
-                        text: 'HowToCook 图片版',
-                        link: '/howtocook-images/',
-                    },
-                    {
-                        text: '本站仓库',
-                        link: 'https://github.com/AlexanderJ-Carter/MyCook',
-                    },
-                    {
-                        text: '作者主页',
-                        link: 'https://alexander.xin',
-                    },
-                ],
-            },
+            moreNav('zh'),
             { text: '帮助', link: '/help' },
             { text: 'Agent', link: '/ai-agents' },
             { text: '关于', link: '/about' },
         ],
+
+        returnToTopLabel: '回到顶部',
+        sidebarMenuLabel: '菜单',
+        skipToContentLabel: '跳到正文',
+        darkModeSwitchLabel: '外观',
+        lightModeSwitchTitle: '切换到浅色模式',
+        darkModeSwitchTitle: '切换到深色模式',
 
         sidebar,
 
@@ -132,8 +210,8 @@ export default defineConfig({
             options: {
                 translations: {
                     button: {
-                        buttonText: '搜索菜谱...',
-                        buttonAriaLabel: '搜索菜谱',
+                        buttonText: '搜索菜谱 Search…',
+                        buttonAriaLabel: '搜索菜谱 Search recipes',
                     },
                     modal: {
                         noResultsText: '没有找到结果',
@@ -174,8 +252,8 @@ export default defineConfig({
 
         footer: {
             message:
-                '内容来源于 CookLikeHOC 与 HowToCook · 由 <a href="https://alexander.xin" target="_blank" rel="noopener">alexander.xin</a> 站群维护',
-            copyright: `Copyright © ${new Date().getFullYear()} MyCook · 非官方站点`,
+                '菜谱来自开源项目 CookLikeHOC 与 HowToCook · 由 <a href="https://alexander.xin" target="_blank" rel="noopener">alexander.xin</a> 整理维护',
+            copyright: `Copyright © ${new Date().getFullYear()} MyCook · 好好吃饭，好好生活`,
         },
 
         socialLinks: [
@@ -196,18 +274,17 @@ export default defineConfig({
                 name: 'serve-spa-subpath',
                 configureServer(server) {
                     server.middlewares.use((req, res, next) => {
-                        const url = req.url?.split('?')[0] || '';
-                        // 处理 /howtocook-images/ 目录请求和 SPA 子路由
-                        if (url === '/howtocook-images/' || url === '/howtocook-images') {
-                            req.url = '/howtocook-images/index.html';
-                        } else if (url.startsWith('/howtocook-images/') && !url.includes('.')) {
-                            // SPA 子路由（无文件扩展名）
-                            req.url = '/howtocook-images/index.html';
-                        }
+                        rewriteHowToCookImages(req);
                         next();
                     });
-                }
-            }
+                },
+                configurePreviewServer(server) {
+                    server.middlewares.use((req, res, next) => {
+                        rewriteHowToCookImages(req);
+                        next();
+                    });
+                },
+            },
         ],
         assetsInclude: [
             '**/*.jpg',

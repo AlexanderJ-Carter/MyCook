@@ -1,6 +1,8 @@
 <script setup>
 import { onMounted, ref } from 'vue';
+import { useI18n } from './composables/useI18n';
 
+const { t } = useI18n();
 const visible = ref(false);
 
 onMounted(() => {
@@ -21,7 +23,7 @@ function focusMain() {
 
 <template>
   <a v-if="visible" class="skip-link" href="#VPContent" @click.prevent="focusMain">
-    跳到正文
+    {{ t('skipLink') }}
   </a>
 </template>
 

@@ -2,17 +2,14 @@
 import { computed, onMounted, ref } from "vue";
 import { withBase } from "vitepress";
 import { useSiteData } from "./composables/useSiteData";
+import { useI18n } from "./composables/useI18n";
 
 const { loadTipsIndex } = useSiteData();
+const { t } = useI18n();
 const tips = ref([]);
 
-const CATEGORY_LABEL = {
-  learn: "基础技法",
-  advanced: "进阶技巧",
-  general: "厨房备忘",
-};
-
 const groups = computed(() => {
+  const cats = t("home.tips.categories");
   const map = new Map();
   for (const item of tips.value) {
     const key = item.category || "general";
@@ -21,7 +18,7 @@ const groups = computed(() => {
   }
   return [...map.entries()].map(([id, items]) => ({
     id,
-    label: CATEGORY_LABEL[id] || id,
+    label: cats[id] || id,
     items: items.map((item) => ({
       ...item,
       href: withBase(item.link),
@@ -36,16 +33,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section id="kitchen-tips" class="kitchen-tips" aria-label="厨房技巧">
+  <section id="kitchen-tips" class="kitchen-tips" :aria-label="t('home.tips.aria')">
     <div class="kitchen-tips-head">
-      <p class="kitchen-tips-kicker">HowToCook Tips</p>
-      <h2>厨房技巧速查</h2>
+      <p class="kitchen-tips-kicker">{{ t('home.tips.kicker') }}</p>
+      <h2>{{ t('home.tips.title') }}</h2>
       <p class="kitchen-tips-lead">
-        来自 HowToCook 的 {{ tips.length }} 篇技巧与备忘，备菜前先翻一翻。
+        {{ t('home.tips.lead', { n: tips.length }) }}
       </p>
     </div>
 
-    <div v-if="!tips.length" class="kitchen-tips-empty">技巧索引加载中…</div>
+    <div v-if="!tips.length" class="kitchen-tips-empty">{{ t('home.tips.loading') }}</div>
 
     <div v-for="group in groups" :key="group.id" class="tips-group">
       <h3>{{ group.label }}</h3>

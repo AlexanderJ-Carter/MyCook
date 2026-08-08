@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * MyCook MCP Server — stdio（Cursor/Claude Desktop）或 Streamable HTTP
+ * MyCook MCP Server — stdio（任意 MCP 客户端）或 Streamable HTTP
  *
  *   node mcp/server.mjs              # stdio（默认）
  *   node mcp/server.mjs http         # HTTP → http://127.0.0.1:3001/mcp
@@ -25,7 +25,7 @@ import {
     searchTips,
 } from '../scripts/mcp-tools.mjs';
 
-const VERSION = '1.5.0';
+const VERSION = '1.6.0';
 const MCP_PORT = Number(process.env.MCP_PORT || 3001);
 
 function textResult(data) {

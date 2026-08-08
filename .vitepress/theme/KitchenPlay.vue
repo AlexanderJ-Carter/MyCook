@@ -2,6 +2,9 @@
 import { computed, onMounted, ref } from "vue";
 import { withBase } from "vitepress";
 import { useSiteData } from "./composables/useSiteData";
+import { useI18n } from "./composables/useI18n";
+
+const { t } = useI18n();
 
 const tab = ref("pantry");
 const selected = ref([]);
@@ -37,11 +40,7 @@ const cookExternalUrl = computed(() => {
   return `https://cook.yunyoujun.cn/?stuff=${encodeURIComponent(selected.value.join(","))}`;
 });
 
-const spinCategories = [
-  { id: "all", label: "随便" },
-  { id: "cooklikehoc", label: "做法库" },
-  { id: "howtocook", label: "食材指南" },
-];
+const spinCategories = computed(() => t("home.kitchenPlay.spinCategories"));
 
 const spinCategory = ref("all");
 
@@ -86,16 +85,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section id="kitchen-play" class="kitchen-play" aria-label="厨房玩法">
+  <section id="kitchen-play" class="kitchen-play" :aria-label="t('home.kitchenPlay.aria')">
     <div class="kitchen-play-head">
-      <p class="kitchen-play-kicker">Play Kitchen</p>
-      <h2>开冰箱 · 转一转</h2>
+      <p class="kitchen-play-kicker">{{ t('home.kitchenPlay.kicker') }}</p>
+      <h2>{{ t('home.kitchenPlay.title') }}</h2>
       <p class="kitchen-play-lead">
-        轻量集成
-        <a href="https://github.com/YunYouJun/cook" target="_blank" rel="noopener"
-          >食用手册</a
-        >
-        食材数据 + 站内菜谱，不嵌入第二个应用。
+        {{ t('home.kitchenPlay.leadBefore') }}
+        <a href="https://github.com/YunYouJun/cook" target="_blank" rel="noopener">{{
+          t('home.kitchenPlay.leadLink')
+        }}</a>
+        {{ t('home.kitchenPlay.leadAfter') }}
       </p>
       <div class="kitchen-tabs" role="tablist">
         <button
@@ -105,7 +104,7 @@ onMounted(async () => {
           :class="{ active: tab === 'pantry' }"
           @click="tab = 'pantry'"
         >
-          开冰箱
+          {{ t('home.kitchenPlay.tabPantry') }}
         </button>
         <button
           type="button"
@@ -114,13 +113,13 @@ onMounted(async () => {
           :class="{ active: tab === 'spin' }"
           @click="tab = 'spin'"
         >
-          转一转
+          {{ t('home.kitchenPlay.tabSpin') }}
         </button>
       </div>
     </div>
 
     <div v-show="tab === 'pantry'" role="tabpanel" class="kitchen-panel">
-      <p v-if="!hasPantry" class="kitchen-empty">食用手册数据未就绪。</p>
+      <p v-if="!hasPantry" class="kitchen-empty">{{ t('home.kitchenPlay.empty') }}</p>
       <template v-else>
         <div class="chip-bar">
           <button
@@ -141,17 +140,19 @@ onMounted(async () => {
             class="chip clear"
             @click="clearSelected"
           >
-            清空
+            {{ t('home.kitchenPlay.clear') }}
           </button>
         </div>
-        <p v-if="!selected.length" class="kitchen-hint">先选手头有的食材</p>
+        <p v-if="!selected.length" class="kitchen-hint">{{ t('home.kitchenPlay.hintSelect') }}</p>
         <p v-else-if="cookExternalUrl" class="kitchen-hint">
-          也可在
-          <a :href="cookExternalUrl" target="_blank" rel="noopener">Cook 食用手册</a>
-          继续探索
+          {{ t('home.kitchenPlay.hintExternal') }}
+          <a :href="cookExternalUrl" target="_blank" rel="noopener">{{
+            t('home.kitchenPlay.hintExternalLink')
+          }}</a>
+          {{ t('home.kitchenPlay.hintExternalAfter') }}
         </p>
         <div v-if="pantryMatches.length" class="match-block">
-          <h3>食用手册 · 全匹配</h3>
+          <h3>{{ t('home.kitchenPlay.matchPantry') }}</h3>
           <ul>
             <li v-for="r in pantryMatches" :key="r.name">
               <span>{{ r.name }}</span>
@@ -161,13 +162,13 @@ onMounted(async () => {
                 target="_blank"
                 rel="noopener"
                 class="bv-link"
-                >视频</a
+                >{{ t('home.kitchenPlay.video') }}</a
               >
             </li>
           </ul>
         </div>
         <div v-if="siteMatches.length" class="match-block is-site">
-          <h3>MyCook 站内</h3>
+          <h3>{{ t('home.kitchenPlay.matchSite') }}</h3>
           <ul>
             <li v-for="r in siteMatches" :key="r.link">
               <a :href="withBase(r.link)">{{ r.title }}</a>
@@ -194,10 +195,12 @@ onMounted(async () => {
         <span>吃</span>
       </div>
       <button type="button" class="spin-go" :disabled="spinning" @click="spin">
-        {{ spinning ? "转盘中…" : "转一下" }}
+        {{ spinning ? t('home.kitchenPlay.spinSpinning') : t('home.kitchenPlay.spinButton') }}
       </button>
       <p v-if="spinResult" class="spin-result">
-        就它：<a :href="withBase(spinResult.link)">{{ spinResult.title }}</a>
+        {{ t('home.kitchenPlay.spinResult') }}<a :href="withBase(spinResult.link)">{{
+          spinResult.title
+        }}</a>
       </p>
     </div>
   </section>
@@ -350,6 +353,10 @@ onMounted(async () => {
   font-weight: 700;
   color: #fff;
   background: radial-gradient(circle at 30% 30%, #e2553d, var(--vp-c-brand-1));
+  border: 3px solid var(--mycook-paper, #faf8f4);
+  box-shadow:
+    0 10px 24px rgba(184, 58, 40, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.25);
 }
 .spin-wheel.spinning {
   animation: spin-turn 0.9s cubic-bezier(0.22, 1, 0.36, 1);

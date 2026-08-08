@@ -2,20 +2,20 @@
 layout: home
 hero:
   name: MyCook
-  text: 打开就能做饭
-  tagline: 做法库 × 食材指南，合并成一个顺手的厨房入口——少翻页，多下厨
+  text: Cook at home, all in one place
+  tagline: Chinese home cooking — browse by method or by ingredient, with fridge matching and weekly planning
   actions:
     - theme: brand
-      text: 按做法找
+      text: By method
       link: /cooklikehoc/炒菜/README
     - theme: alt
-      text: 按食材找
+      text: By ingredient
       link: /howtocook/dishes/vegetable_dish/西红柿炒鸡蛋
     - theme: alt
-      text: 图片版
+      text: Images
       link: /howtocook-images/
     - theme: alt
-      text: 开冰箱
+      text: Fridge
       link: "#kitchen-play"
 ---
 

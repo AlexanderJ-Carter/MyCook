@@ -2,8 +2,10 @@
 import { onMounted, ref } from "vue";
 import { withBase } from "vitepress";
 import { useSiteData } from "./composables/useSiteData";
+import { useI18n } from "./composables/useI18n";
 
 const { loadRecent } = useSiteData();
+const { t } = useI18n();
 const items = ref([]);
 
 onMounted(async () => {
@@ -13,10 +15,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section v-if="items.length" class="recent-updates" aria-label="最近更新">
+  <section v-if="items.length" class="recent-updates" :aria-label="t('home.recent.aria')">
     <div class="recent-updates-head">
-      <h2 class="recent-updates-title">最近更新</h2>
-      <p class="recent-updates-hint">上游同步后的最新菜谱</p>
+      <h2 class="recent-updates-title">{{ t('home.recent.title') }}</h2>
+      <p class="recent-updates-hint">{{ t('home.recent.hint') }}</p>
     </div>
     <ul class="recent-updates-list">
       <li v-for="(item, i) in items" :key="i" class="recent-item">
@@ -26,7 +28,11 @@ onMounted(async () => {
             class="recent-source"
             :class="item.source === 'howtocook' ? 'is-jade' : 'is-chili'"
           >
-            {{ item.source === "howtocook" ? "食材" : "做法" }}
+            {{
+              item.source === "howtocook"
+                ? t('home.recent.sourceHowtocook')
+                : t('home.recent.sourceCooklikehoc')
+            }}
           </span>
         </a>
       </li>

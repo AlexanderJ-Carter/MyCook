@@ -2,19 +2,13 @@
 import { computed, onMounted, ref } from "vue";
 import { withBase } from "vitepress";
 import { useSiteData } from "./composables/useSiteData";
+import { useI18n } from "./composables/useI18n";
 
 const STORAGE_KEY = "mycook-meal-plan";
-const DAYS = [
-  { id: "mon", label: "周一" },
-  { id: "tue", label: "周二" },
-  { id: "wed", label: "周三" },
-  { id: "thu", label: "周四" },
-  { id: "fri", label: "周五" },
-  { id: "sat", label: "周六" },
-  { id: "sun", label: "周日" },
-];
-
 const { loadRecipesIndex } = useSiteData();
+const { t } = useI18n();
+
+const DAYS = computed(() => t("home.mealPlan.days"));
 const plan = ref({});
 const recipes = ref([]);
 const pickerDay = ref(null);
@@ -27,8 +21,18 @@ const filtered = computed(() => {
 });
 
 const filledCount = computed(
-  () => DAYS.filter((d) => plan.value[d.id]?.title).length,
+  () => DAYS.value.filter((d) => plan.value[d.id]?.title).length,
 );
+
+const pickerDayLabel = computed(() => {
+  if (!pickerDay.value) return "";
+  return DAYS.value.find((d) => d.id === pickerDay.value)?.label ?? "";
+});
+
+const todayId = computed(() => {
+  const map = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+  return map[new Date().getDay()];
+});
 
 function loadPlan() {
   try {
@@ -74,7 +78,7 @@ function clearWeek() {
 function autoFill() {
   if (!recipes.value.length) return;
   const next = { ...plan.value };
-  for (const day of DAYS) {
+  for (const day of DAYS.value) {
     if (next[day.id]?.title) continue;
     const item = recipes.value[Math.floor(Math.random() * recipes.value.length)];
     next[day.id] = { title: item.title, link: item.link };
@@ -95,21 +99,27 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section id="meal-planner" class="meal-planner" aria-label="一周菜单">
+  <section id="meal-planner" class="meal-planner" :aria-label="t('home.mealPlan.aria')">
     <div class="meal-planner-head">
-      <p class="meal-planner-kicker">Meal Plan</p>
-      <h2>一周吃什么</h2>
+      <p class="meal-planner-kicker">{{ t('home.mealPlan.kicker') }}</p>
+      <h2>{{ t('home.mealPlan.title') }}</h2>
       <p class="meal-planner-lead">
-        纯前端周菜单，存在本机浏览器。已排 {{ filledCount }} / 7 天。
+        {{ t('home.mealPlan.lead') }}
+        {{ t('home.mealPlan.filled', { n: filledCount }) }}
       </p>
       <div class="meal-planner-actions">
-        <button type="button" class="mp-btn" @click="autoFill">随机填满空位</button>
-        <button type="button" class="mp-btn ghost" @click="clearWeek">清空本周</button>
+        <button type="button" class="mp-btn" @click="autoFill">{{ t('home.mealPlan.autoFill') }}</button>
+        <button type="button" class="mp-btn ghost" @click="clearWeek">{{ t('home.mealPlan.clearWeek') }}</button>
       </div>
     </div>
 
     <div class="meal-grid">
-      <div v-for="day in DAYS" :key="day.id" class="meal-slot">
+      <div
+        v-for="day in DAYS"
+        :key="day.id"
+        class="meal-slot"
+        :class="{ 'is-today': day.id === todayId }"
+      >
         <div class="meal-slot-top">
           <strong>{{ day.label }}</strong>
           <button
@@ -118,7 +128,7 @@ onMounted(async () => {
             class="mp-link-btn"
             @click="clearDay(day.id)"
           >
-            清除
+            {{ t('home.mealPlan.remove') }}
           </button>
         </div>
         <template v-if="plan[day.id]?.title">
@@ -126,26 +136,26 @@ onMounted(async () => {
             plan[day.id].title
           }}</a>
           <button type="button" class="mp-link-btn" @click="openPicker(day.id)">
-            换一道
+            {{ t('home.mealPlan.change') }}
           </button>
         </template>
         <button v-else type="button" class="meal-add" @click="openPicker(day.id)">
-          + 选菜
+          {{ t('home.mealPlan.add') }}
         </button>
       </div>
     </div>
 
-    <div v-if="pickerDay" class="meal-picker" role="dialog" aria-label="选择菜谱">
+    <div v-if="pickerDay" class="meal-picker" role="dialog" :aria-label="t('home.mealPlan.pickerClose')">
       <div class="meal-picker-inner">
         <div class="meal-picker-head">
-          <strong>为 {{ DAYS.find((d) => d.id === pickerDay)?.label }} 选菜</strong>
-          <button type="button" class="mp-link-btn" @click="pickerDay = null">关闭</button>
+          <strong>{{ t('home.mealPlan.pickerFor', { day: pickerDayLabel }) }}</strong>
+          <button type="button" class="mp-link-btn" @click="pickerDay = null">{{ t('home.mealPlan.pickerClose') }}</button>
         </div>
         <input
           v-model="query"
           type="search"
           class="meal-search"
-          placeholder="搜菜名…"
+          :placeholder="t('home.mealPlan.pickerSearch')"
           autofocus
         />
         <ul class="meal-picker-list">
@@ -234,6 +244,14 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+}
+.meal-slot.is-today {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--vp-c-brand-1) 45%, transparent);
+  background: var(--vp-c-brand-soft);
+}
+.meal-slot.is-today .meal-slot-top strong {
+  color: var(--vp-c-brand-1);
 }
 .meal-slot-top {
   display: flex;

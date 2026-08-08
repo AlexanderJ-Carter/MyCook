@@ -1,14 +1,16 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { useI18n } from './composables/useI18n.js';
 
+const { t } = useI18n();
 const visible = ref(false);
 
-const shortcuts = [
-    { keys: ['Ctrl', 'K'], mac: ['⌘', 'K'], action: '打开搜索' },
-    { keys: ['/'], mac: ['/'], action: '快速搜索（非输入框时）' },
-    { keys: ['?'], mac: ['?'], action: '显示/隐藏快捷键' },
-    { keys: ['Esc'], mac: ['Esc'], action: '关闭弹层' },
-];
+const shortcuts = computed(() => [
+    { keys: ['Ctrl', 'K'], mac: ['⌘', 'K'], action: t('keyboard.search') },
+    { keys: ['/'], mac: ['/'], action: t('keyboard.quickSearch') },
+    { keys: ['?'], mac: ['?'], action: t('keyboard.toggleHelp') },
+    { keys: ['Esc'], mac: ['Esc'], action: t('keyboard.closeOverlay') },
+]);
 
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
 
@@ -56,10 +58,10 @@ onUnmounted(() => document.removeEventListener('keydown', onKeyDown));
   <Teleport to="body">
     <Transition name="kbd-fade">
       <div v-if="visible" class="kbd-overlay" @click.self="close">
-        <div class="kbd-panel" role="dialog" aria-label="键盘快捷键">
+        <div class="kbd-panel" role="dialog" :aria-label="t('keyboard.aria')">
           <header class="kbd-head">
-            <h2>快捷键</h2>
-            <button type="button" class="kbd-close" aria-label="关闭" @click="close">×</button>
+            <h2>{{ t('keyboard.title') }}</h2>
+            <button type="button" class="kbd-close" :aria-label="t('keyboard.close')" @click="close">×</button>
           </header>
           <ul class="kbd-list">
             <li v-for="item in shortcuts" :key="item.action">
@@ -67,7 +69,7 @@ onUnmounted(() => document.removeEventListener('keydown', onKeyDown));
               <kbd class="kbd-keys">{{ formatKeys(item) }}</kbd>
             </li>
           </ul>
-          <p class="kbd-hint">按 <kbd>?</kbd> 随时打开此面板</p>
+          <p class="kbd-hint">{{ t('keyboard.hint') }}</p>
         </div>
       </div>
     </Transition>

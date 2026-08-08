@@ -1,34 +1,33 @@
 <script setup>
+import { computed } from 'vue';
 import { withBase } from 'vitepress';
+import { useI18n } from './composables/useI18n';
 
-const tiers = [
-  {
-    stars: '0–2 星',
-    note: '上手最快',
-    href: '/howtocook/starsystem/2Star',
-    accent: 'jade',
-  },
-  {
-    stars: '3–5 星',
-    note: '日常硬菜',
-    href: '/howtocook/starsystem/4Star',
-    accent: 'chili',
-  },
-  {
-    stars: '6 星+',
-    note: '挑战厨房',
-    href: '/howtocook/starsystem/7Star',
-    accent: 'ink',
-  },
+const { t } = useI18n();
+
+const hrefs = [
+  '/howtocook/starsystem/2Star',
+  '/howtocook/starsystem/4Star',
+  '/howtocook/starsystem/7Star',
 ];
+const accents = ['jade', 'chili', 'ink'];
+
+const tiers = computed(() => {
+  const items = t('home.difficulty.tiers');
+  return items.map((item, i) => ({
+    ...item,
+    href: withBase(hrefs[i]),
+    accent: accents[i],
+  }));
+});
 </script>
 
 <template>
-  <section class="difficulty-shelf" aria-label="按难度找菜">
+  <section class="difficulty-shelf" :aria-label="t('home.difficulty.aria')">
     <div class="difficulty-head">
-      <p class="difficulty-kicker">Difficulty</p>
-      <h2>今晚想做多难？</h2>
-      <p>HowToCook 难度星级索引，从快手到硬菜一键进。</p>
+      <p class="difficulty-kicker">{{ t('home.difficulty.kicker') }}</p>
+      <h2>{{ t('home.difficulty.title') }}</h2>
+      <p>{{ t('home.difficulty.lead') }}</p>
     </div>
     <div class="difficulty-grid">
       <a
@@ -36,7 +35,7 @@ const tiers = [
         :key="item.stars"
         class="difficulty-card"
         :class="`is-${item.accent}`"
-        :href="withBase(item.href)"
+        :href="item.href"
       >
         <strong>{{ item.stars }}</strong>
         <span>{{ item.note }}</span>
@@ -47,7 +46,7 @@ const tiers = [
 
 <style scoped>
 .difficulty-shelf {
-  max-width: 920px;
+  max-width: 1080px;
   margin: 0 auto 2.5rem;
   padding: 0 1.25rem;
 }
@@ -82,6 +81,8 @@ const tiers = [
 }
 
 .difficulty-card {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -93,6 +94,27 @@ const tiers = [
   border: 1px solid var(--mycook-line);
   box-shadow: var(--shadow-sm);
   transition: transform 0.16s ease, border-color 0.16s ease;
+}
+
+.difficulty-card::after {
+  content: '★';
+  position: absolute;
+  right: 0.6rem;
+  bottom: -0.7rem;
+  font-size: 3.2rem;
+  line-height: 1;
+  font-family: var(--mycook-display, serif);
+  color: var(--vp-c-brand-1);
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.difficulty-card.is-jade::after {
+  color: var(--mycook-jade);
+}
+
+.difficulty-card.is-ink::after {
+  color: var(--mycook-steel);
 }
 
 .difficulty-card:hover {

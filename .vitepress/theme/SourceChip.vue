@@ -1,32 +1,31 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute, withBase } from "vitepress";
+import { useI18n } from "./composables/useI18n.js";
 
 const route = useRoute();
+const { t } = useI18n();
 
 const source = computed(() => {
   const path = route.path;
   if (path.startsWith("/cooklikehoc")) {
     return {
       key: "cooklikehoc",
-      label: "做法库",
-      name: "按做法找菜",
+      ...t("sourceChip.cooklikehoc"),
       href: "/cooklikehoc/炒菜/README",
     };
   }
   if (path.startsWith("/howtocook-images")) {
     return {
       key: "images",
-      label: "图片版",
-      name: "图文浏览",
+      ...t("sourceChip.images"),
       href: "/howtocook-images/",
     };
   }
   if (path.startsWith("/howtocook")) {
     return {
       key: "howtocook",
-      label: "食材指南",
-      name: "按食材找菜",
+      ...t("sourceChip.howtocook"),
       href: "/howtocook/dishes/vegetable_dish/西红柿炒鸡蛋",
     };
   }

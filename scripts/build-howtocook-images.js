@@ -76,13 +76,33 @@ function writePlaceholder(reason) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HowToCook 图片版 - 构建未就绪</title>
-  <style>body{font-family:system-ui,sans-serif;max-width:36em;margin:2em auto;padding:0 1em;line-height:1.5;}a{color:#c4452f;}</style>
+  <title>HowToCook 图片版 · MyCook</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: system-ui, "Noto Sans SC", sans-serif;
+      max-width: 40em;
+      margin: 12vh auto;
+      padding: 0 1.25em;
+      line-height: 1.65;
+      color: #2c241c;
+      background: #f7f3ec;
+    }
+    .kicker { letter-spacing: .14em; text-transform: uppercase; font-size: .75rem; color: #b83a28; margin: 0 0 .6rem; }
+    h1 { font-family: "Noto Serif SC", serif; font-weight: 600; font-size: 1.7rem; margin: 0 0 .75rem; }
+    .en { color: #6b6258; font-size: .95em; }
+    .reason { margin: 1.2rem 0; padding: .9em 1em; background: #fff; border: 1px solid rgba(28,25,21,.1); border-radius: 12px; }
+    a { color: #b83a28; }
+  </style>
 </head>
 <body>
-  <h1>HowToCook 图片版</h1>
-  <p>${escaped}</p>
-  <p><a href="../">返回 MyCook 首页</a></p>
+  <p class="kicker">MyCook</p>
+  <h1>图片版这次没装上</h1>
+  <p class="en" style="font-size:1.05em;margin-top:-.35rem">Photo cookbook isn’t in this build</p>
+  <p>看图做菜是一个独立小站，体积比较大。当前这次构建跳过了它，所以还打不开。</p>
+  <p class="en">The photo cookbook is a separate mini-app. This build skipped it to stay small, so it isn’t available here.</p>
+  <p class="reason">${escaped}</p>
+  <p><a href="../">← 返回首页 / Back home</a></p>
 </body>
 </html>`;
     fs.writeFileSync(path.join(OUT_PATH, 'index.html'), html, 'utf8');
@@ -97,7 +117,7 @@ function main() {
     if (process.env.SKIP_IMAGES === '1') {
         console.log('[build-howtocook-images] SKIP_IMAGES=1, skip.');
         writePlaceholder(
-            '当前已跳过图片版构建（SKIP_IMAGES=1）。本地可取消该变量后执行 npm run build:images。',
+            '本地若需要图片版，在项目根目录执行 npm run build:images 后再预览。 / To include it locally, run npm run build:images then preview again.',
         );
         return;
     }

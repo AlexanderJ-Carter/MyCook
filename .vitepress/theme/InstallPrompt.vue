@@ -1,6 +1,8 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue';
+import { useI18n } from './composables/useI18n';
 
+const { t } = useI18n();
 const show = ref(false);
 let deferredPrompt = null;
 
@@ -36,11 +38,11 @@ onUnmounted(() => {
 
 <template>
   <Transition name="install-fade">
-    <div v-if="show" class="install-banner" role="region" aria-label="安装应用">
-      <p>把 MyCook 装到主屏幕，做饭时更快打开</p>
+    <div v-if="show" class="install-banner" role="region" :aria-label="t('install.aria')">
+      <p>{{ t('install.body') }}</p>
       <div class="install-actions">
-        <button type="button" class="install-go" @click="install">安装</button>
-        <button type="button" class="install-dismiss" @click="dismiss">稍后</button>
+        <button type="button" class="install-go" @click="install">{{ t('install.install') }}</button>
+        <button type="button" class="install-dismiss" @click="dismiss">{{ t('install.later') }}</button>
       </div>
     </div>
   </Transition>
@@ -58,44 +60,39 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.75rem 1rem;
   max-width: min(420px, calc(100vw - 2rem));
-  padding: 0.85rem 1.1rem;
+  padding: 0.85rem 1rem;
   border-radius: 14px;
-  background: var(--vp-c-bg-elv);
+  background: var(--mycook-paper);
   border: 1px solid var(--mycook-line);
   box-shadow: var(--shadow-lg);
-}
-
-.install-banner p {
-  margin: 0;
-  flex: 1;
   font-size: 0.88rem;
   color: var(--vp-c-text-2);
 }
 
 .install-actions {
   display: flex;
-  gap: 0.45rem;
+  gap: 0.5rem;
+  margin-left: auto;
 }
 
-.install-go,
-.install-dismiss {
+.install-go {
   padding: 0.4rem 0.85rem;
+  border: none;
   border-radius: 999px;
+  background: var(--vp-c-brand-1);
+  color: #fff;
+  font-weight: 600;
   font-size: 0.82rem;
   cursor: pointer;
 }
 
-.install-go {
-  border: none;
-  background: var(--vp-c-brand-1);
-  color: #fff;
-  font-weight: 600;
-}
-
 .install-dismiss {
-  border: 1px solid var(--mycook-line);
+  padding: 0.4rem 0.75rem;
+  border: none;
   background: transparent;
-  color: var(--vp-c-text-2);
+  color: var(--vp-c-text-3);
+  font-size: 0.82rem;
+  cursor: pointer;
 }
 
 .install-fade-enter-active,
@@ -107,11 +104,5 @@ onUnmounted(() => {
 .install-fade-leave-to {
   opacity: 0;
   transform: translateX(-50%) translateY(12px);
-}
-
-@media (max-width: 768px) {
-  .install-banner {
-    bottom: 5.5rem;
-  }
 }
 </style>

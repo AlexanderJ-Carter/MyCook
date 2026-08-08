@@ -109,10 +109,8 @@
 
 首页下方的「Play Kitchen」区块（也可从入口卡片 **04 · 开冰箱** 跳转）：
 
-- **开冰箱**：勾选手头食材，从 [Cook 食用手册](https://github.com/YunYouJun/cook) 数据反查可做的菜（含 B 站视频链接），并尝试匹配站内菜谱标题
+- **开冰箱**：勾选手头食材，从 [Cook 食用手册](https://github.com/YunYouJun/cook) 的搭配灵感里反查可做的菜（含 B 站视频链接），并尝试匹配站内菜谱
 - **转一转**：在 577+ 道站内菜谱里随机抽一道，可按「做法库 / 食材指南」筛选
-
-数据在构建时从上游 CSV 同步为约 90KB 的 `pantry.json`，页面组件异步加载。详见 [INTEGRATIONS.md](./INTEGRATIONS.md)。
 
 ## 📅 一周菜单
 
@@ -124,7 +122,9 @@
 
 ## 🤖 发给 AI
 
-菜谱页工具栏 **AI** 按钮：复制「提示词 + 正文」到任意聊天模型。开发者见 [/ai-agents](/ai-agents)。
+菜谱页工具栏 **AI** 按钮：复制「提示词 + 正文」到 **任意聊天模型**（ChatGPT、Claude、Gemini 等），无需 API Key。
+
+开发者可通过 **MCP / OpenAPI / Agent Skills** 接入，支持 Cursor、Claude Desktop、Copilot 等多种客户端。英文说明见 [/en/ai-agents](/en/ai-agents)，中文见 [/ai-agents](/ai-agents)。
 
 ## 🔔 通知权限
 
