@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useRoute, withBase } from "vitepress";
 import { useI18n } from "./composables/useI18n.js";
+import { imagesUrl } from "./sites.js";
 
 const route = useRoute();
 const { t } = useI18n();
@@ -12,21 +13,21 @@ const source = computed(() => {
     return {
       key: "cooklikehoc",
       ...t("sourceChip.cooklikehoc"),
-      href: "/cooklikehoc/炒菜/README",
+      href: withBase("/cooklikehoc/炒菜/README"),
     };
   }
   if (path.startsWith("/howtocook-images")) {
     return {
       key: "images",
       ...t("sourceChip.images"),
-      href: "/howtocook-images/",
+      href: imagesUrl("/"),
     };
   }
   if (path.startsWith("/howtocook")) {
     return {
       key: "howtocook",
       ...t("sourceChip.howtocook"),
-      href: "/howtocook/dishes/vegetable_dish/西红柿炒鸡蛋",
+      href: withBase("/howtocook/dishes/vegetable_dish/西红柿炒鸡蛋"),
     };
   }
   return null;
@@ -36,7 +37,7 @@ const source = computed(() => {
 <template>
   <div v-if="source" class="source-chip" :class="`is-${source.key}`">
     <span>{{ source.label }}</span>
-    <a :href="withBase(source.href)">{{ source.name }}</a>
+    <a :href="source.href">{{ source.name }}</a>
   </div>
 </template>
 

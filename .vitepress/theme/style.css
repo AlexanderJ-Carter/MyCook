@@ -110,18 +110,146 @@ body::after {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
 }
 
-/* 滚动渐显（Layout.vue 挂载时注入） */
-.reveal {
+/* 滚动渐显（Layout.vue 挂载时注入；默认可见，仅在 .reveal 且未 .is-in 时淡入） */
+.reveal:not(.is-in) {
     opacity: 0;
-    transform: translateY(22px);
+    transform: translateY(16px);
     transition:
-        opacity 0.65s ease,
-        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+        opacity 0.55s ease,
+        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.reveal.is-in {
+.reveal.is-in,
+.is-in {
     opacity: 1;
     transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal:not(.is-in) {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* 文档页（帮助 / MCP / Agent / 关于）阅读区 */
+.VPDoc:not(.has-sidebar) .content-container {
+    max-width: 46rem;
+}
+
+.VPDoc .vp-doc > h1:first-child {
+    font-family: var(--mycook-display);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.35em;
+}
+
+.VPDoc .vp-doc > h1:first-child + p,
+.VPDoc .vp-doc > h1:first-child + blockquote {
+    color: var(--mycook-steel);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.VPDoc .vp-doc table {
+    display: table;
+    width: 100%;
+    font-size: 0.95rem;
+}
+
+.VPDoc .vp-doc tr:hover td {
+    background: color-mix(in srgb, var(--vp-c-brand-soft) 55%, transparent);
+}
+
+/* 自定义 404 */
+.not-found {
+    text-align: center;
+    padding: clamp(3rem, 12vh, 5.5rem) 1.25rem 4rem;
+    max-width: 36rem;
+    margin: 0 auto;
+}
+
+.not-found-kicker {
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: var(--vp-c-brand-1);
+    margin: 0 0 0.75rem;
+}
+
+.not-found-title {
+    font-family: var(--mycook-display);
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: var(--mycook-ink);
+}
+
+.not-found-desc {
+    font-size: 1.05rem;
+    color: var(--mycook-steel);
+    margin: 0 0 1.75rem;
+    line-height: 1.65;
+}
+
+.not-found-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+}
+
+.not-found-suggestions a {
+    display: inline-block;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    background: var(--vp-c-bg-elv);
+    border: 1px solid var(--mycook-line);
+    color: var(--mycook-ink);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition:
+        border-color var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.not-found-suggestions a:hover {
+    border-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+    transform: translateY(-1px);
+}
+
+.not-found-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.not-found-actions a,
+.not-found-actions button {
+    display: inline-block;
+    padding: 0.7rem 1.35rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 550;
+    text-decoration: none;
+    border: 1px solid var(--mycook-line);
+    background: var(--vp-c-bg-elv);
+    color: var(--mycook-ink);
+    cursor: pointer;
+}
+
+.not-found-actions a.primary {
+    background: var(--vp-c-brand-1);
+    border-color: var(--vp-c-brand-1);
+    color: #fff;
+}
+
+.not-found-actions a.primary:hover {
+    background: var(--vp-c-brand-2);
 }
 
 .VPHome {

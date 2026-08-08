@@ -1,6 +1,6 @@
 // Service Worker for MyCook PWA
-const CACHE_NAME = 'mycook-cache-v6';
-const STATIC_CACHE = 'mycook-static-v6';
+const CACHE_NAME = 'mycook-cache-v7';
+const STATIC_CACHE = 'mycook-static-v7';
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, '');
 const withBase = (value) => `${BASE_PATH}${value}`;
 

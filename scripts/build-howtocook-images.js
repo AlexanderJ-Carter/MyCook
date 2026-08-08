@@ -71,38 +71,55 @@ function writePlaceholder(reason) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+    const full = 'https://mycook.alexander.xin/howtocook-images/';
     const html = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HowToCook 图片版 · MyCook</title>
+  <meta http-equiv="refresh" content="0;url=${full}" />
+  <link rel="canonical" href="${full}" />
+  <title>HowToCook 图片版 · 转到完整站</title>
   <style>
     :root { color-scheme: light dark; }
     body {
-      font-family: system-ui, "Noto Sans SC", sans-serif;
-      max-width: 40em;
-      margin: 12vh auto;
+      font-family: "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+      max-width: 28rem;
+      margin: 18vh auto;
       padding: 0 1.25em;
       line-height: 1.65;
-      color: #2c241c;
-      background: #f7f3ec;
+      color: #1c1915;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 0%, rgba(184,58,40,.12), transparent 55%),
+        #f3f1ec;
     }
-    .kicker { letter-spacing: .14em; text-transform: uppercase; font-size: .75rem; color: #b83a28; margin: 0 0 .6rem; }
-    h1 { font-family: "Noto Serif SC", serif; font-weight: 600; font-size: 1.7rem; margin: 0 0 .75rem; }
-    .en { color: #6b6258; font-size: .95em; }
-    .reason { margin: 1.2rem 0; padding: .9em 1em; background: #fff; border: 1px solid rgba(28,25,21,.1); border-radius: 12px; }
-    a { color: #b83a28; }
+    .kicker { letter-spacing: .16em; text-transform: uppercase; font-size: .72rem; color: #b83a28; margin: 0 0 .6rem; }
+    h1 { font-family: "Noto Serif SC", serif; font-weight: 700; font-size: 1.65rem; margin: 0 0 .75rem; }
+    p { color: #5f584e; margin: 0 0 1rem; }
+    a.btn {
+      display: inline-block;
+      margin: .35rem .5rem .35rem 0;
+      padding: .65rem 1.2rem;
+      border-radius: 999px;
+      background: #b83a28;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a.secondary { color: #b83a28; }
+    .reason { margin: 1.2rem 0 0; padding: .85em 1em; background: #faf8f4; border: 1px solid rgba(28,25,21,.1); border-radius: 12px; font-size: .9rem; }
   </style>
 </head>
 <body>
   <p class="kicker">MyCook</p>
-  <h1>图片版这次没装上</h1>
-  <p class="en" style="font-size:1.05em;margin-top:-.35rem">Photo cookbook isn’t in this build</p>
-  <p>看图做菜是一个独立小站，体积比较大。当前这次构建跳过了它，所以还打不开。</p>
-  <p class="en">The photo cookbook is a separate mini-app. This build skipped it to stay small, so it isn’t available here.</p>
+  <h1>图片版在完整站</h1>
+  <p>本站（Pages）为减轻体积未内嵌步骤大图。正在带你去 <strong>mycook</strong> 完整站看图做菜。</p>
+  <p>
+    <a class="btn" href="${full}">打开图片版</a>
+    <a class="secondary" href="/">回首页</a>
+  </p>
   <p class="reason">${escaped}</p>
-  <p><a href="../">← 返回首页 / Back home</a></p>
+  <script>location.replace(${JSON.stringify(full)});</script>
 </body>
 </html>`;
     fs.writeFileSync(path.join(OUT_PATH, 'index.html'), html, 'utf8');

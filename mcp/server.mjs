@@ -274,6 +274,45 @@ async function runHttp() {
     });
     const transports = {};
 
+    app.get('/', (_req, res) => {
+        const site = SITE_URL;
+        const mcp = process.env.MCP_PUBLIC_URL || '';
+        const guide = `${site}/mcp-guide`;
+        res.type('html').send(`<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MyCook MCP</title>
+  <style>
+    body{font-family:"Noto Sans SC",system-ui,sans-serif;margin:0;min-height:100vh;display:grid;place-items:center;background:#f3f1ec;color:#1c1915}
+    main{max-width:28rem;padding:2rem 1.25rem}
+    .k{letter-spacing:.16em;text-transform:uppercase;font-size:.72rem;color:#b83a28;margin:0 0 .5rem}
+    h1{font-family:"Noto Serif SC",serif;font-size:1.7rem;margin:0 0 .75rem}
+    p{color:#5f584e;line-height:1.65;margin:0 0 1rem}
+    a{color:#b83a28}
+    code{font-size:.9em;background:#ebe8e1;padding:.1em .35em;border-radius:6px}
+    .row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+    .btn{display:inline-block;padding:.65rem 1.15rem;border-radius:999px;background:#b83a28;color:#fff;text-decoration:none;font-weight:600}
+    .ghost{background:transparent;color:#b83a28;border:1px solid rgba(184,58,40,.35)}
+  </style>
+</head>
+<body>
+  <main>
+    <p class="k">MyCook</p>
+    <h1>远程 MCP 服务</h1>
+    <p>这里是给 AI 用的工具接口，不是菜谱网页。浏览器请去主站；Agent 请连接 <code>/mcp</code>（需要 Bearer）。</p>
+    <p>探测：<a href="/health"><code>/health</code></a> · 端点：<code>/mcp</code></p>
+    <div class="row">
+      <a class="btn" href="${guide}">使用说明</a>
+      <a class="btn ghost" href="${site}">打开菜谱站</a>
+      ${mcp ? `<a class="btn ghost" href="${mcp}/health">健康检查</a>` : ''}
+    </div>
+  </main>
+</body>
+</html>`);
+    });
+
     app.get('/health', (_req, res) => {
         res.json({
             ok: true,

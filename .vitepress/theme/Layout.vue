@@ -20,12 +20,21 @@ const route = useRoute();
 let revealObserver = null;
 
 function setupReveal() {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const targets = document.querySelectorAll(
     ".home-explore, .difficulty-shelf, .home-play-zone, .stats-section, .recent-updates, .home-credits",
   );
   if (!targets.length) return;
   revealObserver?.disconnect();
+
+  // 无动效或观察失败时保持可见，避免「打开一片空白」
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    targets.forEach((el) => {
+      el.classList.remove("reveal");
+      el.classList.add("is-in");
+    });
+    return;
+  }
+
   revealObserver = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
@@ -35,12 +44,21 @@ function setupReveal() {
         }
       }
     },
-    { rootMargin: "0px 0px -8% 0px" },
+    { rootMargin: "0px 0px -4% 0px", threshold: 0.01 },
   );
   targets.forEach((el) => {
     el.classList.add("reveal");
-    revealObserver.observe(el);
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.96 && rect.bottom > 0) {
+      el.classList.add("is-in");
+    } else {
+      revealObserver.observe(el);
+    }
   });
+  // 兜底：2s 后仍未显现的区块强制显示
+  window.setTimeout(() => {
+    targets.forEach((el) => el.classList.add("is-in"));
+  }, 2000);
 }
 
 onMounted(() => {
