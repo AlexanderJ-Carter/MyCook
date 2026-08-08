@@ -77,6 +77,7 @@ LABEL org.opencontainers.image.authors="AlexanderJ-Carter"
 LABEL io.mycook.skip-images="${SKIP_IMAGES}"
 
 COPY --from=builder /app/.vitepress/dist /usr/share/nginx/html
+COPY nginx-map.conf /etc/nginx/conf.d/00-map.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

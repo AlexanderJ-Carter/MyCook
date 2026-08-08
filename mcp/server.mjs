@@ -252,8 +252,26 @@ async function runStdio() {
     await server.connect(transport);
 }
 
+function mcpAllowedHosts() {
+    const hosts = new Set(['127.0.0.1', 'localhost', '::1']);
+    const publicUrl = process.env.MCP_PUBLIC_URL || '';
+    try {
+        if (publicUrl) hosts.add(new URL(publicUrl).hostname);
+    } catch {
+        /* ignore */
+    }
+    for (const h of String(process.env.MCP_ALLOWED_HOSTS || '').split(',')) {
+        const t = h.trim();
+        if (t) hosts.add(t);
+    }
+    return [...hosts];
+}
+
 async function runHttp() {
-    const app = createMcpExpressApp();
+    const app = createMcpExpressApp({
+        host: '0.0.0.0',
+        allowedHosts: mcpAllowedHosts(),
+    });
     const transports = {};
 
     app.get('/health', (_req, res) => {

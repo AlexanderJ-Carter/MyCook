@@ -8,12 +8,15 @@
 services:
   mycook:
     image: ghcr.io/alexanderj-carter/mycook:full
-    pull_policy: always
+    # 国内直连 GHCR 慢时用本地 crane 拉 tar + docker load，设 never；可改 missing
+    pull_policy: never
     container_name: mycook
     restart: unless-stopped
     ports:
       - "127.0.0.1:8090:80"
     mem_limit: 64m
+    volumes:
+      - ./nginx-runtime:/etc/nginx/conf.d:ro
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:80/"]
       interval: 30s
@@ -23,7 +26,7 @@ services:
 
   mycook-mcp:
     image: ghcr.io/alexanderj-carter/mycook-mcp:latest
-    pull_policy: always
+    pull_policy: never
     container_name: mycook-mcp
     restart: unless-stopped
     ports:
