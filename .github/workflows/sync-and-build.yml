@@ -38,6 +38,8 @@ jobs:
                   fetch-depth: 0
 
             - name: Clone upstream repos with retry
+              env:
+                  GIT_LFS_SKIP_SMUDGE: '1'
               run: |
                   clone_with_retry() {
                     local repo=$1 dest=$2 branch=${3:-main}
