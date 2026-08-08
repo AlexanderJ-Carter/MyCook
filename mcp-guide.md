@@ -23,7 +23,17 @@ description: 如何用 Cursor / Claude / Copilot 连接 MyCook 远程 MCP，以�
 
 1. 管理员已在 [id.alexander.xin](https://id.alexander.xin) 建好 API：  
    resource = `https://cook-mcp.alexander.xin/mcp`，权限 `mycook:read`。
-2. 用 OIDC 客户端 `mycook-mcp` 的 **client_credentials** 换 access token（运维脚本 / 网关常用），或让支持 OAuth 的 MCP 客户端走授权码流程。
+2. 用 OIDC 客户端 `mycook-mcp` 的 **client_credentials** 换 access token（运维脚本 / 网关常用），或让支持 OAuth 的 MCP 客户端走授权码流程。  
+   Pocket ID ≥ 2.13 换票时必须带 `resource`（RFC 8707），否则 `mycook:read` 会报 `invalid_scope`：
+
+```bash
+curl -sS -u 'mycook-mcp:$CLIENT_SECRET' \
+  -d 'grant_type=client_credentials' \
+  -d 'scope=mycook:read' \
+  -d 'resource=https://cook-mcp.alexander.xin/mcp' \
+  https://id.alexander.xin/api/oidc/token
+```
+
 3. 请求头：
 
 ```http
