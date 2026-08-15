@@ -32,7 +32,7 @@ import {
     isAuthRequired,
 } from './auth.mjs';
 
-const VERSION = '1.6.1';
+const VERSION = '1.7.0';
 const MCP_PORT = Number(process.env.MCP_PORT || 3001);
 
 function textResult(data) {

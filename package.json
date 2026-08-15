@@ -1,6 +1,6 @@
 {
   "name": "my-cook",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "private": true,
   "type": "module",
   "description": "老乡鸡风格菜谱 + 程序员做饭指南 — 静态站点、Docker 镜像与 MCP Agent 就绪",

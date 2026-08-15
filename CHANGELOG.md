@@ -1,6 +1,6 @@
 # Changelog
 
-## 未发布 (Unreleased)
+## v1.7.0 — 2026-08-15
 
 ### Agent / MCP
 
