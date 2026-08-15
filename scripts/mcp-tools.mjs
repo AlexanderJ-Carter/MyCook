@@ -8,15 +8,23 @@ export const ROOT = path.resolve(__dirname, '..');
 export const DATA_ROOT = process.env.MYCOOK_DATA || path.join(ROOT, 'public');
 export const SITE_URL = (process.env.SITE_URL || 'https://cook.alexander.xin').replace(/\/$/, '');
 
-const cache = new Map();
+// 按文件 mtime 失效的缓存：长驻 HTTP MCP 在重新生成 JSON 后能感知更新，
+// 而非一直返回旧数据。代价是每次调用多一次 statSync，可忽略。
+const cache = new Map(); // relativePath -> { data, mtimeMs }
 
 function readJson(relativePath) {
-    const key = relativePath;
-    if (cache.has(key)) return cache.get(key);
     const filePath = path.join(DATA_ROOT, relativePath);
-    if (!fs.existsSync(filePath)) return null;
+    let stat;
+    try {
+        stat = fs.statSync(filePath);
+    } catch {
+        // 文件不存在（或不可访问），不缓存 null，便于下次重试
+        return null;
+    }
+    const cached = cache.get(relativePath);
+    if (cached && cached.mtimeMs === stat.mtimeMs) return cached.data;
     const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    cache.set(key, data);
+    cache.set(relativePath, { data, mtimeMs: stat.mtimeMs });
     return data;
 }
 

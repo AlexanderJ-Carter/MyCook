@@ -267,12 +267,72 @@ function mcpAllowedHosts() {
     return [...hosts];
 }
 
+// 上游 OIDC 元数据几乎不变：按 60s 缓存 + 5s 超时，避免每个请求都打 issuer，
+// 也避免 issuer 变慢 / 不可达时把鉴权链路拖垮。
+let oauthMetadataCache = null; // { at, status, body }
+
+async function fetchOAuthMetadata(issuer) {
+    const now = Date.now();
+    if (oauthMetadataCache && now - oauthMetadataCache.at < 60_000) {
+        return oauthMetadataCache;
+    }
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+    try {
+        const upstream = await fetch(`${issuer}/.well-known/openid-configuration`, {
+            signal: controller.signal,
+        });
+        const body = await upstream.json();
+        // 仅缓存成功响应；失败则下次重试
+        if (upstream.ok) {
+            oauthMetadataCache = { at: now, status: upstream.status, body };
+        }
+        return { at: now, status: upstream.status, body };
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 async function runHttp() {
     const app = createMcpExpressApp({
         host: '0.0.0.0',
         allowedHosts: mcpAllowedHosts(),
     });
     const transports = {};
+    const sessionLastSeen = {};
+    const SESSION_TTL_MS = 30 * 60 * 1000; // 空闲 30 分钟回收
+    const SWEEP_INTERVAL_MS = 10 * 60 * 1000;
+
+    function touchSession(id) {
+        if (id) sessionLastSeen[id] = Date.now();
+    }
+
+    // 会话正常结束（onclose / DELETE）时调用：仅清理映射，不再触发 close()
+    function forgetSession(id) {
+        if (!id) return;
+        delete transports[id];
+        delete sessionLastSeen[id];
+    }
+
+    // sweeper 主动回收：先清映射，再尽力通知 SDK 关闭；close() 若触发 onclose 也只做幂等清理
+    function evictSession(id) {
+        const transport = transports[id];
+        forgetSession(id);
+        try {
+            transport?.close?.();
+        } catch {
+            /* ignore */
+        }
+    }
+
+    // 客户端崩溃 / 未发 DELETE 时回收泄漏会话，避免长驻 sidecar 内存增长
+    const sweeper = setInterval(() => {
+        const now = Date.now();
+        for (const id of Object.keys(sessionLastSeen)) {
+            if (now - sessionLastSeen[id] > SESSION_TTL_MS) evictSession(id);
+        }
+    }, SWEEP_INTERVAL_MS);
+    sweeper.unref?.();
 
     app.get('/', (_req, res) => {
         const site = SITE_URL;
@@ -329,10 +389,9 @@ async function runHttp() {
 
     app.get('/.well-known/oauth-authorization-server', async (_req, res) => {
         try {
-            const issuer = authSummary().issuer;
-            const upstream = await fetch(`${issuer}/.well-known/openid-configuration`);
-            const body = await upstream.json();
-            res.type('application/json').status(upstream.status).json(body);
+            const { issuer } = authSummary();
+            const meta = await fetchOAuthMetadata(issuer);
+            res.type('application/json').status(meta.status).json(meta.body);
         } catch (err) {
             res.status(502).json({ error: 'Failed to fetch authorization server metadata', detail: String(err) });
         }
@@ -349,17 +408,16 @@ async function runHttp() {
             let transport;
             if (sessionId && transports[sessionId]) {
                 transport = transports[sessionId];
+                touchSession(sessionId);
             } else if (!sessionId && isInitializeRequest(req.body)) {
                 transport = new StreamableHTTPServerTransport({
                     sessionIdGenerator: () => randomUUID(),
                     onsessioninitialized: (id) => {
                         transports[id] = transport;
+                        touchSession(id);
                     },
                 });
-                transport.onclose = () => {
-                    const sid = transport.sessionId;
-                    if (sid) delete transports[sid];
-                };
+                transport.onclose = () => forgetSession(transport.sessionId);
                 const server = createServer();
                 await server.connect(transport);
                 await transport.handleRequest(req, res, req.body);
@@ -392,6 +450,22 @@ async function runHttp() {
             res.status(400).send('Invalid or missing session ID');
             return;
         }
+        touchSession(sessionId);
+        await transports[sessionId].handleRequest(req, res);
+    });
+
+    app.delete('/mcp', async (req, res) => {
+        if (!(await guard(req, res))) return;
+        const sessionId = req.headers['mcp-session-id'];
+        if (!sessionId || !transports[sessionId]) {
+            res.status(404).json({
+                jsonrpc: '2.0',
+                error: { code: -32602, message: 'Session not found' },
+                id: null,
+            });
+            return;
+        }
+        // SDK 的 handleRequest 支持 DELETE：结束会话并触发 onclose（→ forgetSession）
         await transports[sessionId].handleRequest(req, res);
     });
 

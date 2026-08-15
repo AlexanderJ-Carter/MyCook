@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onBeforeUnmount, ref } from "vue";
 import { withBase } from "vitepress";
 import { useSiteData } from "./composables/useSiteData";
 import { useI18n } from "./composables/useI18n";
@@ -91,10 +91,26 @@ function href(link) {
   return withBase(link);
 }
 
+function closePicker() {
+  pickerDay.value = null;
+}
+
+function onKeydown(e) {
+  if (e.key === "Escape" && pickerDay.value) {
+    e.preventDefault();
+    closePicker();
+  }
+}
+
 onMounted(async () => {
   loadPlan();
+  document.addEventListener("keydown", onKeydown);
   const data = await loadRecipesIndex();
   recipes.value = data?.items || [];
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("keydown", onKeydown);
 });
 </script>
 
@@ -145,11 +161,17 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div v-if="pickerDay" class="meal-picker" role="dialog" :aria-label="t('home.mealPlan.pickerClose')">
+    <div
+      v-if="pickerDay"
+      class="meal-picker"
+      role="dialog"
+      :aria-label="t('home.mealPlan.pickerClose')"
+      @click.self="closePicker"
+    >
       <div class="meal-picker-inner">
         <div class="meal-picker-head">
           <strong>{{ t('home.mealPlan.pickerFor', { day: pickerDayLabel }) }}</strong>
-          <button type="button" class="mp-link-btn" @click="pickerDay = null">{{ t('home.mealPlan.pickerClose') }}</button>
+          <button type="button" class="mp-link-btn" @click="closePicker">{{ t('home.mealPlan.pickerClose') }}</button>
         </div>
         <input
           v-model="query"

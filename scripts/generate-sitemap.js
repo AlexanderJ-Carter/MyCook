@@ -10,7 +10,22 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const OUT_FILE = path.join(ROOT, '.vitepress/dist', 'sitemap.xml');
 
-const BASE_URL = 'https://cook.alexander.xin';
+// Fork 部署时站点域名不同：优先用 SITE_URL，其次读 .vitepress/dist/CNAME，
+// 最后兜底原站，保证 sitemap 始终指向当前部署域名。
+const CNAME_FILE = path.join(ROOT, '.vitepress/dist', 'CNAME');
+const BASE_URL = (() => {
+    const fromEnv = (process.env.SITE_URL || '').trim().replace(/\/$/, '');
+    if (fromEnv) return fromEnv;
+    try {
+        if (fs.existsSync(CNAME_FILE)) {
+            const host = fs.readFileSync(CNAME_FILE, 'utf8').trim();
+            if (host && !host.includes('/')) return `https://${host}`;
+        }
+    } catch {
+        /* ignore */
+    }
+    return 'https://cook.alexander.xin';
+})();
 
 function encodeUrlPath(pathname) {
   return pathname
