@@ -1,6 +1,10 @@
 # MyCook
 
 <p align="center">
+  🌐 <a href="./README.md">简体中文</a> · <a href="./README.es-ES.md">Español</a>
+</p>
+
+<p align="center">
   <strong>老乡鸡风格菜谱 × 程序员做饭指南 — 一站查阅、规划、交给 AI</strong>
 </p>
 
@@ -217,6 +221,15 @@ npm run mcp:http     # http://127.0.0.1:3001/mcp
 - [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) — Gar-b-age
 - [HowToCook 图片版](https://github.com/king-jingxiang/HowToCook) — king-jingxiang
 - [Cook · 食用手册](https://github.com/YunYouJun/cook) — YunYouJun（MIT，仅 CSV 集成）
+
+## 贡献者
+
+MyCook 的站点功能由以下贡献者与上游作者共同维护，谨致谢意：
+
+- **[AlexanderJ-Carter](https://github.com/AlexanderJ-Carter)** — 站点主体、MCP、CI/CD
+- **[WebBrain](https://github.com/webbrain-one)** — [西班牙语 README](./README.es-ES.md) 翻译
+
+完整名单见 [GitHub Contributors](https://github.com/AlexanderJ-Carter/MyCook/graphs/contributors)。欢迎你的加入——见 [贡献指南](./CONTRIBUTING.md)。
 
 ## 许可证
 

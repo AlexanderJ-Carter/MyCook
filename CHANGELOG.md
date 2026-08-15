@@ -1,5 +1,28 @@
 # Changelog
 
+## 未发布 (Unreleased)
+
+### Agent / MCP
+
+- **长驻 sidecar 健壮性**：`mcp-tools` 的 JSON 缓存按文件 mtime 失效，重新生成数据后无需重启即可生效
+- **OIDC 元数据代理**：`/.well-known/oauth-authorization-server` 加 5s 超时 + 60s 缓存，issuer 变慢/不可达不再拖垮鉴权链路
+- **会话生命周期**：新增 `DELETE /mcp` 规范终结会话；空闲 30min 会话轮询回收，防客户端崩溃后内存泄漏
+
+### 文档
+
+- **西班牙语 README**：合并社区贡献 `README.es-ES.md`（#8，by [WebBrain](https://github.com/webbrain-one)）并刷新到与当前主 README 一致（脚本/版本/特性/镜像/贡献者）
+- **README**：新增语言切换链接与「贡献者」名单
+- **CONTRIBUTING**：新增「翻译与国际化」指南；修复发版步骤中重复的 `git tag` 步骤
+- **CODE_OF_CONDUCT**：升级到 [Contributor Covenant v2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct.html)（原 v1.4）
+- **SECURITY**：补 MCP sidecar 鉴权安全说明；修正「不含后端服务」的失真描述
+
+### 修复
+
+- `generate-sitemap` 的 `BASE_URL` 优先读 `SITE_URL` / `dist/CNAME`，修复 Fork 部署的 sitemap 仍指向原站域名
+- `MealPlanner` 菜谱选择弹窗支持 `Esc` 与点击遮罩关闭
+
+---
+
 ## v1.6.1 — 2026-08-08
 
 ### 体验

@@ -30,6 +30,12 @@
 
 推送后等待 MyCook **Sync & Build** 自动同步（或手动触发 Actions）。
 
+### 翻译与国际化
+
+- **站点界面**：多语言文案在 `.vitepress/theme/i18n/messages.js`，英文页面在 `en/` 目录；新增语言需两端同步。
+- **README 翻译**：新增 `README.<lang>.md`（如 `README.es-ES.md`），结构与主 [README.md](./README.md) 保持一致，并在两份文件顶部互加语言切换链接。
+- 翻译或首次代码贡献合并后，维护者会把你的名字加入 README 的[贡献者名单](./README.md#贡献者)。
+
 ## 本地开发
 
 ```bash
@@ -57,10 +63,8 @@ PR 会触发 **PR Check** 工作流（语法检查 + 有内容时完整 validate
 
 ## 发版（维护者）
 
-1. 更新 `package.json` 版本与 `CHANGELOG.md`
-2. `git tag vX.Y.Z && git push origin vX.Y.Z`
-3. 推送 `main` 后等待 **Sync & Build** 完成
-4. `git tag vX.Y.Z && git push origin vX.Y.Z` 触发 **Release** 与 **Docker**
+1. 更新 `package.json` 版本与 `CHANGELOG.md`，提交并推送 `main`（触发 **Sync & Build** 部署 Pages）
+2. `git tag vX.Y.Z && git push origin vX.Y.Z`（触发 **Release** 与 **Docker** 镜像）
 
 ## 许可证
 
