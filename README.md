@@ -229,6 +229,8 @@ MyCook 的站点功能由以下贡献者与上游作者共同维护，谨致谢�
 - **[AlexanderJ-Carter](https://github.com/AlexanderJ-Carter)** — 站点主体、MCP、CI/CD
 - **[WebBrain](https://github.com/webbrain-one)** — [西班牙语 README](./README.es-ES.md) 翻译
 
+本项目亦借助 GitHub Copilot、Codex 与 Claude 协助开发。
+
 完整名单见 [GitHub Contributors](https://github.com/AlexanderJ-Carter/MyCook/graphs/contributors)。欢迎你的加入——见 [贡献指南](./CONTRIBUTING.md)。
 
 ## 许可证

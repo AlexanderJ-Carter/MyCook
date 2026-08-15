@@ -229,6 +229,8 @@ Las funciones del sitio de MyCook son mantenidas por los siguientes contribuidor
 - **[AlexanderJ-Carter](https://github.com/AlexanderJ-Carter)** — sitio principal, MCP, CI/CD
 - **[WebBrain](https://github.com/webbrain-one)** — traducción del [README al español](./README.es-ES.md)
 
+Este proyecto también cuenta con la asistencia de GitHub Copilot, Codex y Claude en el desarrollo.
+
 La lista completa está en [GitHub Contributors](https://github.com/AlexanderJ-Carter/MyCook/graphs/contributors). ¡Tu contribución es bienvenida! Consulta la [guía de contribución](./CONTRIBUTING.md).
 
 ## Licencia
