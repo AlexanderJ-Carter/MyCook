@@ -339,6 +339,7 @@ export default defineConfig({
             '**/*.svg',
         ],
         build: {
+            target: 'es2022',
             // 性能优化：代码分割
             chunkSizeWarningLimit: 1000,
             cssMinify: true,
