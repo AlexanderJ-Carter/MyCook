@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.8.0 — 2026-10-07
+
+### 厨助手
+
+- 站内右下角 **厨助手** FAB（类 Folio「问站」）：对话、建议 chip、跳转菜谱
+- MCP sidecar 公开 `POST /ask`（限流 + CORS）：先检索菜谱/食材/技巧，可选 OmniRoute 润色
+- 首页主 CTA 改为「问厨助手」；窑火杂志风格面板与动效
+
+### 内容
+
+- 同步 HowToCook / CookLikeHOC 上游菜谱；CookLikeHOC README 补回 MyCook 导流
+
+---
+
 ## v1.7.0 — 2026-08-15
 
 ### Agent / MCP

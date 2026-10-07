@@ -31,8 +31,9 @@ import {
     buildProtectedResourceMetadata,
     isAuthRequired,
 } from './auth.mjs';
+import { handleAsk } from './ask.mjs';
 
-const VERSION = '1.7.0';
+const VERSION = '1.8.0';
 const MCP_PORT = Number(process.env.MCP_PORT || 3001);
 
 function textResult(data) {
@@ -298,6 +299,27 @@ async function runHttp() {
         host: '0.0.0.0',
         allowedHosts: mcpAllowedHosts(),
     });
+    // Ensure JSON body for /ask (SDK app may already parse; harmless if duplicate)
+    app.use((req, res, next) => {
+        if (req.path === '/ask' && req.method === 'POST' && !req.body) {
+            let raw = '';
+            req.setEncoding('utf8');
+            req.on('data', (c) => {
+                raw += c;
+                if (raw.length > 32_000) req.destroy();
+            });
+            req.on('end', () => {
+                try {
+                    req.body = raw ? JSON.parse(raw) : {};
+                } catch {
+                    req.body = {};
+                }
+                next();
+            });
+            return;
+        }
+        next();
+    });
     const transports = {};
     const sessionLastSeen = {};
     const SESSION_TTL_MS = 30 * 60 * 1000; // 空闲 30 分钟回收
@@ -380,8 +402,14 @@ async function runHttp() {
             version: VERSION,
             site: SITE_URL,
             auth: authSummary(),
+            ask: true,
+            omni: Boolean(process.env.OMNI_URL && process.env.OMNI_KEY && process.env.OMNI_MODEL),
         });
     });
+
+    // Public kitchen assistant (no Bearer); rate-limited + CORS
+    app.options('/ask', (req, res) => handleAsk(req, res));
+    app.post('/ask', (req, res) => handleAsk(req, res));
 
     app.get('/.well-known/oauth-protected-resource', (_req, res) => {
         res.type('application/json').json(buildProtectedResourceMetadata());

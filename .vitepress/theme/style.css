@@ -1713,3 +1713,271 @@ a.daily-pick-go:hover,
         border-width: 2px;
     }
 }
+
+/* ===== Kitchen Assist (问站-style FAB) ===== */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.kitchen-assist__fab {
+    position: fixed;
+    right: 1.1rem;
+    bottom: 1.1rem;
+    z-index: 60;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.85rem 1.25rem;
+    background: var(--vp-c-brand-1);
+    color: #fff;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    transition:
+        transform var(--transition-normal),
+        background var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.kitchen-assist__fab:hover {
+    background: var(--vp-c-brand-2);
+    transform: translateY(-2px);
+}
+
+.kitchen-assist__fab:focus-visible {
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: 3px;
+}
+
+.kitchen-assist__panel {
+    position: fixed;
+    right: 1.1rem;
+    bottom: 4.6rem;
+    z-index: 61;
+    width: min(22.5rem, calc(100vw - 1.5rem));
+    max-height: min(34rem, calc(100vh - 6.5rem));
+    display: flex;
+    flex-direction: column;
+    background: var(--mycook-paper);
+    color: var(--mycook-ink);
+    border: 1px solid var(--mycook-line);
+    border-radius: calc(var(--mycook-radius) + 4px);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    animation: kitchen-assist-in var(--transition-normal) both;
+}
+
+@keyframes kitchen-assist-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.kitchen-assist__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem 1rem 0.75rem;
+    border-bottom: 1px solid var(--mycook-line);
+    background:
+        radial-gradient(120% 80% at 100% 0%, var(--vp-c-brand-soft), transparent 55%),
+        var(--mycook-paper);
+}
+
+.kitchen-assist__kicker {
+    margin: 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--vp-c-brand-1);
+}
+
+.kitchen-assist__title {
+    margin: 0.15rem 0 0;
+    font-family: var(--mycook-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.kitchen-assist__close {
+    border: 0;
+    background: transparent;
+    color: var(--mycook-steel);
+    cursor: pointer;
+    padding: 0.25rem 0.4rem;
+    border-radius: 8px;
+}
+
+.kitchen-assist__close:hover {
+    color: var(--mycook-ink);
+    background: var(--vp-c-bg-soft);
+}
+
+.kitchen-assist__list {
+    flex: 1;
+    overflow: auto;
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.kitchen-assist__msg[data-role='user'] .kitchen-assist__text {
+    margin-left: auto;
+    background: var(--vp-c-brand-soft);
+    border-radius: 12px 12px 4px 12px;
+}
+
+.kitchen-assist__msg[data-role='assistant'] .kitchen-assist__text {
+    background: var(--vp-c-bg-soft);
+    border-radius: 12px 12px 12px 4px;
+}
+
+.kitchen-assist__text {
+    margin: 0;
+    padding: 0.7rem 0.85rem;
+    white-space: pre-wrap;
+    line-height: 1.55;
+    font-size: 0.92rem;
+    max-width: 100%;
+}
+
+.kitchen-assist__actions,
+.kitchen-assist__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.45rem;
+}
+
+.kitchen-assist__action {
+    border: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 35%, transparent);
+    background: transparent;
+    color: var(--vp-c-brand-1);
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.kitchen-assist__action:hover {
+    background: var(--vp-c-brand-soft);
+}
+
+.kitchen-assist__chip {
+    border: 1px solid var(--mycook-line);
+    background: var(--mycook-paper);
+    color: var(--mycook-ink);
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.kitchen-assist__chip:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--vp-c-brand-1) 40%, var(--mycook-line));
+}
+
+.kitchen-assist__chip:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.kitchen-assist__thinking,
+.kitchen-assist__error {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--mycook-steel);
+}
+
+.kitchen-assist__error {
+    color: var(--vp-c-brand-1);
+}
+
+.kitchen-assist__form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem 1rem;
+    border-top: 1px solid var(--mycook-line);
+    background: var(--vp-c-bg-alt);
+}
+
+.kitchen-assist__form textarea {
+    resize: none;
+    border: 1px solid var(--mycook-line);
+    border-radius: 12px;
+    padding: 0.55rem 0.7rem;
+    font: inherit;
+    background: var(--mycook-paper);
+    color: var(--mycook-ink);
+}
+
+.kitchen-assist__send {
+    align-self: end;
+    border: 0;
+    border-radius: 12px;
+    padding: 0.55rem 0.9rem;
+    background: var(--vp-c-brand-1);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.kitchen-assist__send:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Hero polish */
+.VPHero .name {
+    font-family: var(--mycook-display);
+    letter-spacing: -0.02em;
+}
+
+.VPHero .tagline {
+    max-width: 28rem;
+    color: var(--mycook-steel);
+}
+
+.VPHero .actions {
+    gap: 0.65rem;
+}
+
+.layout-cooklikehoc .VPDoc .content-container,
+.layout-howtocook .VPDoc .content-container {
+    max-width: 46rem;
+}
+
+.recipe-toolbar {
+    transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+@media (max-width: 640px) {
+    .kitchen-assist__panel {
+        right: 0.65rem;
+        left: 0.65rem;
+        width: auto;
+        bottom: 4.4rem;
+    }
+
+    .kitchen-assist__fab {
+        right: 0.85rem;
+        bottom: 0.85rem;
+    }
+}

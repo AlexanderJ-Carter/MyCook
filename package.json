@@ -1,9 +1,9 @@
 {
   "name": "my-cook",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "private": true,
   "type": "module",
-  "description": "\u8001\u4e61\u9e21\u98ce\u683c\u83dc\u8c31 + \u7a0b\u5e8f\u5458\u505a\u996d\u6307\u5357 \u2014 \u9759\u6001\u7ad9\u70b9\u3001Docker \u955c\u50cf\u4e0e MCP Agent \u5c31\u7eea",
+  "description": "老乡鸡风格菜谱 + 程序员做饭指南 — 静态站点、Docker 镜像与 MCP Agent 就绪",
   "author": "AlexanderJ-Carter",
   "license": "MIT",
   "repository": {

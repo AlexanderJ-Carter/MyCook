@@ -15,6 +15,7 @@ import SkipLink from "./SkipLink.vue";
 import InstallPrompt from "./InstallPrompt.vue";
 import LangSwitch from "./LangSwitch.vue";
 import NotFound from "./NotFound.vue";
+import KitchenAssist from "./KitchenAssist.vue";
 
 const route = useRoute();
 
@@ -115,5 +116,6 @@ const showSourceChip = computed(() => {
     <BackToTop />
     <RecipeSchema />
     <RecipeToolbar />
+    <KitchenAssist />
   </div>
 </template>

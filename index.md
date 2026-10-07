@@ -3,17 +3,14 @@ layout: home
 hero:
   name: MyCook
   text: 打开就能做饭
-  tagline: 做法库 × 食材指南，合并成一个顺手的厨房入口——少翻页，多下厨
+  tagline: 做法库 × 食材指南。问厨助手一句，或按做法 / 食材自己逛。
   actions:
     - theme: brand
+      text: 问厨助手
+      link: /#kitchen-assist
+    - theme: alt
       text: 按做法找
       link: /cooklikehoc/炒菜/README
-    - theme: alt
-      text: 按食材找
-      link: /howtocook/dishes/vegetable_dish/西红柿炒鸡蛋
-    - theme: alt
-      text: 图片版
-      link: https://mycook.alexander.xin/howtocook-images/
     - theme: alt
       text: 开冰箱
       link: "#kitchen-play"
