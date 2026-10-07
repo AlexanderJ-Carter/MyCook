@@ -23,7 +23,7 @@ let revealObserver = null;
 
 function setupReveal() {
   const targets = document.querySelectorAll(
-    ".home-explore, .difficulty-shelf, .home-play-zone, .stats-section, .recent-updates, .home-credits",
+    ".daily-pick, .home-explore, .difficulty-shelf, .home-play-zone, .stats-section, .recent-updates, .home-credits",
   );
   if (!targets.length) return;
   revealObserver?.disconnect();

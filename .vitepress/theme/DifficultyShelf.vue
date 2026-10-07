@@ -46,15 +46,20 @@ const tiers = computed(() => {
 
 <style scoped>
 .difficulty-shelf {
-  max-width: 1080px;
-  margin: 0 auto 2.5rem;
+  max-width: 720px;
+  margin: 0 auto 3rem;
   padding: 0 1.25rem;
+}
+
+.difficulty-head {
+  text-align: center;
+  margin-bottom: 1.1rem;
 }
 
 .difficulty-head h2 {
   margin: 0.2rem 0 0.4rem;
   font-family: var(--mycook-display, serif);
-  font-size: 1.35rem;
+  font-size: clamp(1.35rem, 3vw, 1.7rem);
   font-weight: 700;
 }
 
@@ -87,12 +92,12 @@ const tiers = computed(() => {
   flex-direction: column;
   gap: 0.25rem;
   padding: 1rem 1.05rem;
-  border-radius: 12px;
+  border-radius: 6px;
   text-decoration: none;
   color: inherit;
   background: var(--mycook-paper);
   border: 1px solid var(--mycook-line);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   transition: transform 0.16s ease, border-color 0.16s ease;
 }
 

@@ -58,8 +58,8 @@ const source = computed(() => {
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--mycook-line, rgba(28, 25, 21, 0.1));
   border-left: 3px solid var(--vp-c-brand-1);
-  border-radius: 999px;
-  box-shadow: var(--shadow-sm, 0 2px 10px rgba(28, 25, 21, 0.05));
+  border-radius: 4px;
+  box-shadow: none;
 }
 
 .source-chip.is-howtocook,

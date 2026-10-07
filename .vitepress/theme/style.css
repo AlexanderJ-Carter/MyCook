@@ -286,27 +286,30 @@ html.js-ready .reveal:not(.is-in) {
 
 /* ===== Hero ===== */
 .VPHero {
-    padding: 4.75rem 0 2.25rem;
+    padding: clamp(3.5rem, 8vh, 5.5rem) 0 1.5rem;
     position: relative;
     overflow: hidden;
+    min-height: min(72vh, 36rem);
+    display: flex;
+    align-items: center;
 }
 
 .VPHero::before {
     content: '厨';
     position: absolute;
-    left: 50%;
-    top: 42%;
+    left: 52%;
+    top: 46%;
     transform: translate(-50%, -50%);
     font-family: var(--mycook-display);
-    font-size: clamp(14rem, 42vw, 28rem);
+    font-size: clamp(12rem, 38vw, 24rem);
     font-weight: 700;
     line-height: 1;
     color: var(--vp-c-brand-1);
-    opacity: 0.06;
+    opacity: 0.055;
     pointer-events: none;
     user-select: none;
-    letter-spacing: 0.08em;
-    animation: seal-breathe 8s ease-in-out infinite;
+    letter-spacing: 0.12em;
+    animation: seal-breathe 10s ease-in-out infinite;
 }
 
 @keyframes seal-breathe {
@@ -336,9 +339,9 @@ html.js-ready .reveal:not(.is-in) {
 .VPHero .name {
     font-family: var(--mycook-display);
     font-weight: 700;
-    font-size: clamp(3.4rem, 9vw, 5.8rem);
-    letter-spacing: 0.08em;
-    line-height: 1;
+    font-size: clamp(3.8rem, 11vw, 6.4rem);
+    letter-spacing: 0.04em;
+    line-height: 0.95;
     animation: rise-in 0.75s var(--transition-slow) both;
 }
 
@@ -362,10 +365,10 @@ html.js-ready .reveal:not(.is-in) {
     display: inline-block;
     font-family: var(--mycook-display);
     font-weight: 600;
-    font-size: clamp(1.4rem, 3.2vw, 1.95rem);
-    line-height: 1.35;
+    font-size: clamp(1.25rem, 2.8vw, 1.7rem);
+    line-height: 1.4;
     color: var(--mycook-steel);
-    margin-top: 1rem;
+    margin-top: 1.15rem;
     animation: rise-in 0.75s 0.08s var(--transition-slow) both;
 }
 
@@ -382,29 +385,29 @@ html.js-ready .reveal:not(.is-in) {
 }
 
 .VPHero .tagline {
-    margin-top: 1rem;
-    max-width: 26em;
+    margin-top: 1.35rem;
+    max-width: 22em;
     margin-left: auto;
     margin-right: auto;
-    font-size: 1rem;
-    line-height: 1.75;
-    color: var(--vp-c-text-2);
+    font-size: 0.98rem;
+    line-height: 1.7;
+    color: var(--mycook-steel);
     text-wrap: balance;
     animation: rise-in 0.75s 0.16s var(--transition-slow) both;
 }
 
 .VPHero .actions {
-    margin-top: 2.1rem;
-    gap: 0.7rem;
+    margin-top: 2.35rem;
+    gap: 0.65rem;
     justify-content: center;
     animation: rise-in 0.75s 0.24s var(--transition-slow) both;
 }
 
 .VPHero .actions .VPButton {
-    padding: 0.78rem 1.45rem;
-    border-radius: 12px;
+    padding: 0.72rem 1.35rem;
+    border-radius: 10px;
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.04em;
     transition:
         transform var(--transition-normal),
         box-shadow var(--transition-normal),
@@ -417,31 +420,32 @@ html.js-ready .reveal:not(.is-in) {
 }
 
 .VPHero .actions .VPButton.brand {
-    padding: 0.85rem 1.7rem;
+    padding: 0.82rem 1.65rem;
     font-size: 1.02rem;
-    background: linear-gradient(160deg, #d24a35, var(--vp-c-brand-1) 55%, var(--vp-c-brand-2));
+    border-radius: 10px;
+    background: var(--vp-c-brand-1);
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.18),
-        0 10px 28px rgba(184, 58, 40, 0.28);
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        0 12px 28px rgba(184, 58, 40, 0.26);
 }
 
 .VPHero .actions .VPButton.brand:hover {
-    background: linear-gradient(160deg, #c44530, var(--vp-c-brand-2));
+    background: var(--vp-c-brand-2);
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.16),
-        0 14px 34px rgba(184, 58, 40, 0.34);
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 16px 36px rgba(184, 58, 40, 0.32);
 }
 
 .VPHero .actions .VPButton.alt {
-    background: color-mix(in srgb, var(--mycook-paper) 72%, transparent);
-    border-color: var(--mycook-line);
-    backdrop-filter: blur(8px);
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--mycook-ink) 18%, transparent);
+    color: var(--mycook-ink);
 }
 
 .VPHero .actions .VPButton.alt:hover {
     border-color: var(--vp-c-brand-1);
     color: var(--vp-c-brand-1);
-    box-shadow: var(--shadow-sm);
+    background: var(--vp-c-brand-soft);
 }
 
 @keyframes rise-in {
@@ -458,17 +462,16 @@ html.js-ready .reveal:not(.is-in) {
 /* ===== Daily Pick ===== */
 .daily-pick {
     position: relative;
-    max-width: 1080px;
-    margin: 0.25rem auto 2.75rem;
-    padding: 1.85rem 4.5rem 1.85rem 2.15rem;
+    max-width: 720px;
+    margin: -0.5rem auto 3.25rem;
+    padding: 2.1rem 4.75rem 2.1rem 2.35rem;
     overflow: hidden;
-    border-radius: calc(var(--mycook-radius) + 4px);
-    border: 1px solid rgba(184, 58, 40, 0.14);
+    border-radius: 4px;
+    border: 1px solid rgba(184, 58, 40, 0.16);
     background:
-        linear-gradient(135deg, rgba(184, 58, 40, 0.08), transparent 42%),
-        linear-gradient(225deg, rgba(31, 111, 91, 0.08), transparent 46%),
-        var(--mycook-paper);
-    box-shadow: var(--shadow-md);
+        linear-gradient(180deg, rgba(250, 248, 244, 0.92), var(--mycook-paper)),
+        linear-gradient(135deg, rgba(184, 58, 40, 0.07), transparent 50%);
+    box-shadow: var(--shadow-sm);
     animation: rise-in 0.6s 0.28s both;
 }
 
@@ -498,30 +501,32 @@ html.js-ready .reveal:not(.is-in) {
 
 .daily-pick-seal {
     position: absolute;
-    right: 1.2rem;
-    top: 1.1rem;
-    width: 3.1rem;
-    height: 3.1rem;
-    border-radius: 50%;
+    right: 1.35rem;
+    top: 1.35rem;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 2px;
     display: grid;
     place-items: center;
     font-family: var(--mycook-display);
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #faf4ee;
-    background: radial-gradient(circle at 30% 30%, #e2553d, #9e2f1d);
-    box-shadow: 0 8px 20px rgba(158, 47, 29, 0.28);
-    transform: rotate(8deg);
+    background: var(--vp-c-brand-1);
+    box-shadow: 0 6px 16px rgba(158, 47, 29, 0.22);
+    transform: rotate(6deg);
+    letter-spacing: 0.06em;
 }
 
 .daily-pick h2 {
     margin: 0;
-    max-width: 14em;
+    max-width: 12em;
     font-family: var(--mycook-display);
-    font-size: clamp(1.8rem, 4vw, 2.55rem);
+    font-size: clamp(1.85rem, 4vw, 2.45rem);
     font-weight: 700;
-    line-height: 1.15;
+    line-height: 1.2;
     color: var(--mycook-ink);
+    letter-spacing: 0.02em;
 }
 
 .daily-pick-desc {
@@ -706,8 +711,8 @@ a.daily-pick-go:hover,
 
 /* ===== Home Explore ===== */
 .home-explore {
-    max-width: 1080px;
-    margin: 0 auto 3.5rem;
+    max-width: 960px;
+    margin: 0 auto 3.75rem;
     padding: 0 1.25rem;
 }
 
@@ -720,7 +725,7 @@ a.daily-pick-go:hover,
 .home-explore-intro h2 {
     margin: 0;
     font-family: var(--mycook-display);
-    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    font-size: clamp(1.5rem, 2.8vw, 1.9rem);
     font-weight: 700;
     color: var(--mycook-ink);
     line-height: 1.25;
@@ -735,21 +740,21 @@ a.daily-pick-go:hover,
 .home-paths {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
+    gap: 0.85rem;
 }
 
 .home-path {
     position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 250px;
-    padding: 1.45rem 1.4rem 1.35rem;
-    border-radius: var(--mycook-radius);
+    min-height: 230px;
+    padding: 1.35rem 1.3rem 1.25rem;
+    border-radius: 6px;
     text-decoration: none !important;
     color: inherit !important;
     border: 1px solid var(--mycook-line);
     background: var(--mycook-paper);
-    box-shadow: var(--shadow-sm);
+    box-shadow: none;
     overflow: hidden;
     transition:
         transform var(--transition-normal),
@@ -1729,17 +1734,18 @@ a.daily-pick-go:hover,
 
 .kitchen-assist__fab {
     position: fixed;
-    right: 1.1rem;
-    bottom: 1.1rem;
+    right: 1.15rem;
+    bottom: 1.15rem;
     z-index: 60;
     border: 0;
-    border-radius: 999px;
-    padding: 0.85rem 1.25rem;
+    border-radius: 4px;
+    padding: 0.8rem 1.15rem;
     background: var(--vp-c-brand-1);
     color: #fff;
-    font-weight: 650;
-    letter-spacing: 0.04em;
-    box-shadow: var(--shadow-md);
+    font-family: var(--mycook-display);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    box-shadow: 0 10px 24px rgba(184, 58, 40, 0.28);
     cursor: pointer;
     transition:
         transform var(--transition-normal),
@@ -1759,8 +1765,8 @@ a.daily-pick-go:hover,
 
 .kitchen-assist__panel {
     position: fixed;
-    right: 1.1rem;
-    bottom: 4.6rem;
+    right: 1.15rem;
+    bottom: 4.5rem;
     z-index: 61;
     width: min(22.5rem, calc(100vw - 1.5rem));
     max-height: min(34rem, calc(100vh - 6.5rem));
@@ -1768,8 +1774,8 @@ a.daily-pick-go:hover,
     flex-direction: column;
     background: var(--mycook-paper);
     color: var(--mycook-ink);
-    border: 1px solid var(--mycook-line);
-    border-radius: calc(var(--mycook-radius) + 4px);
+    border: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 22%, var(--mycook-line));
+    border-radius: 6px;
     box-shadow: var(--shadow-lg);
     overflow: hidden;
     animation: kitchen-assist-in var(--transition-normal) both;
@@ -1944,28 +1950,45 @@ a.daily-pick-go:hover,
     cursor: not-allowed;
 }
 
-/* Hero polish */
-.VPHero .name {
-    font-family: var(--mycook-display);
-    letter-spacing: -0.02em;
-}
-
-.VPHero .tagline {
-    max-width: 28rem;
-    color: var(--mycook-steel);
-}
-
-.VPHero .actions {
-    gap: 0.65rem;
-}
-
 .layout-cooklikehoc .VPDoc .content-container,
 .layout-howtocook .VPDoc .content-container {
-    max-width: 46rem;
+    max-width: 42rem;
+}
+
+.layout-cooklikehoc .vp-doc h1,
+.layout-howtocook .vp-doc h1 {
+    font-family: var(--mycook-display);
+    letter-spacing: 0.03em;
+    line-height: 1.25;
+    margin-bottom: 0.6em;
+}
+
+.layout-cooklikehoc .vp-doc h2,
+.layout-howtocook .vp-doc h2 {
+    font-family: var(--mycook-display);
+    font-size: 1.25rem;
+    margin-top: 2em;
+    padding-top: 0.35em;
+    border-top: 1px solid var(--mycook-line);
+}
+
+.layout-cooklikehoc .vp-doc ul,
+.layout-howtocook .vp-doc ul,
+.layout-cooklikehoc .vp-doc ol,
+.layout-howtocook .vp-doc ol {
+    line-height: 1.75;
 }
 
 .recipe-toolbar {
     transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+.home-explore {
+    margin-bottom: 3.75rem;
+}
+
+.difficulty-shelf {
+    margin-bottom: 3rem !important;
 }
 
 @media (max-width: 640px) {
