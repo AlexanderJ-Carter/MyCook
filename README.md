@@ -79,7 +79,11 @@ MyCook/
 
 ### 在线使用
 
-直接访问 **[cook.alexander.xin](https://cook.alexander.xin)** — 无需安装。
+- **[cook.alexander.xin](https://cook.alexander.xin)** — GitHub Pages CDN 主站（轻量）
+- **[mycook.alexander.xin](https://mycook.alexander.xin)** — Cloud 完整站（含 HowToCook 图片版）
+- **[cook-mcp.alexander.xin](https://cook-mcp.alexander.xin)** — 厨助手 `/ask` + MCP（两边共用）
+
+同一套 MyCook 应用，不是两个产品。
 
 ### 本地开发
 

@@ -88,6 +88,7 @@ async function ask(question) {
       suggestions: Array.isArray(data.suggestions) ? data.suggestions : [],
       actions: Array.isArray(data.actions) ? data.actions : [],
       mode: data.mode,
+      model: data.model || '',
     });
   } catch (e) {
     error.value = e?.message || '网络异常';
@@ -125,6 +126,13 @@ function onKeydown(e) {
     open.value = false;
   }
 }
+
+function modeLabel(mode) {
+  if (mode === 'llm') return 'AI 整理';
+  if (mode === 'tool') return '站内检索';
+  if (mode === 'none') return '未命中';
+  return '';
+}
 </script>
 
 <template>
@@ -149,7 +157,7 @@ function onKeydown(e) {
     >
       <header class="kitchen-assist__head">
         <div>
-          <p class="kitchen-assist__kicker">MyCook</p>
+          <p class="kitchen-assist__kicker">MyCook · 检索优先，必要时走 AI</p>
           <h2 class="kitchen-assist__title">厨助手</h2>
         </div>
         <button type="button" class="kitchen-assist__close" @click="open = false">关闭</button>
@@ -162,6 +170,13 @@ function onKeydown(e) {
           class="kitchen-assist__msg"
           :data-role="m.role"
         >
+          <p
+            v-if="m.role === 'assistant' && modeLabel(m.mode)"
+            class="kitchen-assist__mode"
+            :data-mode="m.mode"
+          >
+            {{ modeLabel(m.mode) }}
+          </p>
           <p class="kitchen-assist__text">{{ m.text }}</p>
           <div v-if="m.actions?.length" class="kitchen-assist__actions">
             <button

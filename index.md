@@ -16,6 +16,8 @@ hero:
       link: "#kitchen-play"
 ---
 
+<SiteEdition />
+
 <DailyPick />
 
 <HomeBootstrap />

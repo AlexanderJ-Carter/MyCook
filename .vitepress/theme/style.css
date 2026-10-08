@@ -711,8 +711,8 @@ a.daily-pick-go:hover,
 
 /* ===== Home Explore ===== */
 .home-explore {
-    max-width: 960px;
-    margin: 0 auto 3.75rem;
+    max-width: 1080px;
+    margin: 0 auto 3.5rem;
     padding: 0 1.25rem;
 }
 
@@ -725,7 +725,7 @@ a.daily-pick-go:hover,
 .home-explore-intro h2 {
     margin: 0;
     font-family: var(--mycook-display);
-    font-size: clamp(1.5rem, 2.8vw, 1.9rem);
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
     font-weight: 700;
     color: var(--mycook-ink);
     line-height: 1.25;
@@ -2003,4 +2003,45 @@ a.daily-pick-go:hover,
         right: 0.85rem;
         bottom: 0.85rem;
     }
+}
+
+/* Dual-site edition note */
+.site-edition {
+    max-width: 720px;
+    margin: -0.5rem auto 1.75rem;
+    padding: 0.65rem 1rem;
+    border-left: 3px solid var(--vp-c-brand-1, #c45c26);
+    background: color-mix(in srgb, var(--vp-c-bg-soft, #f6f2eb) 88%, transparent);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--vp-c-text-2);
+}
+.site-edition[data-edition="full"] {
+    border-left-color: var(--vp-c-brand-2, #2f6f5e);
+}
+.site-edition p {
+    margin: 0;
+}
+.site-edition a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.kitchen-assist__mode {
+    display: inline-block;
+    margin: 0 0 0.35rem;
+    padding: 0.12rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    background: var(--vp-c-bg-soft, #eee);
+    color: var(--vp-c-text-2);
+}
+.kitchen-assist__mode[data-mode="llm"] {
+    background: color-mix(in srgb, #2f6f5e 18%, transparent);
+    color: #1f4d42;
+}
+.kitchen-assist__mode[data-mode="tool"] {
+    background: color-mix(in srgb, #c45c26 16%, transparent);
+    color: #7a3514;
 }

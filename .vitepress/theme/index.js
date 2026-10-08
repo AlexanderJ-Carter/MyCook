@@ -11,6 +11,7 @@ import DailyPick from './DailyPick.vue';
 import DifficultyShelf from './DifficultyShelf.vue';
 import HomeBootstrap from './HomeBootstrap.vue';
 import HomeCredits from './HomeCredits.vue';
+import SiteEdition from './SiteEdition.vue';
 import './style.css';
 
 const KitchenPlay = defineAsyncComponent(() => import('./KitchenPlay.vue'));
@@ -36,6 +37,7 @@ export default {
         app.component('DifficultyShelf', DifficultyShelf);
         app.component('HomeBootstrap', HomeBootstrap);
         app.component('HomeCredits', HomeCredits);
+        app.component('SiteEdition', SiteEdition);
         app.component('KitchenPlay', KitchenPlay);
         app.component('KitchenTips', KitchenTips);
         app.component('MealPlanner', MealPlanner);

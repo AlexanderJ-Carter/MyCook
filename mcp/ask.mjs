@@ -3,6 +3,7 @@
  */
 import {
     SITE_URL,
+    getMarkdownByPath,
     listPantryIngredients,
     randomRecipe,
     searchByIngredients,
@@ -102,7 +103,6 @@ function extractIngredients(question) {
     for (const name of names) {
         if (name && question.includes(name)) hit.push(name);
     }
-    // light fallbacks for common fridge items not in chip list spelling
     for (const name of ['番茄', '西红柿', '鸡蛋', '土豆', '豆腐', '青椒', '牛肉', '猪肉', '鸡肉']) {
         if (question.includes(name) && !hit.includes(name)) hit.push(name === '西红柿' ? '番茄' : name);
     }
@@ -114,7 +114,20 @@ function wantsRandom(question) {
 }
 
 function wantsTips(question) {
-    return /技巧|怎么洗|备菜|刀工|火候|保鲜|禁忌/.test(question);
+    return /技巧|怎么洗|备菜|刀工|火候|保鲜|禁忌|油温|焯水|去腥|空气炸|微波|高压|洗碗|食品安全|腌制|糖色|学习蒸|学习煮|学习炒/.test(
+        question,
+    );
+}
+
+function attachExcerpt(tool) {
+    const path = tool?.actions?.[0]?.path || tool?.hits?.[0]?.path;
+    if (!path) return tool;
+    const md = getMarkdownByPath(path);
+    if (!md.found || !md.excerpt) return tool;
+    return {
+        ...tool,
+        facts: `${tool.facts || ''}\n正文摘录（${path}）：\n${md.excerpt}`,
+    };
 }
 
 /** Tool-first retrieval; returns structured answer when confident. */
@@ -144,7 +157,6 @@ export function runKitchenTool(question) {
         if (by.enabled && by.items?.length) {
             const top = by.items.slice(0, 3);
             const lines = top.map((item, i) => `${i + 1}. ${item.name}`).join('\n');
-            // map pantry names to site search for navigate
             const navHits = [];
             for (const item of top) {
                 const found = searchRecipes({ query: item.name, limit: 1 });
@@ -169,12 +181,12 @@ export function runKitchenTool(question) {
     }
 
     if (wantsTips(q)) {
-        const tips = searchTips({ query: q.replace(/技巧|怎么|如何/g, '').trim() || q, limit: 4 });
+        const tips = searchTips({ query: q, limit: 4 });
         if (tips.items?.length) {
             const top = tips.items[0];
-            return {
+            return attachExcerpt({
                 id: 'search_tips',
-                answer: `技巧里有「${top.title}」，可以先看这篇。`,
+                answer: `技巧里有「${top.title}」，可以先看这篇；我也能按文内要点帮你概括。`,
                 suggestions: tips.items.slice(1, 3).map((t) => ({
                     label: t.title.slice(0, 8),
                     question: t.title,
@@ -182,7 +194,7 @@ export function runKitchenTool(question) {
                 actions: [{ type: 'navigate', path: top.path, label: top.title }],
                 facts: `技巧：${tips.items.map((t) => t.title).join(' / ')}`,
                 hits: tips.items,
-            };
+            });
         }
     }
 
@@ -190,7 +202,7 @@ export function runKitchenTool(question) {
     if (recipes.items?.length) {
         const top = recipes.items.slice(0, 3);
         const lines = top.map((item, i) => `${i + 1}. ${item.title}`).join('\n');
-        return {
+        return attachExcerpt({
             id: 'search_recipes',
             answer: `站内搜到这些相关菜谱：\n${lines}`,
             suggestions: [
@@ -200,7 +212,21 @@ export function runKitchenTool(question) {
             actions: top.map((h) => ({ type: 'navigate', path: h.path, label: h.title })),
             facts: `检索「${q}」→ ${top.map((t) => `${t.title}(${t.path})`).join('；')}`,
             hits: top,
-        };
+        });
+    }
+
+    // Last-chance tip scan for technique questions that missed the keyword list.
+    const tips = searchTips({ query: q, limit: 3 });
+    if (tips.items?.length && /怎么|如何|判断|为什么|注意/.test(q)) {
+        const top = tips.items[0];
+        return attachExcerpt({
+            id: 'search_tips',
+            answer: `和这个问题最接近的是「${top.title}」。`,
+            suggestions: [{ label: '随机一道', question: '随机推荐一道菜' }],
+            actions: [{ type: 'navigate', path: top.path, label: top.title }],
+            facts: `技巧兜底：${top.title} → ${top.path}`,
+            hits: tips.items,
+        });
     }
 
     return null;
@@ -259,13 +285,16 @@ async function callOmni(question, history, tool) {
     const model = process.env.OMNI_MODEL;
     if (!base || !key || !model) return null;
 
+    const hasFacts = Boolean(tool?.facts);
     const system = [
-        '你是 MyCook 厨助手，帮访客在 cook.alexander.xin 找菜谱。',
-        '只用下方「检索实况」与站点路径回答，禁止编造不存在的菜名或不在实况里的步骤细节。',
+        '你是 MyCook 厨助手，帮访客在 cook.alexander.xin / mycook.alexander.xin 找菜谱与厨房技巧。',
+        hasFacts
+            ? '必须以「检索实况」与正文摘录为依据回答：可概括步骤/火候/注意点，禁止编造不在摘录里的克数或步骤。'
+            : '当前没有站内检索命中。如实说明没对上菜名，并建议换「西红柿炒鸡蛋」等常见写法，或随机一道；不要编造菜谱步骤。',
         '只输出一个 JSON：{"answer":"…","suggestions":[{"label":"…","question":"…"}],"actions":[{"type":"navigate","path":"/cooklikehoc/…或/howtocook/…","label":"…"}]}',
-        'answer 2～4 句，与用户同语言；suggestions 最多 2 条；actions 用实况里的 path。',
+        'answer 2～5 句，与用户同语言；suggestions 最多 2 条；actions 只用实况里的 path。',
         `站点：${SITE_URL}`,
-        tool?.facts ? `\n检索实况：\n${tool.facts}` : '\n检索实况：无命中，请诚实说明并建议换关键词或随机一道。',
+        hasFacts ? `\n检索实况：\n${tool.facts}` : '\n检索实况：无命中。',
     ].join('\n');
 
     const messages = [{ role: 'system', content: system }];
@@ -295,7 +324,7 @@ async function callOmni(question, history, tool) {
         if (!content) return null;
         const parsed = parseOmniJson(content);
         if (!parsed) return null;
-        return sanitizePayload(parsed, tool);
+        return { ...sanitizePayload(parsed, tool), model };
     } catch {
         return null;
     }
@@ -333,8 +362,8 @@ export async function handleAsk(req, res) {
     const wantLlm = req.body?.llm !== false;
     const tool = runKitchenTool(question);
 
-    // Strong tool hits: answer without LLM rewrite
-    if (tool && (tool.id === 'random_recipe' || (tool.hits?.length && tool.id !== 'search_recipes'))) {
+    // Strong tool hits that need no rewrite
+    if (tool && tool.id === 'random_recipe') {
         res.set(headers).json({
             answer: tool.answer,
             suggestions: tool.suggestions,
@@ -345,7 +374,18 @@ export async function handleAsk(req, res) {
         return;
     }
 
-    if (tool && tool.id === 'search_recipes' && tool.hits?.length >= 1 && !wantLlm) {
+    if (tool && tool.id === 'search_by_ingredients' && tool.hits?.length) {
+        res.set(headers).json({
+            answer: tool.answer,
+            suggestions: tool.suggestions,
+            actions: tool.actions,
+            mode: 'tool',
+            tool: tool.id,
+        });
+        return;
+    }
+
+    if (tool && !wantLlm) {
         res.set(headers).json({
             answer: tool.answer,
             suggestions: tool.suggestions,
@@ -360,9 +400,12 @@ export async function handleAsk(req, res) {
         const llm = await callOmni(question, history, tool);
         if (llm) {
             res.set(headers).json({
-                ...llm,
+                answer: llm.answer,
+                suggestions: llm.suggestions,
+                actions: llm.actions,
                 mode: 'llm',
-                tool: tool?.id,
+                tool: tool?.id || null,
+                model: llm.model || process.env.OMNI_MODEL || null,
             });
             return;
         }
