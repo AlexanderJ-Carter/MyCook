@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.8.3 — 2026-10-08
+
+### Docs / ops
+- MCP.md 与 `.env.example` 对齐厨助手 Omni（OMNI_*）与 SITE_URL=Pages
+- lite `docs:build:fast` 写入 howtocook-images 占位跳转页
+- `dns/README.md` 说明 cook / mycook / cook-mcp 解析分工
+
 ## 1.8.2 — 2026-10-08
 
 ### Fixed

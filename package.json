@@ -1,6 +1,6 @@
 {
   "name": "my-cook",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "private": true,
   "type": "module",
   "description": "老乡鸡风格菜谱 + 程序员做饭指南 — 静态站点、Docker 镜像与 MCP Agent 就绪",
@@ -25,7 +25,7 @@
     "generate:sitemap": "node scripts/generate-sitemap.js",
     "docs:dev": "npm run generate && vitepress dev .",
     "docs:build": "npm run build:images && npm run generate && vitepress build . && npm run generate:sitemap",
-    "docs:build:fast": "npm run generate && vitepress build . && npm run generate:sitemap && node scripts/write-image-manifest.js",
+    "docs:build:fast": "SKIP_IMAGES=1 node scripts/build-howtocook-images.js && npm run generate && vitepress build . && npm run generate:sitemap && node scripts/write-image-manifest.js",
     "docs:preview": "vitepress preview .",
     "mycook": "node bin/mycook.mjs",
     "mcp": "node mcp/server.mjs",

@@ -26,10 +26,13 @@ MyCook 面向 **任意 AI Agent** 提供三层能力（不限于 Cursor）。MCP
          可选 sidecar          ▼
 ┌─────────────────────────────────────────────────────────┐
 │  MCP Server（stdio 或 HTTP :3001）                       │
-│  · 9 个只读 tools + 2 prompts + 资源索引                 │
-│  · 读本地 public/ 或挂载 dist，无 LLM 密钥               │
+│  · 只读 tools + prompts + 资源索引                       │
+│  · 读本地 public/ 或挂载 dist                            │
+│  · 公开 POST /ask：检索优先；可选 OmniRoute（OMNI_*）    │
 └─────────────────────────────────────────────────────────┘
 ```
+
+厨助手 FAB（cook / mycook 共用）请求 `https://cook-mcp.alexander.xin/ask`：先跑站内检索，命中后再视情况调用 Omni 润色；未配置 `OMNI_*` 时退回纯检索。
 
 ## 方式一：本地 stdio（IDE / 桌面客户端）
 
@@ -134,22 +137,28 @@ Docker 部署时携带 `Accept: text/markdown` 可获取菜谱 Markdown 镜像�
 | 变量 | 默认 | 说明 |
 |------|------|------|
 | `MYCOOK_DATA` | `./public` | JSON / Markdown 数据目录 |
-| `SITE_URL` | `https://cook.alexander.xin` | 生成链接用 |
+| `SITE_URL` | `https://cook.alexander.xin` | 生成菜谱链接用（Pages 主站） |
+| `MCP_PUBLIC_URL` | `https://cook-mcp.alexander.xin` | 对外 MCP / OAuth 资源标识 |
 | `MCP_PORT` | `3001` | HTTP 模式端口 |
-| `MCP_URL` | `{SITE_URL}/mcp` | 写入 server-card（自托管可改） |
+| `OMNI_URL` | （空） | 可选；OmniRoute / OpenAI 兼容网关根 URL |
+| `OMNI_KEY` | （空） | 可选；Bearer |
+| `OMNI_MODEL` | （空） | 可选；如 `gemini/gemini-3.1-flash-lite` |
 
-## 前端 AI 辅助（无 API Key）
+`GET /health` 会报告 `ask` / `omni` 是否就绪（不暴露密钥）。
 
-菜谱页工具栏 **「AI」**：复制「系统提示 + 正文」到剪贴板，粘贴到 ChatGPT / Claude / Gemini / 本地模型等均可。
+## 前端 AI 辅助
 
-浏览器支持 [WebMCP](https://github.com/webmachinelearning/webmcp) 时，页面自动注册同名工具（`WebMcp.vue`）。
+1. **厨助手 FAB** → `POST /ask`（检索 + 可选 Omni）
+2. 菜谱页工具栏 **「AI」**：复制「系统提示 + 正文」到剪贴板，粘贴到任意聊天模型
+3. 浏览器支持 [WebMCP](https://github.com/webmachinelearning/webmcp) 时注册同名工具（`WebMcp.vue`）
 
 ## 设计原则
 
 - **只读**：不提供写菜谱、无用户数据上传
-- **无 LLM 内置**：不在服务端调用 OpenAI，Agent 自带模型
+- **检索优先**：`/ask` 先命中站内菜谱/技巧；Omni 仅润色，禁止编造未检索到的步骤
+- **LLM 可选**：不配 `OMNI_*` 时仍可检索；配齐后才有 `mode: llm`
 - **客户端无关**：MCP / OpenAPI / 剪贴板，不绑定单一产品
 - **数据同源**：MCP 读 `public/` 与静态站一致
-- **可选部署**：Pages 纯静态；需要 Agent 时再启 MCP sidecar
+- **可选部署**：Pages 纯静态；需要 Agent / 厨助手时再启 MCP sidecar
 
 详见 [INTEGRATIONS.md](./INTEGRATIONS.md) · [AGENTS.md](./AGENTS.md) · [ai-agents.md](./ai-agents.md)

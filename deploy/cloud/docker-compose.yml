@@ -35,12 +35,15 @@ services:
     env_file:
       - .env
     environment:
-      # 对外链接默认指向 Pages 主站；图片与 MCP 用完整站 / 独立域名
+      # 对外菜谱链接默认 Pages；图片站 UI 另链 mycook；MCP 独立域名
       SITE_URL: ${SITE_URL:-https://cook.alexander.xin}
       MCP_PUBLIC_URL: ${MCP_PUBLIC_URL:-https://cook-mcp.alexander.xin}
       OIDC_ISSUER: ${OIDC_ISSUER:-https://id.alexander.xin}
       OIDC_AUDIENCE: ${OIDC_AUDIENCE:-https://cook-mcp.alexander.xin/mcp}
       AUTH_REQUIRED: ${AUTH_REQUIRED:-1}
+      OMNI_URL: ${OMNI_URL:-}
+      OMNI_KEY: ${OMNI_KEY:-}
+      OMNI_MODEL: ${OMNI_MODEL:-}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3001/health"]
       interval: 30s
