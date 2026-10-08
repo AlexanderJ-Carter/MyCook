@@ -59,9 +59,14 @@ function collectMdHowToCook(dir, basePath, list) {
             if (!subMd) continue;
             const title = subMd.replace(/\.md$/i, '');
             if (isMetaTitle(title)) continue;
+            // VitePress maps dish folders to /dishes/<cat>/<folder>, not .../<folder>/<title>.
+            const link =
+                title === name
+                    ? `/${basePath}/${name}`
+                    : `/${basePath}/${name}/${title}`;
             list.push({
                 title,
-                link: `/${basePath}/${name}/${title}`,
+                link,
                 source: 'howtocook',
                 mtime: fs.statSync(path.join(full, subMd)).mtimeMs,
             });
@@ -79,6 +84,7 @@ function collectMdHowToCook(dir, basePath, list) {
     }
 }
 
+/** Actual dishes only (excludes tips / starsystem index pages). */
 export function scanAllRecipes() {
     const list = [];
     const cooklikehocDir = path.join(ROOT, 'cooklikehoc');
@@ -100,13 +106,24 @@ export function scanAllRecipes() {
                 );
             }
         }
-        for (const sub of ['tips', 'starsystem']) {
-            const p = path.join(howtocookDir, sub);
-            if (fs.existsSync(p)) collectMd(p, `howtocook/${sub}`, list);
-        }
     }
 
     return list;
+}
+
+/** HowToCook tips / learn notes (not dishes). */
+export function scanTips() {
+    const list = [];
+    const tips = path.join(ROOT, 'howtocook', 'tips');
+    if (fs.existsSync(tips)) collectMd(tips, 'howtocook/tips', list);
+    return list;
+}
+
+export function isDishLink(link) {
+    const p = String(link || '');
+    if (p.startsWith('/cooklikehoc/')) return true;
+    if (p.startsWith('/howtocook/dishes/')) return true;
+    return false;
 }
 
 export function computeStats(recipes) {

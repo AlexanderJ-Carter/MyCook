@@ -191,8 +191,8 @@ export const messages = {
                 aria: '最近更新',
                 title: '刚同步的新菜',
                 hint: '上游仓库更新后会出现在这里',
-                sourceHowtocook: '食材',
-                sourceCooklikehoc: '做法',
+                sourceHowtocook: 'HowToCook',
+                sourceCooklikehoc: '做法库',
             },
         },
         toolbar: {
@@ -415,8 +415,8 @@ export const messages = {
                 aria: 'Recent updates',
                 title: 'Fresh from sync',
                 hint: 'New recipes appear here after upstream updates',
-                sourceHowtocook: 'Ingredient',
-                sourceCooklikehoc: 'Method',
+                sourceHowtocook: 'HowToCook',
+                sourceCooklikehoc: 'CookLikeHOC',
             },
         },
         toolbar: {

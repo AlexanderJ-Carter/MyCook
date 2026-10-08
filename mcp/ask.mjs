@@ -87,10 +87,11 @@ function isSafePath(pathname) {
     if (!pathname.startsWith('/')) return false;
     if (pathname.includes('..') || pathname.includes('//')) return false;
     return (
-        pathname.startsWith('/cooklikehoc') ||
-        pathname.startsWith('/howtocook') ||
+        pathname.startsWith('/cooklikehoc/') ||
+        pathname.startsWith('/howtocook/dishes/') ||
+        pathname.startsWith('/howtocook/tips/') ||
         pathname === '/' ||
-        pathname.startsWith('/en')
+        pathname.startsWith('/en/')
     );
 }
 

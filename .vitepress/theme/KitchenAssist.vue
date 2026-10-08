@@ -111,7 +111,13 @@ function onSubmit(e) {
 function go(path) {
   if (!path) return;
   open.value = false;
-  router.go(path);
+  const target = path.startsWith('/') ? path : `/${path}`;
+  // Client router often fails to resolve CJK dish paths; hard-navigate instead.
+  if (typeof window !== 'undefined') {
+    window.location.assign(target);
+    return;
+  }
+  router.go(target);
 }
 
 function onKeydown(e) {

@@ -143,11 +143,16 @@ export function searchByIngredients({ ingredients = [], limit = 12 } = {}) {
     return { enabled: true, matched: items.length, items };
 }
 
+function isDishItem(item) {
+    const link = String(item?.link || '');
+    return link.startsWith('/cooklikehoc/') || link.startsWith('/howtocook/dishes/');
+}
+
 export function randomRecipe({ source } = {}) {
     const data = readJson('recipes-index.json');
     if (!data?.items?.length) return { found: false };
 
-    let pool = data.items;
+    let pool = data.items.filter(isDishItem);
     if (source) pool = pool.filter((item) => item.source === source);
     if (!pool.length) return { found: false, source: source || 'all' };
 
