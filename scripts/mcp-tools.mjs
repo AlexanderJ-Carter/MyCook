@@ -31,7 +31,18 @@ function readJson(relativePath) {
 function normalizePath(pathname) {
     let normalized = String(pathname || '').trim();
     if (!normalized.startsWith('/')) normalized = `/${normalized}`;
-    return normalized.replace(/\/$/, '') || '/';
+    normalized = normalized.replace(/\/$/, '') || '/';
+    // Nested HowToCook dishes are served at /dishes/<cat>/<folder>, not .../<folder>/<title>.
+    const parts = normalized.split('/').filter(Boolean);
+    if (
+        parts.length === 5 &&
+        parts[0] === 'howtocook' &&
+        parts[1] === 'dishes' &&
+        parts[3] === parts[4]
+    ) {
+        normalized = `/${parts.slice(0, 4).join('/')}`;
+    }
+    return normalized;
 }
 
 function resolveMarkdownPath(urlPath) {

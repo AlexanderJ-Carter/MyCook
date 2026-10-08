@@ -1,6 +1,6 @@
 // Service Worker for MyCook PWA
-const CACHE_NAME = 'mycook-cache-v7';
-const STATIC_CACHE = 'mycook-static-v7';
+const CACHE_NAME = 'mycook-cache-v8';
+const STATIC_CACHE = 'mycook-static-v8';
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, '');
 const withBase = (value) => `${BASE_PATH}${value}`;
 
@@ -10,18 +10,16 @@ function isHtmlResponse(response) {
   return response.ok && (response.headers.get('content-type') || '').includes('text/html');
 }
 
-// 需要缓存的静态资源
+function isLiveJson(pathname) {
+  return /\/(recent|recipes-index|tips-index|stats|sync-info|pantry)\.json$/.test(pathname);
+}
+
+// Precache shell only — recipe JSON must stay network-fresh after sync.
 const STATIC_ASSETS = [
   withBase('/'),
   withBase('/manifest.json'),
   withBase('/logo.svg'),
   withBase('/favicon.svg'),
-  withBase('/stats.json'),
-  withBase('/recent.json'),
-  withBase('/recipes-index.json'),
-  withBase('/sync-info.json'),
-  withBase('/pantry.json'),
-  withBase('/tips-index.json')
 ];
 
 // 安装事件
@@ -119,6 +117,12 @@ self.addEventListener('fetch', (event) => {
           });
         })
     );
+    return;
+  }
+
+  // Recipe JSON: network only (stale recent.json was showing tips/stars after sync).
+  if (isLiveJson(url.pathname)) {
+    event.respondWith(fetch(request));
     return;
   }
 
