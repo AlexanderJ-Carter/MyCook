@@ -1,0 +1,21 @@
+# Smithery 清单（目录提交用）：https://smithery.ai/docs/guides/custom-servers
+# 本服务器按 Smithery 规范声明启动命令与配置 schema。
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      MYCOOK_DATA:
+        type: string
+        default: ./public
+        description: Recipe data directory (public/ after npm run generate)
+      SITE_URL:
+        type: string
+        default: https://cook.alexander.xin
+        description: Public site URL used in returned links
+  commandConfig:
+    MYCOOK_DATA: ./public
+    SITE_URL: https://cook.alexander.xin
+  command: node
+  args:
+    - mcp/server.mjs

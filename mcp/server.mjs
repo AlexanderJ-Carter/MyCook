@@ -401,7 +401,8 @@ async function runHttp() {
     <p class="k">MyCook</p>
     <h1>远程 MCP 服务</h1>
     <p>这里是给 AI 用的工具接口，不是菜谱网页。浏览器请去主站；Agent 请连接 <code>/mcp</code>（需要 Bearer）。</p>
-    <p>探测：<a href="/health"><code>/health</code></a> · 端点：<code>/mcp</code></p>
+    <p>This is a tool endpoint for AI agents, not a recipe website. Browsers: visit the main site. Agents: connect to <code>/mcp</code> with a Bearer token — or run it locally via <code>npm run mcp</code> with no auth.</p>
+    <p>9 tools · 709 recipes · streamable-http + stdio. 探测：<a href="/health"><code>/health</code></a> · 端点：<code>/mcp</code></p>
     <div class="row">
       <a class="btn" href="${guide}">使用说明</a>
       <a class="btn ghost" href="${site}">打开菜谱站</a>

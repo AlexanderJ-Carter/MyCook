@@ -248,7 +248,8 @@ function buildMcpServerCard() {
             name: 'mycook',
             version: VERSION,
             title: 'MyCook Recipe Discovery',
-            description: '577+ 道菜谱搜索、Markdown 读取、食材反查与随机推荐',
+            description:
+                '709 道家常菜谱搜索、Markdown 正文读取、按食材反查与随机推荐 — kitchen toolbox for AI agents',
         },
         endpoint: mcpUrl.endsWith('/mcp') ? mcpUrl : `${mcpUrl}/mcp`,
         transport: 'streamable-http',
