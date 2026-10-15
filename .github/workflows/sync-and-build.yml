@@ -37,7 +37,20 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Clone upstream repos with retry
+            # 每日 cron 不再从零 clone 上游：命中缓存时 fetch+reset 增量更新（按 run_id 存新档，
+            # restore 前缀保证总能拿到最近一次的缓存）。只缓存两个小内容仓库——
+            # HowToCookImages 是 GB 级图片仓库，缓存会撑爆 10GB 限额，仍走全量 clone
+            - name: Restore upstream cache
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      upstream/CookLikeHOC
+                      upstream/HowToCook
+                  key: upstream-${{ github.run_id }}
+                  restore-keys: |
+                      upstream-
+
+            - name: Clone or update upstream repos
               env:
                   GIT_LFS_SKIP_SMUDGE: '1'
               run: |
@@ -55,12 +68,26 @@ jobs:
                     done
                     return 1
                   }
-                  clone_with_retry https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC main \
+                  update_or_clone() {
+                    local repo=$1 dest=$2 branch=${3:-main}
+                    if [ -d "$dest/.git" ]; then
+                      echo "→ fetch $repo ($branch) from cache"
+                      if git -C "$dest" fetch --depth 1 origin "$branch" \
+                        && git -C "$dest" reset --hard FETCH_HEAD \
+                        && git -C "$dest" clean -fdq; then
+                        echo "✓ updated $repo from cache"
+                        return 0
+                      fi
+                      echo "cache update failed, falling back to clone"
+                    fi
+                    clone_with_retry "$repo" "$dest" "$branch"
+                  }
+                  update_or_clone https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC main \
                     || clone_with_retry https://github.com/Gar-b-age/CookLikeHOC.git upstream/CookLikeHOC main
-                  clone_with_retry https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook master \
+                  update_or_clone https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook master \
                     || clone_with_retry https://github.com/Anduin2017/HowToCook.git upstream/HowToCook master
                   if [ "${{ github.event.inputs.skip_images }}" != "true" ]; then
-                    clone_with_retry https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages master || true
+                    update_or_clone https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages master || true
                   fi
 
             - name: Setup Node
@@ -90,6 +117,10 @@ jobs:
                   VITEPRESS_BASE: /
                   SKIP_IMAGES: ${{ github.event.inputs.skip_images == 'true' && '1' || '0' }}
               run: |
+                  # SW 缓存名随部署哈希走：每次发布自动换版本，activate 自动清旧缓存，不再手 bump
+                  short="${GITHUB_SHA:0:7}"
+                  sed -i -E "s/(mycook-(cache|static)-)v[0-9a-z-]+/\1${short}/g" public/sw.js
+                  grep -n "mycook-" public/sw.js | head -4
                   if [ "$SKIP_IMAGES" = "1" ]; then
                     npm run docs:build:fast
                   else

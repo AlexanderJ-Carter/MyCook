@@ -49,6 +49,14 @@ function rewriteRelativeImages(markdown, urlPrefix) {
 
 function mirrorMarkdown(srcPath, destPath, urlPrefix) {
     if (!fs.existsSync(srcPath)) return;
+    // 源没变（mtime 不新于镜像）就跳过读写——全量重写 700+ 个 md 是 generate 阶段 IO 大头
+    try {
+        const srcMtime = fs.statSync(srcPath).mtimeMs;
+        const destMtime = fs.statSync(destPath).mtimeMs;
+        if (destMtime >= srcMtime) return;
+    } catch {
+        /* 镜像不存在，正常走写入 */
+    }
     const body = rewriteRelativeImages(
         stripFrontmatter(fs.readFileSync(srcPath, 'utf8')),
         urlPrefix,

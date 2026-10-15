@@ -42,8 +42,12 @@ function topLevelBreakdown(base) {
     }).sort((a, b) => b.bytes - a.bytes);
 }
 
-const total = walkSize(distDir);
+// 只扫一遍：总计由 breakdown 各项求和得出，不再对 dist 整树 walk 第二次
 const breakdown = topLevelBreakdown(distDir);
+const total = breakdown.reduce(
+    (acc, e) => ({ bytes: acc.bytes + e.bytes, files: acc.files + e.files }),
+    { bytes: 0, files: 0 },
+);
 const variant = breakdown.some((e) => e.name === 'howtocook-images' && e.bytes > 1_000_000)
     ? 'full'
     : 'lite';
