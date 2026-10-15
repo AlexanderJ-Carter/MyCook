@@ -1,20 +1,30 @@
-# MyCook
+# MyCook 🍳
 
 <p align="center">
   🌐 <a href="./README.md">简体中文</a> · <a href="./README.es-ES.md">Español</a>
 </p>
 
-<p align="center">
-  <strong>老乡鸡风格菜谱 × 程序员做饭指南 — 一站查阅、规划、交给 AI</strong>
-</p>
+> **打开就能做饭。** 709 道家常菜一站查阅——问一句「今天吃什么」、开冰箱看手头食材能做什么、做菜时开多计时器，还能把菜谱交给 AI。
+>
+> *Cook 709 Chinese home recipes in one place — ask "what to eat today", match by what's in your fridge, with PWA + MCP Server for AI agents.*
 
 <p align="center">
-  <a href="https://cook.alexander.xin">🍳 在线访问</a> ·
-  <a href="https://alexander.xin/projects">作者主页</a> ·
-  <a href="#快速开始">快速开始</a> ·
-  <a href="#部署">部署</a> ·
+  <a href="https://cook.alexander.xin">🍳 在线体验（无需安装）</a> ·
+  <a href="#快速开始">自部署</a> ·
   <a href="./MCP.md">Agent / MCP</a>
 </p>
+
+**首页 · 今天吃什么 / 开冰箱反查 / 一周菜单**
+
+![MyCook 首页](docs/screenshots/home-hero.png)
+
+**厨助手：检索优先的厨房 AI，问一句就出菜谱链接**
+
+![厨助手](docs/screenshots/assist-open.png)
+
+**菜谱页：难度星级、精确到克与秒、收藏 / 计时器 / 打印**
+
+![菜谱页](docs/screenshots/recipe-page.png)
 
 <p align="center">
   <a href="https://github.com/AlexanderJ-Carter/MyCook/actions/workflows/sync-and-build.yml"><img src="https://img.shields.io/github/actions/workflow/status/AlexanderJ-Carter/MyCook/sync-and-build.yml?branch=main&label=Pages&style=flat-square" alt="Pages"></a>
@@ -30,20 +40,38 @@
 
 ## 这是什么
 
-[MyCook](https://cook.alexander.xin) 是 [alexander.xin](https://alexander.xin) 站群下的**静态菜谱站**：把两个成熟开源项目合并成一张「厨房桌面」，并补上搜索、PWA、周菜单、AI Agent 等现代能力。
+[MyCook](https://cook.alexander.xin) 把两个成熟的开源菜谱项目合并成一张「厨房桌面」，并补上现代 Web 的全部体验：搜索、PWA 离线、周菜单、计时器、AI Agent。上游每天更新菜谱，本站每天自动同步发布。
 
 | 来源 | 入口 | 特点 |
 |------|------|------|
-| [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) | 按**做法** | 炒、炖、卤、汤…步骤详尽 |
-| [HowToCook](https://github.com/Anduin2017/HowToCook) | 按**食材** | 荤素水产、难度星级、技巧库 |
+| [CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC) | 按**做法** | 炒、炖、卤、汤…步骤详尽，老乡鸡同款家常味 |
+| [HowToCook](https://github.com/Anduin2017/HowToCook) | 按**食材** | 荤素水产、难度星级、精确到克与秒、技巧库 |
 | [HowToCook 图片版](https://github.com/king-jingxiang/HowToCook) | `/howtocook-images/` | 4K 配图浏览（可选构建） |
 | [Cook 食用手册](https://github.com/YunYouJun/cook) | 开冰箱 | 食材 CSV 轻量集成（~90KB） |
 
-当前规模：**577+ 菜谱** · **18 篇技巧** · **599 条食材反查**（构建时同步）
+当前规模：**709 道菜谱** · **18 篇技巧** · **599 条食材反查**（构建时自动同步）
 
 ---
 
 ## 功能一览
+
+**不知道吃什么？**
+- 问**厨助手**（快捷键 `A`）：「今天吃什么」「冰箱里有鸡蛋和番茄能做什么」，检索优先、AI 润色，直接给出可点的菜谱链接
+- **开冰箱**反查：勾选手头食材，匹配合适的菜（599 条食材搭配）
+- **今日推荐**（每日种子）· **转一转**随机 · **一周菜单**规划
+
+**做菜的时候**
+- 菜谱页自带**收藏 · 多计时器 · 打印**（打印样式专门优化过）
+- 难度星级、精确到克与秒的步骤；`Ctrl+K` 站内搜索
+- **复制给 AI**：一键把整道菜谱打包成 prompt，去任何聊天 AI 里追问替换食材/火候
+
+**喜欢折腾？**
+- **PWA** 可安装到手机/桌面主屏，离线可看
+- **MCP Server**：Cursor / Claude Desktop / Copilot 等 Agent 直接查菜谱（`/mcp` + `/ask`）
+- 深色模式 · 无障碍快捷键 `?` · 每日自动同步上游 · Docker 一行命令自托管
+
+<details>
+<summary>⚙️ 技术形态速览</summary>
 
 | 类别 | 能力 |
 |------|------|
@@ -54,6 +82,8 @@
 | 体验 | 深色模式 · PWA 可安装 · 无障碍快捷键 `?` |
 | Agent | OpenAPI · Agent Skills · Markdown 镜像 · **MCP Server** · WebMcp |
 | 运维 | 每日上游同步 · GHCR 镜像 · 一键安装脚本 |
+
+</details>
 
 <details>
 <summary>📂 项目结构</summary>
