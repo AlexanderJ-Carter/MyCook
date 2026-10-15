@@ -1,6 +1,7 @@
 // Service Worker for MyCook PWA
-const CACHE_NAME = 'mycook-cache-v8';
-const STATIC_CACHE = 'mycook-static-v8';
+const CACHE_NAME = 'mycook-cache-v9';
+const STATIC_CACHE = 'mycook-static-v9';
+const RUNTIME_TTL_MS = 14 * 24 * 60 * 60 * 1000; // 运行时缓存最多留 14 天
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, '');
 const withBase = (value) => `${BASE_PATH}${value}`;
 
@@ -46,11 +47,31 @@ self.addEventListener('activate', (event) => {
             .map((name) => caches.delete(name))
         );
       })
+      // 运行时缓存 TTL 清理：上游每日同步，旧图片/带 hash 资源会成为孤儿条目，
+      // 不清理迟早撑爆 PWA 存储配额（iOS 约 50MB）触发 eviction 或 install 失败
+      .then(() => cleanupRuntimeTtl(CACHE_NAME))
       .then(() => {
         return self.clients.claim();
       })
   );
 });
+
+async function cleanupRuntimeTtl(cacheName) {
+  try {
+    const cache = await caches.open(cacheName);
+    const keys = await cache.keys();
+    const now = Date.now();
+    const stale = [];
+    for (const request of keys) {
+      const cached = await cache.match(request);
+      const date = cached && cached.headers.get('date');
+      if (date && now - new Date(date).getTime() > RUNTIME_TTL_MS) stale.push(request);
+    }
+    if (stale.length) await Promise.all(stale.map((request) => cache.delete(request)));
+  } catch {
+    /* 清理失败不影响激活 */
+  }
+}
 
 // 请求拦截 - 网络优先，缓存回退策略
 self.addEventListener('fetch', (event) => {
@@ -120,9 +141,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Recipe JSON: network only (stale recent.json was showing tips/stars after sync).
+  // Recipe JSON: network-first（stale recent.json 曾在 sync 后展示旧 tips/stars），
+  // 但断网时退回缓存而不是直接抛错，让 HomePantry/RecentUpdates 拿到降级数据
   if (isLiveJson(url.pathname)) {
-    event.respondWith(fetch(request));
+    event.respondWith(
+      fetch(request).catch(() => caches.match(request).then((cached) => cached || Response.error()))
+    );
     return;
   }
 

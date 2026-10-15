@@ -32,16 +32,6 @@ function normalizePath(pathname) {
     let normalized = String(pathname || '').trim();
     if (!normalized.startsWith('/')) normalized = `/${normalized}`;
     normalized = normalized.replace(/\/$/, '') || '/';
-    // Nested HowToCook dishes are served at /dishes/<cat>/<folder>, not .../<folder>/<title>.
-    const parts = normalized.split('/').filter(Boolean);
-    if (
-        parts.length === 5 &&
-        parts[0] === 'howtocook' &&
-        parts[1] === 'dishes' &&
-        parts[3] === parts[4]
-    ) {
-        normalized = `/${parts.slice(0, 4).join('/')}`;
-    }
     return normalized;
 }
 
@@ -52,6 +42,11 @@ function resolveMarkdownPath(urlPath) {
         path.join(DATA_ROOT, `${clean.slice(1)}.md`),
         path.join(DATA_ROOT, clean.slice(1), 'index.md'),
     ];
+    // 旧版索引把「文件夹名=菜名」的菜折叠成 4 段路径；展开到 folder/<folder>.md 镜像兜底
+    const parts = clean.split('/').filter(Boolean);
+    if (parts.length === 4 && parts[0] === 'howtocook' && parts[1] === 'dishes') {
+        candidates.push(path.join(DATA_ROOT, clean.slice(1), `${parts[3]}.md`));
+    }
     return candidates.find((candidate) => fs.existsSync(candidate)) || null;
 }
 
@@ -73,6 +68,46 @@ const RECIPE_ALIASES = [
     ['蛋炒饭', '米饭'],
     ['红烧肉', '简易红烧肉'],
 ];
+
+/** 口语食材名 → pantry.json 里的规范名（ask 与检索共用，避免两处各自维护） */
+export const INGREDIENT_ALIASES = {
+    西红柿: '番茄',
+    洋芋: '土豆',
+    马铃薯: '土豆',
+    卷心菜: '包菜',
+    圆白菜: '包菜',
+    甘蓝: '包菜',
+    菜花: '花菜',
+    花椰菜: '花菜',
+    蘑菇: '菌菇',
+    香菇: '菌菇',
+};
+
+/** pantry 未启用时的兜底常见食材 */
+const COMMON_INGREDIENTS = [
+    '鸡蛋', '土豆', '鸡肉', '猪肉', '牛肉', '番茄', '豆腐', '青椒', '洋葱', '胡萝卜',
+];
+
+/** 从问句里提取命中的规范食材名（含口语别名归一），供 ask 与按食材检索共用。 */
+export function extractIngredientHits(question) {
+    const text = String(question || '');
+    if (!text) return [];
+    const pantry = listPantryIngredients();
+    const names = new Set(COMMON_INGREDIENTS);
+    for (const item of pantry.enabled ? pantry.ingredients || [] : []) {
+        if (item?.name) names.add(item.name);
+    }
+    const hits = [];
+    for (const name of names) {
+        if (name && text.includes(name) && !hits.includes(name)) hits.push(name);
+    }
+    for (const [spoken, canonical] of Object.entries(INGREDIENT_ALIASES)) {
+        if (text.includes(spoken) && names.has(canonical) && !hits.includes(canonical)) {
+            hits.push(canonical);
+        }
+    }
+    return hits.slice(0, 8);
+}
 
 export function expandSearchQueries(query) {
     const raw = String(query || '').trim();
@@ -149,9 +184,17 @@ export function getRecipe(pathname) {
     if (!data?.items) return { found: false, path: normalizePath(pathname) };
 
     const normalized = normalizePath(pathname);
-    const item = data.items.find(
+    let item = data.items.find(
         (entry) => entry.link === normalized || entry.link === `${normalized}/`,
     );
+    if (!item) {
+        // 旧版 4 段折叠链接兜底：匹配恰好多一段的完整形态（/dishes/<cat>/<folder> → .../<folder>/<title>）
+        item = data.items.find(
+            (entry) =>
+                entry.link.startsWith(`${normalized}/`) &&
+                entry.link.split('/').length === normalized.split('/').length + 1,
+        );
+    }
     if (!item) return { found: false, path: normalized };
 
     return {
@@ -204,8 +247,9 @@ export function searchByIngredients({ ingredients = [], limit = 12 } = {}) {
     );
     if (!need.size) return { enabled: true, matched: 0, items: [] };
 
+    const needList = [...need];
     const items = pantry.recipes
-        .filter((recipe) => [...need].every((name) => recipe.stuff.includes(name)))
+        .filter((recipe) => needList.every((name) => recipe.stuff.includes(name)))
         .slice(0, Math.min(Math.max(limit, 1), 30))
         .map((recipe) => ({
             name: recipe.name,

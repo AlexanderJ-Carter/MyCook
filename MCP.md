@@ -144,7 +144,7 @@ Docker 部署时携带 `Accept: text/markdown` 可获取菜谱 Markdown 镜像�
 | `OMNI_KEY` | （空） | 可选；Bearer |
 | `OMNI_MODEL` | （空） | 可选；如 `gemini/gemini-3.1-flash-lite` |
 
-`GET /health` 会报告 `ask` / `omni` 是否就绪（不暴露密钥）。
+`GET /health` 会报告 `ask` / `omni` 是否就绪（不暴露密钥），并附 `omniDetail`（上次成功时间、最近失败原因）便于排查上游故障。`/ask` 限流按反代注入的 `X-Real-IP` 计数（30 次/小时）。
 
 ## 前端 AI 辅助
 

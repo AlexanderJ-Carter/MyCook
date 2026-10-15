@@ -59,14 +59,11 @@ function collectMdHowToCook(dir, basePath, list) {
             if (!subMd) continue;
             const title = subMd.replace(/\.md$/i, '');
             if (isMetaTitle(title)) continue;
-            // VitePress maps dish folders to /dishes/<cat>/<folder>, not .../<folder>/<title>.
-            const link =
-                title === name
-                    ? `/${basePath}/${name}`
-                    : `/${basePath}/${name}/${title}`;
+            // VitePress 按文件真实路径出页：文件夹菜一律 /dishes/<cat>/<folder>/<title>。
+            // 曾按 title===name 折叠成 4 段，与实际渲染 URL 不符（线上 301→404）。
             list.push({
                 title,
-                link,
+                link: `/${basePath}/${name}/${title}`,
                 source: 'howtocook',
                 mtime: fs.statSync(path.join(full, subMd)).mtimeMs,
             });

@@ -31,7 +31,7 @@ import {
     buildProtectedResourceMetadata,
     isAuthRequired,
 } from './auth.mjs';
-import { handleAsk } from './ask.mjs';
+import { handleAsk, omniStatus } from './ask.mjs';
 
 const VERSION = '1.8.0';
 const MCP_PORT = Number(process.env.MCP_PORT || 3001);
@@ -229,8 +229,8 @@ function createServer() {
         'recipes-index',
         `${SITE_URL}/recipes-index.json`,
         {
-            title: '菜谱全量索引',
-            description: 'title / link / source 列表',
+            title: '菜谱索引（前 50 条样例）',
+            description: 'title / link / source 样例列表；完整索引请直接读取该 JSON 或用 search_recipes 分页检索',
             mimeType: 'application/json',
         },
         async () => ({
@@ -304,11 +304,22 @@ async function runHttp() {
         if (req.path === '/ask' && req.method === 'POST' && !req.body) {
             let raw = '';
             req.setEncoding('utf8');
+            // 超限回 413 再断流（直接 destroy 会让客户端看到连接重置而非状态码）
+            let tooLarge = false;
             req.on('data', (c) => {
                 raw += c;
-                if (raw.length > 32_000) req.destroy();
+                if (raw.length > 32_000) {
+                    tooLarge = true;
+                    res.status(413).json({ error: 'Payload too large' });
+                    req.destroy();
+                }
+            });
+            // 客户端中断时 end 不会触发，必须补 error 分支放行，否则请求挂死
+            req.on('error', () => {
+                if (!tooLarge && !res.headersSent) res.status(400).end();
             });
             req.on('end', () => {
+                if (tooLarge || res.headersSent) return;
                 try {
                     req.body = raw ? JSON.parse(raw) : {};
                 } catch {
@@ -404,6 +415,7 @@ async function runHttp() {
             auth: authSummary(),
             ask: true,
             omni: Boolean(process.env.OMNI_URL && process.env.OMNI_KEY && process.env.OMNI_MODEL),
+            omniDetail: omniStatus(),
         });
     });
 
@@ -471,15 +483,35 @@ async function runHttp() {
         }
     });
 
+    // GET/DELETE 与 POST 共用同一 JSON-RPC 错误形状，避免 Express 默认 HTML 500
+    async function handleTransportRequest(transport, req, res) {
+        try {
+            await transport.handleRequest(req, res);
+        } catch (error) {
+            console.error('[mycook-mcp]', error);
+            if (!res.headersSent) {
+                res.status(500).json({
+                    jsonrpc: '2.0',
+                    error: { code: -32603, message: 'Internal server error' },
+                    id: null,
+                });
+            }
+        }
+    }
+
     app.get('/mcp', async (req, res) => {
         if (!(await guard(req, res))) return;
         const sessionId = req.headers['mcp-session-id'];
         if (!sessionId || !transports[sessionId]) {
-            res.status(400).send('Invalid or missing session ID');
+            res.status(400).json({
+                jsonrpc: '2.0',
+                error: { code: -32602, message: 'Invalid or missing session ID' },
+                id: null,
+            });
             return;
         }
         touchSession(sessionId);
-        await transports[sessionId].handleRequest(req, res);
+        await handleTransportRequest(transports[sessionId], req, res);
     });
 
     app.delete('/mcp', async (req, res) => {
@@ -494,7 +526,7 @@ async function runHttp() {
             return;
         }
         // SDK 的 handleRequest 支持 DELETE：结束会话并触发 onclose（→ forgetSession）
-        await transports[sessionId].handleRequest(req, res);
+        await handleTransportRequest(transports[sessionId], req, res);
     });
 
     app.listen(MCP_PORT, '0.0.0.0', () => {

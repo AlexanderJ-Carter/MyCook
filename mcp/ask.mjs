@@ -3,8 +3,8 @@
  */
 import {
     SITE_URL,
+    extractIngredientHits,
     getMarkdownByPath,
-    listPantryIngredients,
     randomRecipe,
     searchByIngredients,
     searchRecipes,
@@ -23,7 +23,20 @@ const ALLOWED_ORIGINS = new Set([
 
 const RATE_LIMIT_MAX = 30;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const RATE_BUCKETS_MAX = 20_000; // 防伪造 IP 撑爆内存（容器 mem_limit 128m）
 const rateBuckets = new Map();
+
+// 周期清扫：过期条目不必等该 IP 再来才被过滤，不来访的也及时释放
+const rateSweeper = setInterval(() => {
+    const now = Date.now();
+    for (const [ip, stamps] of rateBuckets) {
+        const alive = stamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+        if (alive.length && alive.length === stamps.length) continue;
+        if (alive.length) rateBuckets.set(ip, alive);
+        else rateBuckets.delete(ip);
+    }
+}, 10 * 60 * 1000);
+rateSweeper.unref?.();
 
 export function corsHeaders(origin) {
     const allow = origin && ALLOWED_ORIGINS.has(origin) ? origin : 'https://cook.alexander.xin';
@@ -62,16 +75,24 @@ function sanitizeMessages(raw) {
     return out;
 }
 
+// 限流 IP 只信任反代注入的头：
+// - X-Real-IP：nginx 配置里由 $remote_addr 设置，客户端不可伪造
+// - XFF 从右往左取第一段（离本服务最近的代理追加的），最左段是客户端自报的，可伪造
+// 不再信任 cf-connecting-ip：本部署不在 Cloudflare 后面，该头纯客户端可控
 function clientIp(req) {
-    const cf = req.get?.('cf-connecting-ip')?.trim();
-    if (cf) return cf;
-    const xff = req.get?.('x-forwarded-for')?.split(',')[0]?.trim();
-    if (xff) return xff;
+    const realIp = req.get?.('x-real-ip')?.trim();
+    if (realIp && /^[0-9a-fA-F.:]+$/.test(realIp)) return realIp;
+    const xff = req.get?.('x-forwarded-for');
+    if (xff) {
+        const hop = xff.split(',').pop()?.trim();
+        if (hop && /^[0-9a-fA-F.:]+$/.test(hop)) return hop;
+    }
     return req.ip || 'unknown';
 }
 
 function takeRateSlot(ip) {
     const now = Date.now();
+    if (rateBuckets.size >= RATE_BUCKETS_MAX) return false; // 桶满即拒绝，防止伪造 IP 无限撑 Map
     const prev = rateBuckets.get(ip) || [];
     const recent = prev.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
     if (recent.length >= RATE_LIMIT_MAX) {
@@ -94,19 +115,6 @@ function isSafePath(pathname) {
         pathname === '/' ||
         pathname.startsWith('/en/')
     );
-}
-
-function extractIngredients(question) {
-    const pantry = listPantryIngredients();
-    const names = pantry.enabled ? pantry.ingredients || [] : [];
-    const hit = [];
-    for (const name of names) {
-        if (name && question.includes(name)) hit.push(name);
-    }
-    for (const name of ['番茄', '西红柿', '鸡蛋', '土豆', '豆腐', '青椒', '牛肉', '猪肉', '鸡肉']) {
-        if (question.includes(name) && !hit.includes(name)) hit.push(name === '西红柿' ? '番茄' : name);
-    }
-    return hit.slice(0, 8);
 }
 
 function wantsRandom(question) {
@@ -151,7 +159,7 @@ export function runKitchenTool(question) {
         };
     }
 
-    const ingredients = extractIngredients(q);
+    const ingredients = extractIngredientHits(q);
     if (ingredients.length >= 1 && /冰箱|手头|只有|有点|能做|做什么|有什么菜/.test(q)) {
         const by = searchByIngredients({ ingredients, limit: 6 });
         if (by.enabled && by.items?.length) {
@@ -279,6 +287,17 @@ function sanitizePayload(raw, fallbackTool) {
     return { answer, suggestions, actions };
 }
 
+// Omni 上次调用状态：/health 暴露，故障不再静默成「悄悄退回 tool 模式」
+const omniState = { lastSuccessAt: 0, lastFailure: null, failureCount: 0 };
+
+export function omniStatus() {
+    return {
+        lastSuccessAt: omniState.lastSuccessAt || null,
+        lastFailure: omniState.lastFailure,
+        failureCount: omniState.failureCount,
+    };
+}
+
 async function callOmni(question, history, tool) {
     const base = process.env.OMNI_URL?.replace(/\/$/, '');
     const key = process.env.OMNI_KEY;
@@ -318,14 +337,34 @@ async function callOmni(question, history, tool) {
             }),
             signal: AbortSignal.timeout(25000),
         });
-        if (!res.ok) return null;
+        if (!res.ok) {
+            omniState.lastFailure = `HTTP ${res.status}`;
+            omniState.failureCount++;
+            console.warn('[ask] omni failed: HTTP', res.status);
+            return null;
+        }
         const data = await res.json();
         const content = data.choices?.[0]?.message?.content?.trim();
-        if (!content) return null;
+        if (!content) {
+            omniState.lastFailure = 'empty content';
+            omniState.failureCount++;
+            console.warn('[ask] omni returned empty content');
+            return null;
+        }
         const parsed = parseOmniJson(content);
-        if (!parsed) return null;
+        if (!parsed) {
+            omniState.lastFailure = 'invalid JSON content';
+            omniState.failureCount++;
+            console.warn('[ask] omni content is not valid JSON');
+            return null;
+        }
+        omniState.lastSuccessAt = Date.now();
+        omniState.lastFailure = null;
         return { ...sanitizePayload(parsed, tool), model };
-    } catch {
+    } catch (err) {
+        omniState.lastFailure = `${err?.name || 'error'}: ${err?.message || ''}`.slice(0, 120);
+        omniState.failureCount++;
+        console.warn('[ask] omni error:', err?.name, err?.message);
         return null;
     }
 }

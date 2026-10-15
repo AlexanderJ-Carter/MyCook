@@ -26,16 +26,12 @@ jobs:
 
             - name: Check script syntax
               run: |
-                  node --check scripts/generate-all.js
-                  node --check scripts/scan-recipes.mjs
-                  node --check scripts/sync-upstream.js
-                  node --check scripts/generate-agent-discovery.js
-                  node --check scripts/generate-sitemap.js
-                  node --check scripts/build-howtocook-images.js
-                  node --check scripts/sync-integrations.js
-                  node --check scripts/mcp-tools.mjs
-                  node --check mcp/server.mjs
-                  node --check scripts/validate.mjs
+                  fail=0
+                  for f in scripts/*.mjs mcp/*.mjs bin/*.mjs; do
+                      [ -f "$f" ] || continue
+                      node --check "$f" || fail=1
+                  done
+                  exit $fail
 
             - name: Validate generated data
               if: hashFiles('cooklikehoc/**') != '' || hashFiles('howtocook/**') != ''
