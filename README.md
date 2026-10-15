@@ -1,7 +1,7 @@
 # MyCook 🍳
 
 <p align="center">
-  🌐 <a href="./README.md">简体中文</a> · <a href="./README.es-ES.md">Español</a>
+  🌐 <a href="./README.md">简体中文</a> · <a href="./README.en.md">English</a> · <a href="./README.es-ES.md">Español</a>
 </p>
 
 > **打开就能做饭。** 709 道家常菜一站查阅——问一句「今天吃什么」、开冰箱看手头食材能做什么、做菜时开多计时器，还能把菜谱交给 AI。

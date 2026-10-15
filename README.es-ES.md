@@ -1,7 +1,7 @@
 # MyCook
 
 <p align="center">
-  🌐 <a href="./README.md">简体中文</a> · <a href="./README.es-ES.md">Español</a>
+  🌐 <a href="./README.md">简体中文</a> · <a href="./README.en.md">English</a> · <a href="./README.es-ES.md">Español</a>
 </p>
 
 <p align="center">
