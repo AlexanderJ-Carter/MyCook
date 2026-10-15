@@ -1,5 +1,33 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- **菜谱索引 192 个坏链**：HowToCook「文件夹名=菜名」的菜曾折叠成 4 段链接（线上 301→404），统一改为与真实路由一致的 5 段；MCP 仍兼容旧 4 段路径（自动展开到镜像/索引）
+- /ask 限流改信 `X-Real-IP`（XFF 从右取段），伪造 `X-Forwarded-For` 不再绕过 30 次/小时限流；限流桶加周期清扫与上限
+- /ask 超大请求回 413 而非掐断连接；客户端中断不再挂死请求
+- SW 运行时缓存 activate 时按 `Date` 头做 14 天 TTL 清理；断网时 live JSON 回退缓存而非抛错；CI 部署时缓存名自动注入 commit 短哈希，不再手 bump
+- Omni 调用失败不再静默：日志 + `/health` 新增 `omniDetail`（上次成功时间/最近失败原因）
+- 厨助手 FAB 与返回顶部按钮重叠：面板展开时自动避让
+- 深色模式下「AI 整理 / 站内检索」徽标对比度失效，改用主题令牌
+- 厨助手/RecipeToolbar 面板全量接入 i18n（英文站不再夹中文）；英文首页补「问厨助手」入口
+- SiteEdition 完整站玉色标识生效（曾因 fallback 变量恒定义而失效）
+- 按食材反查曾只认 9 个硬编码词（pantry 对象匹配 bug），统一走共享食材别名表（西红柿/洋芋/卷心菜…）
+- GET/DELETE /mcp 与 POST 共用 JSON-RPC 错误形状；recipes-index 资源描述如实标注「前 50 条样例」
+- PR 检查语法清单改通配，新文件不再漏检
+
+### Added
+- 收藏导出 / 导入（JSON），换设备可迁移
+- 快捷键 `A` 打开厨助手（并入快捷键帮助面板）
+- 厨助手对话存 sessionStorage，跳转菜谱后返回不丢上下文；Esc 关闭 + 焦点回退 + window 级监听
+
+### Performance
+- `docs:build` 由 `scripts/build.mjs` 编排：图片构建与索引生成并行
+- `generate` 阶段 agent 发现与集成数据并行；markdown 镜像按 mtime 跳过重写（全量 → 秒级）
+- 线上索引对比改内置 fetch + 1 小时缓存；`docs:dev` 跳过线上拉取（曾阻塞最长 20 秒）
+- CI 上游仓库缓存（fetch+reset 增量更新），每日 cron 不再从零 clone
+- `write-image-manifest` 不再整树扫描两遍
+
 ## 1.8.3 — 2026-10-08
 
 ### Docs / ops

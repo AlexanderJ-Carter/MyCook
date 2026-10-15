@@ -30,10 +30,12 @@ MyCook 是一个合并整理两个菜谱项目的静态网站：
 
 | 文件                         | 用途                                                |
 | ---------------------------- | --------------------------------------------------- |
-| `scripts/generate-all.js`    | 一次扫描生成 recent / stats / index，再跑 agent-discovery |
-| `scripts/scan-recipes.mjs`   | 共享菜谱文件扫描逻辑 |
+| `scripts/generate-all.js`    | 一次扫描生成 recent / stats / index，再并行跑 agent-discovery 与集成同步 |
+| `scripts/scan-recipes.mjs`   | 共享菜谱扫描（目录→链接规则的唯一权威实现） |
 | `scripts/mcp-tools.mjs`      | MCP / Agent 共享只读工具 |
 | `mcp/server.mjs`             | MCP Server（stdio + HTTP） |
+| `mcp/ask.mjs`                | 厨助手 /ask 端点（限流、CORS、tool 优先、Omni 可选） |
+| `scripts/build.mjs`          | `docs:build` 编排：图片与索引并行，再 vitepress build + sitemap |
 | `scripts/build-howtocook-images.js` | 构建图片版到 `public/howtocook-images/` |
 
 ### CI/CD
