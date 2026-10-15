@@ -8,6 +8,7 @@ const visible = ref(false);
 const shortcuts = computed(() => [
     { keys: ['Ctrl', 'K'], mac: ['⌘', 'K'], action: t('keyboard.search') },
     { keys: ['/'], mac: ['/'], action: t('keyboard.quickSearch') },
+    { keys: ['A'], mac: ['A'], action: t('keyboard.assist') },
     { keys: ['?'], mac: ['?'], action: t('keyboard.toggleHelp') },
     { keys: ['Esc'], mac: ['Esc'], action: t('keyboard.closeOverlay') },
 ]);

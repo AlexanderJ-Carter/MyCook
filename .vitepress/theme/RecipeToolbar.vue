@@ -60,6 +60,52 @@ const removeFavorite = (path) => {
   saveFavorites();
 };
 
+// 收藏导出 / 导入：换设备或清浏览器数据后可完整恢复
+const exportFavorites = () => {
+  if (!favorites.value.length) return;
+  const blob = new Blob([JSON.stringify(favorites.value, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "mycook-favorites.json";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+const importFavorites = (event) => {
+  const file = event?.target?.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!Array.isArray(data)) throw new Error("not a list");
+      const byPath = new Map(favorites.value.map((f) => [f.path, f]));
+      let added = 0;
+      for (const item of data) {
+        if (item?.path && item?.title && !byPath.has(item.path)) {
+          byPath.set(item.path, {
+            path: item.path,
+            title: String(item.title).slice(0, 120),
+            addedAt: item.addedAt || new Date().toISOString(),
+          });
+          added++;
+        }
+      }
+      favorites.value = [...byPath.values()];
+      saveFavorites();
+      showToast(t("toolbar.importOk", { n: added }));
+    } catch {
+      showToast(t("toolbar.importFail"));
+    }
+  };
+  reader.readAsText(file);
+  // 允许连续选择同一文件
+  event.target.value = "";
+};
+
 const formatDate = (iso) =>
   new Date(iso).toLocaleDateString(dateLocale(), {
     year: "numeric",
@@ -352,13 +398,39 @@ onUnmounted(() => {
         v-if="panel === 'favorites'"
         class="rt-panel"
         role="dialog"
-        aria-label="收藏列表"
+        :aria-label="t('toolbar.favoritesAria')"
       >
         <div class="rt-panel-head">
-          <strong>我的收藏</strong>
-          <button type="button" class="rt-close" @click="panel = null">
-            ×
-          </button>
+          <strong>{{ t('toolbar.favorites') }}</strong>
+          <div class="rt-panel-tools">
+            <button
+              v-if="favorites.length"
+              type="button"
+              class="rt-mini"
+              :title="t('toolbar.export')"
+              :aria-label="t('toolbar.export')"
+              @click="exportFavorites"
+            >
+              ⭳
+            </button>
+            <label class="rt-mini" :title="t('toolbar.import')" :aria-label="t('toolbar.import')">
+              ⭱
+              <input
+                type="file"
+                accept="application/json,.json"
+                class="rt-import-input"
+                @change="importFavorites"
+              />
+            </label>
+            <button
+              type="button"
+              class="rt-close"
+              :aria-label="t('toolbar.close')"
+              @click="panel = null"
+            >
+              ×
+            </button>
+          </div>
         </div>
         <div class="rt-fav-list">
           <div v-for="fav in favorites" :key="fav.path" class="rt-fav-item">
@@ -366,7 +438,8 @@ onUnmounted(() => {
             <span>{{ formatDate(fav.addedAt) }}</span>
             <button
               type="button"
-              title="移除"
+              :title="t('toolbar.remove')"
+              :aria-label="t('toolbar.remove')"
               @click="removeFavorite(fav.path)"
             >
               ×
@@ -381,11 +454,16 @@ onUnmounted(() => {
         v-if="panel === 'timer'"
         class="rt-panel rt-timer"
         role="dialog"
-        aria-label="烹饪计时器"
+        :aria-label="t('toolbar.timerAria')"
       >
         <div class="rt-panel-head">
-          <strong>烹饪计时</strong>
-          <button type="button" class="rt-close" @click="panel = null">
+          <strong>{{ t('toolbar.timerTitle') }}</strong>
+          <button
+            type="button"
+            class="rt-close"
+            :aria-label="t('toolbar.close')"
+            @click="panel = null"
+          >
             ×
           </button>
         </div>
@@ -393,7 +471,7 @@ onUnmounted(() => {
           <input
             v-model="timerName"
             type="text"
-            placeholder="名称，如：煮面"
+            :placeholder="t('toolbar.timerPlaceholder')"
             @keyup.enter="addTimer"
           />
           <input
@@ -401,11 +479,12 @@ onUnmounted(() => {
             type="number"
             min="1"
             max="999"
+            :aria-label="t('toolbar.minutes')"
           />
-          <span>分</span>
-          <button type="button" class="rt-add" @click="addTimer">添加</button>
+          <span>{{ t('toolbar.minutes') }}</span>
+          <button type="button" class="rt-add" @click="addTimer">{{ t('toolbar.add') }}</button>
         </div>
-        <p v-if="!timers.length" class="rt-empty">还没有计时器</p>
+        <p v-if="!timers.length" class="rt-empty">{{ t('toolbar.timerEmpty') }}</p>
         <div
           v-for="timer in timers"
           :key="timer.id"
@@ -414,7 +493,13 @@ onUnmounted(() => {
         >
           <div class="rt-timer-top">
             <span>{{ timer.name }}</span>
-            <button type="button" @click="deleteTimer(timer.id)">×</button>
+            <button
+              type="button"
+              :aria-label="t('toolbar.remove')"
+              @click="deleteTimer(timer.id)"
+            >
+              ×
+            </button>
           </div>
           <div class="rt-timer-clock">
             {{ formatTime(timer.remainingSeconds) }}
@@ -426,16 +511,16 @@ onUnmounted(() => {
               class="primary"
               @click="timer.isPaused ? resumeTimer(timer) : startTimer(timer)"
             >
-              {{ timer.isPaused ? "继续" : "开始" }}
+              {{ timer.isPaused ? t('toolbar.resume') : t('toolbar.start') }}
             </button>
             <button
               v-if="timer.isRunning && !timer.isPaused"
               type="button"
               @click="pauseTimer(timer)"
             >
-              暂停
+              {{ t('toolbar.pause') }}
             </button>
-            <button type="button" @click="resetTimer(timer)">重置</button>
+            <button type="button" @click="resetTimer(timer)">{{ t('toolbar.reset') }}</button>
           </div>
         </div>
       </div>
@@ -539,6 +624,37 @@ onUnmounted(() => {
   font-size: 1.35rem;
   line-height: 1;
   cursor: pointer;
+}
+
+/* 面板头部的小工具组：导出 / 导入 / 关闭 */
+.rt-panel-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.rt-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 1px solid var(--mycook-line, rgba(28, 25, 21, 0.14));
+  border-radius: 6px;
+  background: transparent;
+  color: var(--vp-c-text-2);
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.rt-mini:hover {
+  color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+}
+
+.rt-import-input {
+  display: none;
 }
 
 .rt-fav-item {

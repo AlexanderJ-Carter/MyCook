@@ -6,6 +6,9 @@ hero:
   tagline: Chinese home cooking — browse by method or by ingredient, with fridge matching and weekly planning
   actions:
     - theme: brand
+      text: Ask the kitchen assistant
+      link: /en/#kitchen-assist
+    - theme: alt
       text: By method
       link: /cooklikehoc/炒菜/README
     - theme: alt

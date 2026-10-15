@@ -17,6 +17,16 @@ const handleKeyDown = (e) => {
     ) {
         e.preventDefault();
         openSearch();
+    } else if (
+        e.key.toLowerCase() === 'a' &&
+        !e.altKey &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.shiftKey
+    ) {
+        // 厨助手：KitchenAssist 监听 mycook:open-assist 打开面板
+        e.preventDefault();
+        window.dispatchEvent(new Event('mycook:open-assist'));
     }
 };
 

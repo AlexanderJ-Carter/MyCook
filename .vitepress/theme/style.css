@@ -6,6 +6,19 @@
     display: none !important;
 }
 
+/* 屏幕阅读器专用：通用工具类，任何组件都可复用 */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 :root {
     --vp-font-family-base:
         'Noto Sans SC', ui-sans-serif, system-ui, -apple-system, 'PingFang SC',
@@ -125,13 +138,7 @@ html.js-ready .reveal:not(.is-in) {
     transform: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    html.js-ready .reveal:not(.is-in) {
-        opacity: 1;
-        transform: none;
-        transition: none;
-    }
-}
+/* prefers-reduced-motion 的全局兜底在文件后段统一处理（含 .reveal） */
 
 /* 文档页（帮助 / MCP / Agent / 关于）阅读区 */
 .VPDoc:not(.has-sidebar) .content-container {
@@ -712,7 +719,7 @@ a.daily-pick-go:hover,
 /* ===== Home Explore ===== */
 .home-explore {
     max-width: 1080px;
-    margin: 0 auto 3.5rem;
+    margin: 0 auto 3.75rem;
     padding: 0 1.25rem;
 }
 
@@ -1720,18 +1727,6 @@ a.daily-pick-go:hover,
 }
 
 /* ===== Kitchen Assist (问站-style FAB) ===== */
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
 .kitchen-assist__fab {
     position: fixed;
     right: 1.15rem;
@@ -1983,12 +1978,11 @@ a.daily-pick-go:hover,
     transition: opacity var(--transition-normal), transform var(--transition-normal);
 }
 
-.home-explore {
-    margin-bottom: 3.75rem;
-}
-
-.difficulty-shelf {
-    margin-bottom: 3rem !important;
+/* 厨助手面板展开时避让同角浮层：隐藏返回顶部，避免压住 FAB */
+html.kitchen-assist-open .back-to-top {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
 }
 
 @media (max-width: 640px) {
@@ -2017,7 +2011,7 @@ a.daily-pick-go:hover,
     color: var(--vp-c-text-2);
 }
 .site-edition[data-edition="full"] {
-    border-left-color: var(--vp-c-brand-2, #2f6f5e);
+    border-left-color: var(--mycook-jade, #2f6f5e);
 }
 .site-edition p {
     margin: 0;
@@ -2038,10 +2032,10 @@ a.daily-pick-go:hover,
     color: var(--vp-c-text-2);
 }
 .kitchen-assist__mode[data-mode="llm"] {
-    background: color-mix(in srgb, #2f6f5e 18%, transparent);
-    color: #1f4d42;
+    background: color-mix(in srgb, var(--mycook-jade, #2f6f5e) 18%, transparent);
+    color: var(--mycook-jade, #2f6f5e);
 }
 .kitchen-assist__mode[data-mode="tool"] {
-    background: color-mix(in srgb, #c45c26 16%, transparent);
-    color: #7a3514;
+    background: color-mix(in srgb, var(--vp-c-brand-1, #c45c26) 16%, transparent);
+    color: var(--vp-c-brand-1, #c45c26);
 }
