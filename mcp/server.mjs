@@ -6,6 +6,9 @@
  *   node mcp/server.mjs http         # HTTP → http://127.0.0.1:3001/mcp
  */
 import { randomUUID } from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
@@ -33,7 +36,10 @@ import {
 } from './auth.mjs';
 import { handleAsk, omniStatus } from './ask.mjs';
 
-const VERSION = '1.8.0';
+// 从 package.json 读版本，避免硬编码与发版脱节（曾漂移到落后 3 个 patch）
+const VERSION = JSON.parse(
+    fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'package.json'), 'utf8'),
+).version;
 const MCP_PORT = Number(process.env.MCP_PORT || 3001);
 
 function textResult(data) {
