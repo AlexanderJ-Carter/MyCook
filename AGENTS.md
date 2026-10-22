@@ -90,8 +90,8 @@ npm run mcp:http     # HTTP :3001
 ## 内容来源
 
 内容来自两个上游仓库的 fork：
-- `https://github.com/AlexanderJ-Carter/CookLikeHOC`
-- `https://github.com/AlexanderJ-Carter/HowToCook`
+- `https://github.com/Gar-b-age/CookLikeHOC`（CI/Docker 首选；失败时回退 `AlexanderJ-Carter/CookLikeHOC`）
+- `https://github.com/Anduin2017/HowToCook`（CI/Docker 首选；失败时回退 `AlexanderJ-Carter/HowToCook`）
 
 CI 在构建时会克隆这两个仓库并同步内容。
 
