@@ -82,10 +82,10 @@ jobs:
                     fi
                     clone_with_retry "$repo" "$dest" "$branch"
                   }
-                  update_or_clone https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC main \
-                    || clone_with_retry https://github.com/Gar-b-age/CookLikeHOC.git upstream/CookLikeHOC main
-                  update_or_clone https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook master \
-                    || clone_with_retry https://github.com/Anduin2017/HowToCook.git upstream/HowToCook master
+                  update_or_clone https://github.com/Gar-b-age/CookLikeHOC.git upstream/CookLikeHOC main \
+                    || clone_with_retry https://github.com/AlexanderJ-Carter/CookLikeHOC.git upstream/CookLikeHOC main
+                  update_or_clone https://github.com/Anduin2017/HowToCook.git upstream/HowToCook master \
+                    || clone_with_retry https://github.com/AlexanderJ-Carter/HowToCook.git upstream/HowToCook master
                   if [ "${{ github.event.inputs.skip_images }}" != "true" ]; then
                     update_or_clone https://github.com/king-jingxiang/HowToCook.git upstream/HowToCookImages master || true
                   fi

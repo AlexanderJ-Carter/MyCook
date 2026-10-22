@@ -23,8 +23,8 @@ RUN npm ci --prefer-offline --no-audit
 COPY . .
 RUN mkdir -p upstream cooklikehoc howtocook public
 
-ARG COOKLIKEHOC_REPO=https://github.com/AlexanderJ-Carter/CookLikeHOC.git
-ARG HOWTOCOOK_REPO=https://github.com/AlexanderJ-Carter/HowToCook.git
+ARG COOKLIKEHOC_REPO=https://github.com/Gar-b-age/CookLikeHOC.git
+ARG HOWTOCOOK_REPO=https://github.com/Anduin2017/HowToCook.git
 ARG COOKLIKEHOC_BRANCH=main
 ARG HOWTOCOOK_BRANCH=master
 ARG SKIP_IMAGES=1
