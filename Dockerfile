@@ -66,7 +66,7 @@ RUN node scripts/sync-upstream.js \
 # ============================
 # Runtime Stage — 仅 nginx + 静态文件
 # ============================
-FROM nginx:1.27-alpine
+FROM nginx:1.29-alpine
 
 ARG SKIP_IMAGES=1
 
