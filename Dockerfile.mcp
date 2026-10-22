@@ -1,5 +1,5 @@
 # MyCook MCP sidecar — 构建静态 dist 并暴露 Streamable HTTP MCP
-FROM node:22-alpine AS builder
+FROM node:25-alpine AS builder
 
 RUN apk add --no-cache git
 ENV GIT_LFS_SKIP_SMUDGE=1
@@ -27,7 +27,7 @@ ENV VITEPRESS_BASE=/
 RUN node scripts/sync-upstream.js \
     && npm run docs:build:fast
 
-FROM node:22-alpine
+FROM node:25-alpine
 
 WORKDIR /app
 
