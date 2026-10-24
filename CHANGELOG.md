@@ -6,6 +6,7 @@
 - 钉死 `vite@6.4.5`：`overrides.vite: ">=6.4.5"` 会解析到 Vite 8/Rolldown，主题 CSS 不写入 HTML，cook 首页裸版
 - CI 校验 `index.html` 必须包含 `/assets/theme.*.css`
 - Recipe JSON-LD 补上 Google 必填 `image`（正文图优先，否则 banner），并收紧菜谱页判定
+- 构建期 `transformHead` 写入 Recipe JSON-LD（含必填 image），无 JS 爬虫也能读到
 
 ## Unreleased
 

@@ -43,6 +43,60 @@ function moreNav(lang) {
     };
 }
 
+
+const RECIPE_META_SLUGS = new Set([
+    'about',
+    'index',
+    'readme',
+    'contributing',
+    'fork_info',
+    'security',
+    'code_of_conduct',
+    'changelog',
+    'license',
+    'authors',
+]);
+
+/** 构建期写入 Recipe JSON-LD（含必填 image），供无 JS 爬虫读取。 */
+function recipeJsonLdHead(pageData) {
+    const file = String(pageData.relativePath || '').replace(/\\/g, '/');
+    if (!file || file.startsWith('en/')) return [];
+
+    const segments = file.replace(/\.md$/i, '').split('/').filter(Boolean);
+    const last = (segments[segments.length - 1] || '').toLowerCase().replace(/\s+/g, '_');
+    if (RECIPE_META_SLUGS.has(last)) return [];
+
+    const isCooklike =
+        segments[0] === 'cooklikehoc' && segments.length >= 3;
+    const isHowtocook =
+        segments[0] === 'howtocook' &&
+        segments[1] === 'dishes' &&
+        segments.length >= 4;
+    if (!isCooklike && !isHowtocook) return [];
+
+    const rawTitle = String(pageData.title || segments[segments.length - 1] || '菜谱');
+    const name = rawTitle.replace(/的做法$/, '');
+    const source = isCooklike ? 'CookLikeHOC' : 'HowToCook';
+    const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'Recipe',
+        name,
+        image: ['https://cook.alexander.xin/banner.png'],
+        description: `${name}的做法 - 来自${source}菜谱`,
+        author: { '@type': 'Organization', name: source },
+        recipeCuisine: 'Chinese',
+        keywords: `菜谱, 做饭, 家常菜, ${name}`,
+    };
+
+    return [
+        [
+            'script',
+            { type: 'application/ld+json', 'data-mycook-recipe-schema': '1' },
+            JSON.stringify(schema),
+        ],
+    ];
+}
+
 function rewriteHowToCookImages(req) {
     const url = req.url?.split('?')[0] || '';
     if (url === '/howtocook-images/' || url === '/howtocook-images') {
@@ -60,6 +114,9 @@ export default defineConfig({
     cleanUrls: true,
     base: process.env.VITEPRESS_BASE || '/',
     ignoreDeadLinks: true,
+    transformHead({ pageData }) {
+        return recipeJsonLdHead(pageData);
+    },
     srcExclude: [
         'README.md',
         'AGENTS.md',
