@@ -3,6 +3,13 @@
 ## Unreleased
 
 ### Fixed
+- 钉死 `vite@6.4.5`：`overrides.vite: ">=6.4.5"` 会解析到 Vite 8/Rolldown，主题 CSS 不写入 HTML，cook 首页裸版
+- CI 校验 `index.html` 必须包含 `/assets/theme.*.css`
+- Recipe JSON-LD 补上 Google 必填 `image`（正文图优先，否则 banner），并收紧菜谱页判定
+
+## Unreleased
+
+### Fixed
 - **菜谱索引 192 个坏链**：HowToCook「文件夹名=菜名」的菜曾折叠成 4 段链接（线上 301→404），统一改为与真实路由一致的 5 段；MCP 仍兼容旧 4 段路径（自动展开到镜像/索引）
 - /ask 限流改信 `X-Real-IP`（XFF 从右取段），伪造 `X-Forwarded-For` 不再绕过 30 次/小时限流；限流桶加周期清扫与上限
 - /ask 超大请求回 413 而非掐断连接；客户端中断不再挂死请求
