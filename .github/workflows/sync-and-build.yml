@@ -140,6 +140,7 @@ jobs:
                   test -f .vitepress/dist/tips-index.json
                   test -f .vitepress/dist/sitemap.xml
                   test -f .vitepress/dist/.well-known/mcp/server-card.json
+                  grep -E 'href="/assets/theme\.[A-Za-z0-9_-]+\.css"' .vitepress/dist/index.html
                   echo "dist OK: $(find .vitepress/dist -type f | wc -l) files"
 
             - name: Setup Pages
