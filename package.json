@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.2",
-    "jose": "^6.2.8"
+    "jose": "^6.2.13"
   },
   "devDependencies": {
     "vitepress": "^1.6.4"
