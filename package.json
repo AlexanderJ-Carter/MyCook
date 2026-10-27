@@ -38,7 +38,7 @@
     "docker:run": "docker run -d -p 8080:80 --name mycook mycook:lite"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.2",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "jose": "^6.2.13"
   },
   "devDependencies": {
