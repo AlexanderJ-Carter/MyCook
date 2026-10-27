@@ -41,7 +41,7 @@ jobs:
             # restore 前缀保证总能拿到最近一次的缓存）。只缓存两个小内容仓库——
             # HowToCookImages 是 GB 级图片仓库，缓存会撑爆 10GB 限额，仍走全量 clone
             - name: Restore upstream cache
-              uses: actions/cache@v4
+              uses: actions/cache@v6
               with:
                   path: |
                       upstream/CookLikeHOC
