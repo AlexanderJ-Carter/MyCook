@@ -54,7 +54,7 @@ jobs:
                       type=semver,pattern={{version}},enable=${{ startsWith(github.ref, 'refs/tags/v') }}
                       type=semver,pattern=v{{version}},enable=${{ startsWith(github.ref, 'refs/tags/v') }}
 
-            - uses: docker/build-push-action@v6
+            - uses: docker/build-push-action@v7
               with:
                   context: .
                   push: true
@@ -91,7 +91,7 @@ jobs:
                       type=semver,pattern={{version}}-full,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
                       type=semver,pattern=v{{version}}-full,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
 
-            - uses: docker/build-push-action@v6
+            - uses: docker/build-push-action@v7
               with:
                   context: .
                   push: true
@@ -129,7 +129,7 @@ jobs:
                       type=semver,pattern={{version}},enable=${{ startsWith(github.ref, 'refs/tags/v') }}
                       type=semver,pattern=v{{version}},enable=${{ startsWith(github.ref, 'refs/tags/v') }}
 
-            - uses: docker/build-push-action@v6
+            - uses: docker/build-push-action@v7
               with:
                   context: .
                   file: Dockerfile.mcp
