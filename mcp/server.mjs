@@ -427,6 +427,14 @@ async function runHttp() {
     });
 
     // Public kitchen assistant (no Bearer); rate-limited + CORS
+    app.get('/ask', (_req, res) => {
+        res.set('Allow', 'POST');
+        res.status(405).json({
+            error: 'Method Not Allowed',
+            message: '/ask is POST-only. Send JSON with a question; set llm: false to skip optional LLM polish.',
+            example: { question: '番茄炒蛋怎么做', llm: false },
+        });
+    });
     app.options('/ask', (req, res) => handleAsk(req, res));
     app.post('/ask', (req, res) => handleAsk(req, res));
 
