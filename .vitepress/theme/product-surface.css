@@ -355,6 +355,24 @@ a.daily-pick-go,
     border-radius: var(--mycook-radius-sm);
     border-left-width: 4px;
     max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.site-edition-ecosystem {
+    margin: 0 0 0.35rem;
+    font-size: 0.82rem;
+    color: var(--mycook-steel);
+}
+
+.site-edition-ecosystem a {
+    font-weight: 600;
+    color: var(--mycook-jade);
+    text-decoration: none;
+}
+
+.site-edition-ecosystem a:hover {
+    text-decoration: underline;
 }
 
 /* —— 焦点与 PWA 安全区 —— */

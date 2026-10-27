@@ -171,6 +171,8 @@ export const messages = {
                 kicker: 'Kitchen Tips',
                 title: '下厨前先翻一翻',
                 lead: 'HowToCook 的 {n} 篇技巧与备忘，备菜、火候、工具用法一网打尽。',
+                leadPending: '正在载入厨房技巧索引…',
+                empty: '技巧索引暂未同步；可先浏览食材指南，或稍后再试。',
                 loading: '技巧列表加载中…',
                 categories: {
                     learn: '基础技法',
@@ -435,6 +437,8 @@ export const messages = {
                 kicker: 'Kitchen Tips',
                 title: 'Tips before you cook',
                 lead: '{n} HowToCook tips & notes — prep, heat, tools in one place.',
+                leadPending: 'Loading the tips index…',
+                empty: 'Tips are not synced yet — browse the ingredient guide or try again later.',
                 loading: 'Loading tips…',
                 categories: {
                     learn: 'Basics',

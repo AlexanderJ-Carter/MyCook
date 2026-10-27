@@ -2,12 +2,22 @@
 import { onMounted } from 'vue';
 import { useSiteData } from './composables/useSiteData';
 
-const { loadStats, loadRecipesIndex, loadRecent } = useSiteData();
+const {
+    loadStats,
+    loadRecipesIndex,
+    loadRecent,
+    loadTipsIndex,
+    loadSyncInfo,
+    loadPantry,
+} = useSiteData();
 
 onMounted(() => {
-  loadStats();
-  loadRecipesIndex();
-  loadRecent();
+    loadStats();
+    loadRecipesIndex();
+    loadRecent();
+    loadTipsIndex();
+    loadSyncInfo();
+    loadPantry();
 });
 </script>
 

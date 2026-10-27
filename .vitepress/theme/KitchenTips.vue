@@ -4,9 +4,23 @@ import { withBase } from "vitepress";
 import { useSiteData } from "./composables/useSiteData";
 import { useI18n } from "./composables/useI18n";
 
-const { loadTipsIndex } = useSiteData();
+const { tipsIndex, loadTipsIndex } = useSiteData();
 const { t } = useI18n();
-const tips = ref([]);
+const ready = ref(false);
+
+const tips = computed(() => tipsIndex.value?.items ?? []);
+
+const tipCount = computed(() => {
+  const total = tipsIndex.value?.total;
+  if (typeof total === "number" && total > 0) return total;
+  return tips.value.length;
+});
+
+const leadText = computed(() => {
+  if (!ready.value) return t("home.tips.leadPending");
+  if (!tipCount.value) return t("home.tips.empty");
+  return t("home.tips.lead", { n: tipCount.value });
+});
 
 const groups = computed(() => {
   const cats = t("home.tips.categories");
@@ -27,8 +41,8 @@ const groups = computed(() => {
 });
 
 onMounted(async () => {
-  const data = await loadTipsIndex();
-  tips.value = data?.items || [];
+  await loadTipsIndex();
+  ready.value = true;
 });
 </script>
 
@@ -37,12 +51,12 @@ onMounted(async () => {
     <div class="kitchen-tips-head">
       <p class="kitchen-tips-kicker">{{ t('home.tips.kicker') }}</p>
       <h2>{{ t('home.tips.title') }}</h2>
-      <p class="kitchen-tips-lead">
-        {{ t('home.tips.lead', { n: tips.length }) }}
+      <p class="kitchen-tips-lead" :aria-busy="!ready ? 'true' : 'false'">
+        {{ leadText }}
       </p>
     </div>
 
-    <div v-if="!tips.length" class="kitchen-tips-empty">{{ t('home.tips.loading') }}</div>
+    <p v-if="!ready" class="kitchen-tips-status">{{ t('home.tips.loading') }}</p>
 
     <div v-for="group in groups" :key="group.id" class="tips-group">
       <h3>{{ group.label }}</h3>
@@ -114,8 +128,8 @@ onMounted(async () => {
   background: rgba(42, 122, 98, 0.1);
   color: var(--mycook-jade, #2a7a62);
 }
-.kitchen-tips-empty {
-  margin-top: 1rem;
+.kitchen-tips-status {
+  margin: 1rem 0 0;
   font-size: 0.88rem;
   color: var(--vp-c-text-3);
 }

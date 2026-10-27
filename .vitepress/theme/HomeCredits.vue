@@ -44,6 +44,8 @@ const { t } = useI18n();
       <a href="https://github.com/AlexanderJ-Carter/MyCook" target="_blank" rel="noopener"
         >AlexanderJ-Carter/MyCook</a
       >
+      ·
+      <a href="https://alexander.xin" rel="noopener">Folio</a>
     </p>
   </section>
 </template>
