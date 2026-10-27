@@ -210,26 +210,26 @@ onMounted(async () => {
 .kitchen-play {
   max-width: 920px;
   margin: 0 auto 2.5rem;
-  padding: 1.5rem 1.35rem;
-  border-radius: calc(var(--mycook-radius, 14px) + 4px);
-  border: 1px solid rgba(196, 134, 10, 0.18);
-  background:
-    linear-gradient(135deg, rgba(196, 134, 10, 0.07), transparent 45%),
-    var(--mycook-paper, #faf8f4);
-  box-shadow: var(--shadow-md);
+  padding: 1.25rem 0.15rem;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 .kitchen-play-kicker {
   margin: 0;
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--mycook-pantry, #c4860a);
-  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--mycook-steel, #5c6560);
+  font-weight: 500;
 }
 .kitchen-play-head h2 {
-  margin: 0.25rem 0 0.4rem;
-  font-family: var(--mycook-display, serif);
-  font-size: 1.35rem;
+  margin: 0.35rem 0 0.5rem;
+  font-family: var(--vp-font-family-base);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 .kitchen-play-lead {
   margin: 0 0 1rem;
@@ -257,9 +257,10 @@ onMounted(async () => {
   color: var(--vp-c-text-2);
 }
 .kitchen-tabs button.active {
-  background: var(--mycook-pantry, #c4860a);
-  color: #fff;
-  font-weight: 600;
+  background: var(--vp-c-bg-elv);
+  color: var(--mycook-ink);
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
 }
 .chip-bar {
   display: flex;
@@ -279,8 +280,9 @@ onMounted(async () => {
   cursor: pointer;
 }
 .chip.on {
-  border-color: var(--mycook-pantry, #c4860a);
-  background: rgba(196, 134, 10, 0.12);
+  border-color: var(--mycook-jade, #2a7a62);
+  background: var(--mycook-jade-soft, rgba(42, 122, 98, 0.1));
+  color: var(--mycook-ink);
 }
 .match-block {
   margin-top: 1.1rem;
@@ -342,21 +344,19 @@ onMounted(async () => {
   color: var(--vp-c-brand-1);
 }
 .spin-wheel {
-  width: 5rem;
-  height: 5rem;
+  width: 4.5rem;
+  height: 4.5rem;
   margin: 0 auto 1rem;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-family: var(--mycook-display, serif);
-  font-size: 2rem;
-  font-weight: 700;
+  font-family: var(--vp-font-family-base);
+  font-size: 1.65rem;
+  font-weight: 600;
   color: #fff;
-  background: radial-gradient(circle at 30% 30%, #e2553d, var(--vp-c-brand-1));
-  border: 3px solid var(--mycook-paper, #faf8f4);
-  box-shadow:
-    0 10px 24px rgba(184, 58, 40, 0.3),
-    inset 0 2px 0 rgba(255, 255, 255, 0.25);
+  background: linear-gradient(145deg, var(--vp-c-brand-2), var(--vp-c-brand-1));
+  border: 2px solid var(--vp-c-bg-elv);
+  box-shadow: var(--shadow-md);
 }
 .spin-wheel.spinning {
   animation: spin-turn 0.9s cubic-bezier(0.22, 1, 0.36, 1);

@@ -212,7 +212,7 @@ export default defineConfig({
             'link',
             {
                 rel: 'stylesheet',
-                href: 'https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap',
+                href: 'https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;600&display=swap',
             },
         ],
         ['link', { rel: 'dns-prefetch', href: 'https://cdn.jsdelivr.net' }],

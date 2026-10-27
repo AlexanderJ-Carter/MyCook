@@ -13,6 +13,7 @@ import HomeBootstrap from './HomeBootstrap.vue';
 import HomeCredits from './HomeCredits.vue';
 import SiteEdition from './SiteEdition.vue';
 import './style.css';
+import './product-surface.css';
 
 const KitchenPlay = defineAsyncComponent(() => import('./KitchenPlay.vue'));
 const KitchenTips = defineAsyncComponent(() => import('./KitchenTips.vue'));
