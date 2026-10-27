@@ -41,6 +41,7 @@ onUnmounted(() => {
       :href="`#${link.id}`"
       class="home-play-nav-link"
       :class="{ active: active === link.id }"
+      :aria-current="active === link.id ? 'location' : undefined"
     >
       {{ link.label }}
     </a>

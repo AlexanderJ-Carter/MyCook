@@ -15,6 +15,27 @@ function moreNav(lang) {
         text: en ? 'More' : '更多',
         items: [
             {
+                text: en ? 'alexander.xin' : '站群',
+                items: [
+                    {
+                        text: en ? 'Folio (main)' : 'Folio 主站',
+                        link: 'https://alexander.xin',
+                    },
+                    {
+                        text: 'IT-Tools',
+                        link: 'https://tools.alexander.xin',
+                    },
+                    {
+                        text: 'Gitea',
+                        link: 'https://git.alexander.xin',
+                    },
+                    {
+                        text: en ? 'MCP endpoint' : 'MCP 服务',
+                        link: 'https://cook-mcp.alexander.xin',
+                    },
+                ],
+            },
+            {
                 text: en ? 'Upstream' : '源项目',
                 items: [
                     {
@@ -97,6 +118,26 @@ function recipeJsonLdHead(pageData) {
     ];
 }
 
+const HOME_JSON_PRELOADS = [
+    'stats.json',
+    'tips-index.json',
+    'recent.json',
+    'recipes-index.json',
+];
+
+function homeDataPreloads(pageData) {
+    const rel = String(pageData.relativePath || '').replace(/\\/g, '/');
+    if (rel !== 'index.md' && rel !== 'en/index.md') return [];
+    return HOME_JSON_PRELOADS.map((file) => [
+        'link',
+        { rel: 'preload', href: `/${file}`, as: 'fetch', crossorigin: 'anonymous' },
+    ]);
+}
+
+function transformPageHead(pageData) {
+    return [...recipeJsonLdHead(pageData), ...homeDataPreloads(pageData)];
+}
+
 function rewriteHowToCookImages(req) {
     const url = req.url?.split('?')[0] || '';
     if (url === '/howtocook-images/' || url === '/howtocook-images') {
@@ -115,7 +156,7 @@ export default defineConfig({
     base: process.env.VITEPRESS_BASE || '/',
     ignoreDeadLinks: true,
     transformHead({ pageData }) {
-        return recipeJsonLdHead(pageData);
+        return transformPageHead(pageData);
     },
     srcExclude: [
         'README.md',
@@ -177,7 +218,7 @@ export default defineConfig({
                 },
                 footer: {
                     message:
-                        'Recipes from the open-source projects CookLikeHOC and HowToCook · maintained by <a href="https://alexander.xin" target="_blank" rel="noopener">alexander.xin</a>',
+                        'Recipes from CookLikeHOC & HowToCook · Part of <a href="https://alexander.xin" rel="noopener">alexander.xin</a> (<a href="https://alexander.xin" rel="noopener">Folio</a>)',
                     copyright: `Copyright © ${new Date().getFullYear()} MyCook · Eat well, live well`,
                 },
                 search: {
@@ -215,8 +256,6 @@ export default defineConfig({
                 href: 'https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;600&display=swap',
             },
         ],
-        ['link', { rel: 'dns-prefetch', href: 'https://cdn.jsdelivr.net' }],
-        ['link', { rel: 'preconnect', href: 'https://cdn.jsdelivr.net', crossorigin: '' }],
         // LCP 预加载优化
         ['link', { rel: 'preload', href: '/logo.svg', as: 'image' }],
         // 主题色
@@ -329,7 +368,7 @@ export default defineConfig({
 
         footer: {
             message:
-                '菜谱来自开源项目 CookLikeHOC 与 HowToCook · 由 <a href="https://alexander.xin" target="_blank" rel="noopener">alexander.xin</a> 整理维护',
+                '菜谱来自 CookLikeHOC 与 HowToCook · <a href="https://alexander.xin" rel="noopener">alexander.xin</a> 站群 · <a href="https://alexander.xin" rel="noopener">Folio 主站</a>',
             copyright: `Copyright © ${new Date().getFullYear()} MyCook · 好好吃饭，好好生活`,
         },
 
