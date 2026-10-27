@@ -1,0 +1,410 @@
+/* MyCook — 沉静产品站：清晰层级、克制字重、充足留白 */
+
+:root {
+    --vp-c-brand-1: #c4452f;
+    --vp-c-brand-2: #a83826;
+    --vp-c-brand-3: #8c2e1f;
+    --vp-c-brand-soft: rgba(196, 69, 47, 0.1);
+
+    --vp-c-bg: #eef1ef;
+    --vp-c-bg-alt: #e4e8e5;
+    --vp-c-bg-soft: #e9ecea;
+    --vp-c-bg-elv: #f7f9f8;
+    --vp-nav-bg-color: color-mix(in srgb, var(--vp-c-bg-elv) 92%, transparent);
+
+    --mycook-jade: #2a7a62;
+    --mycook-jade-soft: rgba(42, 122, 98, 0.1);
+    --mycook-ink: #1a1f1c;
+    --mycook-steel: #5c6560;
+    --mycook-paper: #f7f9f8;
+    --mycook-line: rgba(26, 31, 28, 0.09);
+    --mycook-display: var(--vp-font-family-base);
+    --mycook-radius: 16px;
+    --mycook-radius-sm: 12px;
+    --mycook-radius-pill: 999px;
+
+    --mycook-pantry: #b8860b;
+    --mycook-pantry-soft: rgba(184, 134, 11, 0.1);
+
+    --shadow-sm: 0 1px 2px rgba(26, 31, 28, 0.04), 0 4px 14px rgba(26, 31, 28, 0.05);
+    --shadow-md: 0 4px 6px rgba(26, 31, 28, 0.03), 0 12px 28px rgba(26, 31, 28, 0.07);
+    --shadow-lg: 0 8px 20px rgba(26, 31, 28, 0.06), 0 24px 48px rgba(26, 31, 28, 0.1);
+
+    --mycook-focus-ring: 0 0 0 2px var(--vp-c-bg-elv), 0 0 0 4px var(--vp-c-brand-1);
+}
+
+.dark {
+    --vp-c-bg: #141816;
+    --vp-c-bg-alt: #101412;
+    --vp-c-bg-soft: #1c211e;
+    --vp-c-bg-elv: #222824;
+    --mycook-ink: #eef1ef;
+    --mycook-steel: #9aa39d;
+    --mycook-paper: #1e2320;
+    --mycook-line: rgba(238, 241, 239, 0.1);
+    --vp-c-brand-1: #e86a56;
+    --vp-c-brand-2: #d4523e;
+    --vp-c-brand-soft: rgba(232, 106, 86, 0.14);
+    --mycook-jade: #3db892;
+    --mycook-jade-soft: rgba(61, 184, 146, 0.12);
+}
+
+body::after {
+    display: none;
+}
+
+/* —— 顶栏 —— */
+.VPNavBar {
+    border-bottom: 1px solid var(--mycook-line);
+    backdrop-filter: blur(20px) saturate(1.2);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
+}
+
+.VPNavBarTitle .title {
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.VPSidebar .link:hover .text {
+    color: var(--mycook-ink);
+}
+
+.VPSidebarItem.is-active > .item .link .text {
+    font-weight: 500;
+}
+
+/* —— 首页氛围 —— */
+.VPHome::before {
+    height: 70vh;
+    background:
+        radial-gradient(ellipse 70% 50% at 50% -20%, rgba(42, 122, 98, 0.08), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 100% 0%, rgba(196, 69, 47, 0.06), transparent 50%);
+}
+
+/* —— Hero —— */
+.VPHero {
+    min-height: min(68vh, 32rem);
+    padding: clamp(2.75rem, 7vh, 4.5rem) 0 2rem;
+}
+
+.VPHero::before {
+    display: none;
+}
+
+.VPHero .name {
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+    font-size: clamp(2.75rem, 8vw, 4.25rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+}
+
+.VPHero .text {
+    font-family: var(--vp-font-family-base);
+    font-weight: 500;
+    font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+    color: var(--mycook-ink);
+    margin-top: 0.85rem;
+}
+
+.VPHero .text::after {
+    display: none;
+}
+
+.VPHero .tagline {
+    font-size: 1rem;
+    line-height: 1.65;
+    max-width: 26em;
+}
+
+.VPHero .actions {
+    margin-top: 2rem;
+    gap: 0.5rem;
+}
+
+.VPHero .actions .VPButton {
+    font-weight: 500;
+    letter-spacing: 0;
+    border-radius: var(--mycook-radius-sm);
+    padding: 0.65rem 1.2rem;
+}
+
+.VPHero .actions .VPButton.brand {
+    padding: 0.72rem 1.45rem;
+    font-size: 0.98rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.VPHero .actions .VPButton.brand:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.VPHero .actions .VPButton.alt {
+    border-color: var(--mycook-line);
+    background: var(--vp-c-bg-elv);
+}
+
+.VPHero .actions .VPButton:hover {
+    transform: translateY(-1px);
+}
+
+/* —— 区块标签 —— */
+.home-section-kicker::before,
+.home-explore-kicker::before,
+.daily-pick-kicker::before {
+    display: none;
+}
+
+.home-section-kicker,
+.home-explore-kicker,
+.daily-pick-kicker {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: none;
+    font-weight: 500;
+    color: var(--mycook-steel);
+}
+
+.daily-pick-kicker {
+    color: var(--mycook-jade);
+}
+
+/* —— 今日推荐 —— */
+.daily-pick {
+    max-width: 40rem;
+    margin: 0 auto 2.75rem;
+    padding: 1.5rem 1.5rem 1.5rem 1.35rem;
+    border-radius: var(--mycook-radius);
+    border: 1px solid var(--mycook-line);
+    background: var(--vp-c-bg-elv);
+    box-shadow: var(--shadow-sm);
+}
+
+.daily-pick::after {
+    display: none;
+}
+
+.daily-pick-seal {
+    display: none;
+}
+
+.daily-pick-badge {
+    display: inline-block;
+    margin-bottom: 0.65rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--mycook-radius-pill);
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--mycook-jade);
+    background: var(--mycook-jade-soft);
+}
+
+.daily-pick h2 {
+    font-family: var(--vp-font-family-base);
+    font-size: clamp(1.35rem, 3.2vw, 1.75rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    max-width: none;
+}
+
+.daily-pick-go,
+.daily-pick-shuffle {
+    border-radius: var(--mycook-radius-sm);
+    font-weight: 500;
+    min-height: 2.35rem;
+}
+
+a.daily-pick-go,
+.daily-pick-go {
+    box-shadow: none;
+}
+
+.daily-pick-shuffle {
+    background: var(--vp-c-bg-soft);
+}
+
+/* —— 探索卡片 —— */
+.home-explore-intro h2 {
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.home-path {
+    min-height: 200px;
+    border-radius: var(--mycook-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.home-path::after {
+    display: none;
+}
+
+.home-path::before {
+    width: 3px;
+    border-radius: var(--mycook-radius) 0 0 var(--mycook-radius);
+}
+
+.home-path:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.home-path h3 {
+    font-family: var(--vp-font-family-base);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.home-path:hover .home-path-go {
+    letter-spacing: 0;
+}
+
+.home-shelf-head h3,
+.home-flow h3 {
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+}
+
+.home-play-zone {
+    border-radius: var(--mycook-radius);
+    box-shadow: var(--shadow-sm);
+    padding: 0.25rem 1.25rem;
+}
+
+.home-play-nav-link {
+    font-weight: 500;
+    border-radius: var(--mycook-radius-pill);
+}
+
+/* —— 菜谱文档 —— */
+.VPDoc .content .vp-doc h1,
+.VPDoc .content .vp-doc h2,
+.layout-cooklikehoc .vp-doc h1,
+.layout-howtocook .vp-doc h1,
+.layout-cooklikehoc .vp-doc h2,
+.layout-howtocook .vp-doc h2 {
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.VPDoc .content .vp-doc h1::after {
+    width: 2.5rem;
+    height: 2px;
+    opacity: 0.85;
+}
+
+.vp-doc h3 {
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+}
+
+.vp-doc th {
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+}
+
+.VPFooter .container::before {
+    display: none;
+}
+
+.VPFooter {
+    background: var(--vp-c-bg-alt);
+}
+
+/* —— 厨助手 —— */
+.kitchen-assist__fab {
+    border-radius: var(--mycook-radius-pill);
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+    letter-spacing: 0;
+    padding: 0.72rem 1.1rem;
+    box-shadow: var(--shadow-md);
+}
+
+.kitchen-assist__panel {
+    border-radius: var(--mycook-radius);
+    border-color: var(--mycook-line);
+}
+
+.kitchen-assist__title {
+    font-family: var(--vp-font-family-base);
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.kitchen-assist__kicker {
+    letter-spacing: 0.04em;
+    text-transform: none;
+    font-weight: 500;
+}
+
+.kitchen-assist__head {
+    background: var(--vp-c-bg-elv);
+}
+
+.kitchen-assist__form textarea:focus-visible,
+.kitchen-assist__send:focus-visible {
+    outline: none;
+    box-shadow: var(--mycook-focus-ring);
+}
+
+.site-edition {
+    border-radius: var(--mycook-radius-sm);
+    border-left-width: 4px;
+    max-width: 40rem;
+}
+
+/* —— 焦点与 PWA 安全区 —— */
+:focus-visible {
+    outline: none;
+    box-shadow: var(--mycook-focus-ring);
+}
+
+.install-banner {
+    bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+    border-radius: var(--mycook-radius);
+}
+
+.kitchen-assist__fab {
+    bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 640px) {
+    .kitchen-assist__fab {
+        bottom: max(0.85rem, env(safe-area-inset-bottom, 0px));
+    }
+
+    .kitchen-assist__panel {
+        bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+        max-height: min(32rem, calc(100vh - 5.5rem - env(safe-area-inset-bottom, 0px)));
+    }
+}
+
+.stat-number {
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+    font-size: 1.65rem;
+    letter-spacing: -0.02em;
+}
+
+.recent-updates-title {
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.not-found-title {
+    font-family: var(--vp-font-family-base);
+    font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .VPHero .actions .VPButton:hover,
+    .home-path:hover,
+    .kitchen-assist__fab:hover {
+        transform: none;
+    }
+}

@@ -612,9 +612,10 @@ onUnmounted(() => {
 }
 
 .rt-panel-head strong {
-  font-family: var(--mycook-display);
-  font-weight: 400;
-  font-size: 1.05rem;
+  font-family: var(--vp-font-family-base);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
 }
 
 .rt-close {
@@ -765,11 +766,11 @@ onUnmounted(() => {
 
 .rt-timer-clock {
   font-family: ui-monospace, monospace;
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.65rem;
+  font-weight: 600;
   text-align: center;
-  color: var(--vp-c-brand-1);
-  letter-spacing: 0.04em;
+  color: var(--mycook-ink);
+  letter-spacing: 0.06em;
   margin: 0.35rem 0;
 }
 

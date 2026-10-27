@@ -1,4 +1,4 @@
-/* MyCook — 窑火杂志：瓷青纸面 + 朱红印色 + 墨色标题 */
+/* MyCook — 基础布局与组件（产品站视觉见 product-surface.css） */
 /* 字体通过 config.mjs head 预加载，避免 @import 阻塞渲染 */
 
 /* 自有 SkipLink 已覆盖无障碍跳转，隐藏 VitePress 默认英文 Skip to content */

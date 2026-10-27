@@ -47,8 +47,8 @@ onMounted(async () => {
 
 <template>
   <section v-if="picked" class="daily-pick" :aria-label="t('home.dailyPick.aria')">
-    <div class="daily-pick-seal" aria-hidden="true">{{ t('home.dailyPick.seal') }}</div>
     <div class="daily-pick-body">
+      <span class="daily-pick-badge">{{ t('home.dailyPick.seal') }}</span>
       <p class="daily-pick-kicker">{{ t('home.dailyPick.kicker') }} · {{ todayLabel }}</p>
       <h2>{{ picked.title }}</h2>
       <p class="daily-pick-desc">
