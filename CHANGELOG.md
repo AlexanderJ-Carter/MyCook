@@ -7,6 +7,8 @@
 - CI 校验 `index.html` 必须包含 `/assets/theme.*.css`
 - Recipe JSON-LD 补上 Google 必填 `image`（正文图优先，否则 banner），并收紧菜谱页判定
 - 构建期 `transformHead` 写入 Recipe JSON-LD（含必填 image），无 JS 爬虫也能读到
+- 构建期 Recipe JSON-LD 补上 `recipeCategory`（Search Console「未填写字段 recipeCategory」）
+- Recipe JSON-LD：HowToStep 补 `name` / `url` / `image`；构建期从正文抽取配图、步骤、营养；无正文图时回落 banner（应对 GSC image / recipeInstructions 告警）
 
 ## Unreleased
 

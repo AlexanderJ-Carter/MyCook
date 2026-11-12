@@ -3,6 +3,13 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { generateNavAndSidebar } from './navSidebar.mjs';
 import { agentReadyPlugin } from './agentReady.mjs';
+import {
+    buildRecipeSchema,
+    extractRecipeExtras,
+    pageUrlFromRelativePath,
+    recipeCategoryFromSegments,
+    recipePageMeta,
+} from './recipeJsonLd.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicRoot = path.resolve(__dirname, '../public');
@@ -65,49 +72,24 @@ function moreNav(lang) {
 }
 
 
-const RECIPE_META_SLUGS = new Set([
-    'about',
-    'index',
-    'readme',
-    'contributing',
-    'fork_info',
-    'security',
-    'code_of_conduct',
-    'changelog',
-    'license',
-    'authors',
-]);
+/** 构建期写入 Recipe JSON-LD（正文图 / 步骤 / 营养优先），供无 JS 爬虫读取。 */
+function recipeJsonLdHead(pageData, content = '') {
+    const meta = recipePageMeta(pageData.relativePath);
+    if (!meta) return [];
 
-/** 构建期写入 Recipe JSON-LD（含必填 image），供无 JS 爬虫读取。 */
-function recipeJsonLdHead(pageData) {
-    const file = String(pageData.relativePath || '').replace(/\\/g, '/');
-    if (!file || file.startsWith('en/')) return [];
-
-    const segments = file.replace(/\.md$/i, '').split('/').filter(Boolean);
-    const last = (segments[segments.length - 1] || '').toLowerCase().replace(/\s+/g, '_');
-    if (RECIPE_META_SLUGS.has(last)) return [];
-
-    const isCooklike =
-        segments[0] === 'cooklikehoc' && segments.length >= 3;
-    const isHowtocook =
-        segments[0] === 'howtocook' &&
-        segments[1] === 'dishes' &&
-        segments.length >= 4;
-    if (!isCooklike && !isHowtocook) return [];
-
-    const rawTitle = String(pageData.title || segments[segments.length - 1] || '菜谱');
+    const rawTitle = String(
+        pageData.title || meta.segments[meta.segments.length - 1] || '菜谱',
+    );
     const name = rawTitle.replace(/的做法$/, '');
-    const source = isCooklike ? 'CookLikeHOC' : 'HowToCook';
-    const schema = {
-        '@context': 'https://schema.org',
-        '@type': 'Recipe',
+    const pageUrl = pageUrlFromRelativePath(pageData.relativePath);
+    const extras = extractRecipeExtras(content, pageUrl);
+    const schema = buildRecipeSchema({
         name,
-        image: ['https://cook.alexander.xin/banner.png'],
-        description: `${name}的做法 - 来自${source}菜谱`,
-        author: { '@type': 'Organization', name: source },
-        recipeCuisine: 'Chinese',
-        keywords: `菜谱, 做饭, 家常菜, ${name}`,
-    };
+        source: meta.source,
+        category: recipeCategoryFromSegments(meta.segments, meta.isCooklike),
+        pageUrl,
+        extras,
+    });
 
     return [
         [
@@ -134,8 +116,8 @@ function homeDataPreloads(pageData) {
     ]);
 }
 
-function transformPageHead(pageData) {
-    return [...recipeJsonLdHead(pageData), ...homeDataPreloads(pageData)];
+function transformPageHead(pageData, content = '') {
+    return [...recipeJsonLdHead(pageData, content), ...homeDataPreloads(pageData)];
 }
 
 function rewriteHowToCookImages(req) {
@@ -155,8 +137,8 @@ export default defineConfig({
     cleanUrls: true,
     base: process.env.VITEPRESS_BASE || '/',
     ignoreDeadLinks: true,
-    transformHead({ pageData }) {
-        return transformPageHead(pageData);
+    transformHead({ pageData, content }) {
+        return transformPageHead(pageData, content);
     },
     srcExclude: [
         'README.md',
