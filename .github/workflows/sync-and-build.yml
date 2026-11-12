@@ -147,9 +147,11 @@ jobs:
               uses: actions/configure-pages@v6
 
             - name: Upload artifact
-              uses: actions/upload-pages-artifact@v3
+              uses: actions/upload-pages-artifact@v5
               with:
                   path: .vitepress/dist
+                  # v4+ 默认排除点文件；.well-known 必须进 Pages
+                  include-hidden-files: true
 
             - name: Deploy to GitHub Pages
               id: deployment
