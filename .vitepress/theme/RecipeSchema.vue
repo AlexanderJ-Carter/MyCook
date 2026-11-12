@@ -1,49 +1,20 @@
 <script setup>
 import { useData, useRoute, withBase } from 'vitepress';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-
-const SITE = 'https://cook.alexander.xin';
-const FALLBACK_IMAGE = `${SITE}/banner.png`;
-
-const META_SLUGS = new Set([
-  'about',
-  'index',
-  'readme',
-  'contributing',
-  'fork_info',
-  'security',
-  'code_of_conduct',
-  'changelog',
-  'license',
-  'authors',
-]);
-
-const HOWTOCOOK_CATEGORY = {
-  aquatic: '水产',
-  breakfast: '早餐',
-  condiment: '佐料',
-  dessert: '甜品',
-  drink: '饮品',
-  meat_dish: '荤菜',
-  semi_finished: '半成品',
-  soup: '汤',
-  staple: '主食',
-  vegetable_dish: '素菜',
-};
+import {
+  SITE,
+  buildRecipeSchema,
+  isMetaSlug,
+  isUsableImage,
+  minutesToIso,
+  normalizePath,
+  recipeCategoryFromSegments,
+  toAbsoluteUrl,
+} from '../recipeJsonLd.mjs';
 
 const route = useRoute();
 const { page } = useData();
 const extras = ref({});
-
-function normalizePath(path) {
-  return String(path || '')
-    .replace(/\.html$/i, '')
-    .replace(/\/$/, '') || '/';
-}
-
-function isMetaSlug(slug) {
-  return META_SLUGS.has(String(slug || '').toLowerCase().replace(/\s+/g, '_'));
-}
 
 function isRecipePath(path) {
   const segments = normalizePath(path).split('/').filter(Boolean);
@@ -73,46 +44,14 @@ const recipeName = computed(() => {
 
 const recipeCategory = computed(() => {
   const segments = normalizePath(route.path).split('/').filter(Boolean);
-  if (segments[0] === 'cooklikehoc' && segments[1]) return decodeURIComponent(segments[1]);
-  if (segments[0] === 'howtocook' && segments[1] === 'dishes' && segments[2]) {
-    return HOWTOCOOK_CATEGORY[segments[2]] || decodeURIComponent(segments[2]);
-  }
-  return recipeSource.value === 'CookLikeHOC' ? '中式家常菜' : '家常菜';
+  const isCooklike = segments[0] === 'cooklikehoc';
+  return recipeCategoryFromSegments(segments, isCooklike);
 });
 
 const pageUrl = computed(() => {
   const path = withBase(normalizePath(route.path));
   return path.startsWith('http') ? path : `${SITE}${path.startsWith('/') ? path : `/${path}`}`;
 });
-
-function toAbsoluteUrl(src) {
-  if (!src) return null;
-  if (/^https?:\/\//i.test(src)) return src.split('?')[0];
-  if (src.startsWith('//')) return `https:${src.split('?')[0]}`;
-  if (src.startsWith('/')) return `${SITE}${src.split('?')[0]}`;
-  try {
-    return new URL(src, pageUrl.value).href.split('?')[0];
-  } catch {
-    return null;
-  }
-}
-
-function isUsableImage(src) {
-  if (!src) return false;
-  const lower = src.toLowerCase();
-  if (lower.includes('logo.svg') || lower.includes('favicon')) return false;
-  if (lower.endsWith('.svg')) return false;
-  return /\.(avif|gif|jpe?g|png|webp)(\?|$)/i.test(lower) || lower.includes('/assets/');
-}
-
-function minutesToIso(totalMinutes) {
-  const n = Math.round(Number(totalMinutes));
-  if (!Number.isFinite(n) || n <= 0) return null;
-  if (n < 60) return `PT${n}M`;
-  const h = Math.floor(n / 60);
-  const m = n % 60;
-  return m ? `PT${h}H${m}M` : `PT${h}H`;
-}
 
 function listAfterHeading(root, headings) {
   const nodes = [...root.querySelectorAll('h2, h3')];
@@ -149,7 +88,7 @@ function enhanceFromDom() {
 
   const text = root.textContent.replace(/\s+/g, ' ');
   const images = [...root.querySelectorAll('img')]
-    .map((img) => toAbsoluteUrl(img.currentSrc || img.src))
+    .map((img) => toAbsoluteUrl(img.currentSrc || img.src, pageUrl.value))
     .filter(isUsableImage);
 
   const uniqueImages = [...new Set(images)];
@@ -207,57 +146,17 @@ function enhanceFromDom() {
 }
 
 const schemaData = computed(() => {
-  if (!isRecipePage.value) return null;
+  if (!isRecipePage.value || !recipeSource.value) return null;
 
   const name = extras.value.name || recipeName.value;
-  const images = extras.value.images?.length
-    ? extras.value.images
-    : [FALLBACK_IMAGE];
-
-  const data = {
-    '@context': 'https://schema.org',
-    '@type': 'Recipe',
+  return buildRecipeSchema({
     name,
-    image: images,
-    description: `${name}的做法 - 来自${recipeSource.value}菜谱`,
-    author: {
-      '@type': 'Organization',
-      name: recipeSource.value,
-    },
-    recipeCategory: recipeCategory.value,
-    recipeCuisine: 'Chinese',
-    keywords: `菜谱, 做饭, 家常菜, ${name}`,
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': pageUrl.value,
-    },
-  };
-
-  if (extras.value.prepTime) data.prepTime = extras.value.prepTime;
-  if (extras.value.cookTime) data.cookTime = extras.value.cookTime;
-  if (extras.value.totalTime) data.totalTime = extras.value.totalTime;
-
-  if (extras.value.calories) {
-    data.recipeYield = '1 份';
-    data.nutrition = {
-      '@type': 'NutritionInformation',
-      calories: `${extras.value.calories} 大卡`,
-    };
-  }
-
-  if (extras.value.ingredients?.length) {
-    data.recipeIngredient = extras.value.ingredients;
-  }
-
-  if (extras.value.instructions?.length) {
-    data.recipeInstructions = extras.value.instructions.map((text, i) => ({
-      '@type': 'HowToStep',
-      position: i + 1,
-      text,
-    }));
-  }
-
-  return data;
+    source: recipeSource.value,
+    category: recipeCategory.value,
+    pageUrl: pageUrl.value,
+    images: extras.value.images,
+    extras: extras.value,
+  });
 });
 
 const schemaJson = computed(() =>
